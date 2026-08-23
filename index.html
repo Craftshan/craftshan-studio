@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    const CRAFTSHAN_SUPABASE_URL =
+        'https://hiqarqiuqtrksedndpmf.supabase.co';
+
+    const CRAFTSHAN_SUPABASE_KEY =
+        'sb_publishable_8CZRWaO3BevFUyARw7YYew_wLkVEro3';
+
+    const craftshanSupabase = window.supabase.createClient(
+        CRAFTSHAN_SUPABASE_URL,
+        CRAFTSHAN_SUPABASE_KEY
+    );
+</script>
+
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Craftshan Studio — Premium SVG Design Files</title>
@@ -13,6 +29,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>.coupon-overview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}.coupon-stat{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 17px}.coupon-stat span{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);font-weight:700;margin-bottom:7px}.coupon-stat strong{display:block;font-family:'Playfair Display',serif;font-size:1.65rem;line-height:1;color:var(--ink)}.coupon-stat small{display:block;color:var(--ink3);font-size:.72rem;margin-top:6px}.coupon-code-chip{display:inline-flex;align-items:center;padding:5px 9px;border-radius:7px;background:var(--gold-dim);color:#8c5e00;font-weight:800;letter-spacing:.08em;font-size:.7rem}@media(max-width:820px){.coupon-overview-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.coupon-overview-grid{grid-template-columns:1fr}}
+
 
 /* ═══════════════════════════════════════
    TOKENS
@@ -367,6 +384,9 @@ section,[id^=page-]{scroll-margin-top:88px;}
 .checkout-item-name{font-size:.83rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .checkout-item-meta{font-size:.72rem;color:var(--ink3);margin-top:2px;}
 .checkout-item-price{font-family:'Playfair Display',serif;font-weight:700;font-size:.92rem;}
+.checkout-item > .checkout-item-price{margin-left:auto;}
+.checkout-item > .cart-remove{margin-left:auto;margin-top:-5px;}
+@media(max-width:600px){.checkout-item{gap:9px;}.checkout-item > .cart-remove{font-size:.7rem;}}
 .checkout-summary-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:14px;}
 .checkout-pay-btn{width:100%;padding:14px;border:none;border-radius:100px;background:var(--gold);color:var(--night);font-size:.9rem;font-weight:800;margin-top:12px;cursor:pointer;}
 .checkout-pay-btn:hover{background:var(--gold-lt);}
@@ -2116,6 +2136,24 @@ input,select,textarea{min-width:0;}
 <style id="craftshan-seo-settings">
 .seo-settings-layout{align-items:start}.seo-preview-panel{position:sticky;top:86px}.seo-counter{display:block;text-align:right;color:var(--ink3);font-size:.68rem;margin-top:4px}.seo-page-list{border:1px solid var(--border);border-radius:12px;overflow:hidden}.seo-page-row{display:flex;justify-content:space-between;gap:20px;padding:12px 14px;border-bottom:1px solid var(--border);font-size:.78rem}.seo-page-row:last-child{border-bottom:0}.seo-page-row strong{color:var(--ink);min-width:90px}.seo-page-row span{color:var(--ink3);text-align:right}.seo-preview-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 20px}.seo-preview-url{font-size:.72rem;color:#5f6368;margin-bottom:5px}.seo-preview-title{font-size:1.05rem;color:#1a0dab;font-weight:500;line-height:1.35;margin-bottom:6px}.seo-preview-desc{font-size:.78rem;color:#4d5156;line-height:1.55}.seo-social-card{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#fff}.seo-social-image{height:120px;background:linear-gradient(135deg,var(--night),var(--night2));display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:'Playfair Display',serif;font-size:1.1rem}.seo-social-body{padding:14px 16px}.seo-social-domain{font-size:.68rem;color:var(--ink3);margin-bottom:4px}.seo-social-body strong{font-size:.9rem;display:block;margin-bottom:5px}.seo-social-body p{font-size:.76rem;color:var(--ink3);line-height:1.5}.seo-checklist{display:grid;gap:8px}.seo-check{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;border-radius:10px;background:var(--surf);font-size:.78rem;color:var(--ink2)}.seo-check.ok{background:var(--green-bg);color:var(--green)}.seo-check.warn{background:#fff7e7;color:#8a5a00}@media(max-width:900px){.seo-preview-panel{position:static}.seo-page-row{flex-direction:column;gap:4px}.seo-page-row span{text-align:left}.seo-settings-layout{display:block}}
 </style>
+
+<style id="owner-data-table-styles">
+.owner-data-wrap{border:1px solid var(--border);border-radius:16px;background:var(--surf);overflow:hidden;}
+.owner-data-table{width:100%;border-collapse:collapse;min-width:760px;font-size:.78rem;}
+.owner-data-table th{padding:12px 14px;text-align:left;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);background:#f7f4ef;border-bottom:1px solid var(--border);white-space:nowrap;}
+.owner-data-table td{padding:13px 14px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--ink2);}
+.owner-data-table tbody tr:last-child td{border-bottom:0;}
+.owner-data-table tbody tr:hover{background:#fbfaf7;}
+.owner-data-table td strong{display:block;color:var(--ink);font-size:.78rem;}
+.owner-data-table td small{display:block;color:var(--ink3);font-size:.66rem;margin-top:3px;}
+@media(max-width:800px){.owner-data-table{min-width:680px;}}
+</style>
+
+<style>
+.checkout-item-right{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+.checkout-remove{padding:0;border:0;background:transparent;color:var(--ink3);font-size:.72rem;font-weight:500;cursor:pointer;line-height:1.2;}
+.checkout-remove:hover{color:#c0392b;}
+</style>
 </head>
 <body>
 
@@ -2268,7 +2306,7 @@ input,select,textarea{min-width:0;}
       <div class="tools-top-row">
         <div><div class="kicker" id="home-tools-kicker">↳ on the roadmap</div><h2 class="sec-title-light" id="home-tools-heading">Studio tools we're building</h2><p style="color:rgba(255,255,255,.45);font-size:.82rem;margin-top:8px;max-width:520px;font-weight:300;">These creator tools are in development and not available yet. They'll be announced here as they launch.</p></div>
       </div>
-      <div class="tools-grid">
+      <div class="tools-grid" id="home-tools-grid">
         <div class="tool-card"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div class="tool-name">AI Design Generator</div><p class="tool-desc">Planned: describe a concept and generate a production-ready SVG.</p><span class="tool-pill">Coming soon</span></div>
         <div class="tool-card"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg></div><div class="tool-name">Image to Vector</div><p class="tool-desc">Planned: upload a PNG or JPG and get a clean, scalable SVG.</p><span class="tool-pill">Coming soon</span></div>
         <div class="tool-card"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 9l6 6M15 9l-6 6"/></svg></div><div class="tool-name">Background Remover</div><p class="tool-desc">Planned: remove backgrounds cleanly for sublimation and HTV.</p><span class="tool-pill">Coming soon</span></div>
@@ -2527,6 +2565,9 @@ input,select,textarea{min-width:0;}
 .tools-page-card h3{font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:.45rem;}
 .tools-page-card p{font-size:.83rem;color:var(--ink2);line-height:1.7;margin-bottom:12px;}
 .tools-page-status{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;background:var(--surf);border:1px solid var(--border);font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);}
+.tools-available-badge{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:.67rem;font-weight:800;padding:5px 11px;border-radius:999px;text-transform:uppercase;letter-spacing:.09em;background:rgba(74,222,128,.16);color:#4ade80;border:1px solid rgba(74,222,128,.3);}
+.tools-available-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;}
+
 .tools-page-note{margin-top:26px;padding:18px 20px;border:1px solid var(--border);border-radius:14px;background:var(--surf);font-size:.82rem;color:var(--ink2);line-height:1.7;}
 @media(max-width:760px){.tools-page-hero{padding:62px 1.5rem 56px}.tools-page-wrap{padding:42px 1.5rem 64px}.tools-page-grid{grid-template-columns:1fr}.tools-page-card{padding:22px}}
 </style>
@@ -2548,7 +2589,7 @@ input,select,textarea{min-width:0;}
     </div>
   </div>
   <div class="tools-page-wrap">
-    <div class="tools-page-grid">
+    <div class="tools-page-grid" id="tools-page-grid">
       <article class="tools-page-card">
         <div class="tools-page-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="8"/></svg></div>
         <div><h3>SVG Cleaner</h3><p>Prepare vectors with a cleaner structure and more reliable files for everyday cutting workflows.</p><span class="tools-page-status">Coming soon</span><button type="button" class="tools-open-btn" data-tool-open="1" style="display:none;">Open Tool →</button></div>
@@ -3242,7 +3283,7 @@ input,select,textarea{min-width:0;}
         </div>
       </div>
       <div class="foot-col"><h5>Explore</h5><ul><li><a onclick="showPage('shop')">All Designs</a></li><li><a onclick="showFreeFiles()">Free Files</a></li><li><a onclick="showBundles()">Bundles</a></li><li><a onclick="showPage('tools')">Tools</a></li><li><a onclick="showPage('how')">How It Works</a></li></ul></div>
-      <div class="foot-col"><h5>Create</h5><ul><li><span class="foot-soon">AI Generator <em>(coming soon)</em></span></li><li><span class="foot-soon">Image to Vector <em>(coming soon)</em></span></li><li><span class="foot-soon">Background Remover <em>(coming soon)</em></span></li><li><span class="foot-soon">Parametric Templates <em>(coming soon)</em></span></li></ul></div>
+      <div class="foot-col"><h5>Create</h5><ul id="footer-tools-list"></ul></div>
       <div class="foot-col"><h5>Company</h5><ul><li><a onclick="showPage('about')">About</a></li><li><a onclick="showPage('license')">License</a></li><li><a onclick="showPage('contact')">Contact</a></li><li><a onclick="showPage('privacy')">Privacy Policy</a></li></ul></div>
     </div>
     <div class="foot-bottom">
@@ -3259,13 +3300,49 @@ input,select,textarea{min-width:0;}
 <div class="owner-gate" id="owner-gate" aria-hidden="true">
   <div class="owner-gate-card">
     <button class="close" onclick="closeOwnerGate()">×</button>
+
     <div class="kicker">↳ owner access</div>
+
     <h3>Craftshan Studio Control Center</h3>
-    <p>Prototype owner login. Replace this with Supabase Auth before production.</p>
-    <div class="form-box"><label>Owner Access Key</label><input id="owner-key" type="password" placeholder="Enter owner key" onkeydown="if(event.key==='Enter')ownerLogin()"></div>
-    <button class="btn-gold" style="width:100%;" onclick="ownerLogin()">Enter Control Center →</button>
-    <div id="owner-login-status" style="font-size:.7rem;color:var(--ink3);margin-top:10px;text-align:center;min-height:14px;"></div>
+
+    <p>Sign in with your secure Owner account.</p>
+
+    <div class="form-box">
+      <label>Owner Email</label>
+      <input
+        id="owner-email"
+        type="email"
+        autocomplete="username"
+        placeholder="Enter owner email"
+        onkeydown="if(event.key==='Enter')ownerLogin()"
+      >
+    </div>
+
+    <div class="form-box">
+      <label>Password</label>
+      <input
+        id="owner-key"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Enter owner password"
+        onkeydown="if(event.key==='Enter')ownerLogin()"
+      >
+    </div>
+
+    <button
+      class="btn-gold"
+      style="width:100%;"
+      onclick="ownerLogin()"
+    >
+      Enter Control Center →
+    </button>
+
+    <div
+      id="owner-login-status"
+      style="font-size:.7rem;color:var(--ink3);margin-top:10px;text-align:center;min-height:14px;"
+    ></div>
   </div>
+</div>
 </div>
 <div class="admin-toast" id="admin-toast"></div>
 <div class="plugin-modal" id="plugin-install-modal" onclick="if(event.target===this)closePluginModal('plugin-install-modal')">
@@ -3418,7 +3495,7 @@ input,select,textarea{min-width:0;}
       <button data-admin-page="activity"><span>◷</span> Activity Log</button>
       <button data-admin-page="dashboard-settings"><span>◫</span> Dashboard Settings</button>
     </div>
-    <div class="admin-bottom"><button class="admin-btn" style="flex:1;" onclick="showAdminPage('plugins')">Plugin Manager</button><button class="admin-btn" onclick="closeAdmin()">Exit</button></div>
+    <div class="admin-bottom"><button class="admin-btn" style="flex:1;" onclick="showAdminPage('plugins')">Plugin Manager</button><button class="admin-btn" onclick="ownerLogout()">Logout</button></div>
   </aside>
   <main class="admin-main">
     <header class="admin-top"><div style="display:flex;align-items:center;gap:10px;"><button class="admin-mobile-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle admin menu" title="Menu">☰</button><div><div class="kicker" style="margin-bottom:1px;">↳ private owner area</div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><h2 id="admin-page-title">Dashboard</h2><span class="status-pill" style="background:rgba(232,160,32,.12);color:var(--gold);border-color:rgba(232,160,32,.22);">OWNER VIEW</span></div></div></div><div class="admin-top-right"><button class="admin-btn" onclick="showCustomerView()">Customer View</button><button class="admin-btn" onclick="showAdminPage('activity')">Activity</button><button class="admin-btn gold" onclick="saveActiveSettings()">Save Changes</button></div></header>
@@ -3576,7 +3653,7 @@ input,select,textarea{min-width:0;}
       <section class="admin-page" id="admin-page-orders">
         <div class="admin-page-head">
           <div><h3>Orders</h3><p>Manage customer purchases and delivery status when payments are connected.</p></div>
-          <div class="admin-head-actions"><button type="button" class="admin-btn" onclick="showAdminToast('Order search will use live order data after backend connection')">Search Orders</button></div>
+          <div class="admin-head-actions"><button type="button" class="admin-btn" onclick="loadOwnerOrders()">Refresh Orders</button></div>
         </div>
         <div class="admin-four admin-overview-grid">
           <div class="admin-panel admin-metric"><span class="admin-metric-icon">◎</span><strong id="orders-metric-total">0</strong><small>Total orders</small></div>
@@ -3585,7 +3662,7 @@ input,select,textarea{min-width:0;}
           <div class="admin-panel admin-metric"><span class="admin-metric-icon">◌</span><strong id="orders-metric-pending">0</strong><small>Awaiting payment</small></div>
         </div>
         <div class="admin-panel" style="margin-top:16px;">
-          <div class="admin-panel-head-row"><div><h4>Order activity</h4><p class="admin-muted">Only real orders should appear here. Payment processing is not connected yet.</p></div><span class="status-pill off">Payment provider not connected</span></div>
+          <div class="admin-panel-head-row"><div><h4>Order activity</h4><p class="admin-muted">Live orders are loaded from your Supabase backend.</p></div><span class="status-pill">Supabase connected</span></div>
           <div id="owner-orders-list" class="admin-empty-state">
             <div class="admin-empty-icon">▢</div>
             <h4>No orders yet</h4>
@@ -3596,7 +3673,7 @@ input,select,textarea{min-width:0;}
       <section class="admin-page" id="admin-page-customers">
         <div class="admin-page-head">
           <div><h3>Customers</h3><p>Keep customer accounts and support information organized in one place.</p></div>
-          <div class="admin-head-actions"><button type="button" class="admin-btn" onclick="showAdminToast('Customer search will use live account data after backend connection')">Search Customers</button></div>
+          <div class="admin-head-actions"><button type="button" class="admin-btn" onclick="loadOwnerCustomers()">Refresh Customers</button></div>
         </div>
         <div class="admin-four admin-overview-grid">
           <div class="admin-panel admin-metric"><span class="admin-metric-icon">◌</span><strong id="customers-metric-total">0</strong><small>Total customers</small></div>
@@ -3605,7 +3682,7 @@ input,select,textarea{min-width:0;}
           <div class="admin-panel admin-metric"><span class="admin-metric-icon">↺</span><strong id="customers-metric-support">0</strong><small>Support requests</small></div>
         </div>
         <div class="admin-panel" style="margin-top:16px;">
-          <div class="admin-panel-head-row"><div><h4>Customer accounts</h4><p class="admin-muted">Customer information stays private and should be loaded from the real authentication/database layer.</p></div><span class="status-pill off">Backend required</span></div>
+          <div class="admin-panel-head-row"><div><h4>Customer accounts</h4><p class="admin-muted">Customer information is loaded from your private Supabase database.</p></div><span class="status-pill">Supabase connected</span></div>
           <div id="owner-customers-list" class="admin-empty-state">
             <div class="admin-empty-icon">◎</div>
             <h4>No customer accounts yet</h4>
@@ -3799,6 +3876,7 @@ PRODUCTS.forEach((p,i)=>{ if(!p.thumbnailData && !p.coverImage) p.thumbnailData 
 
 
 let cart = [];
+try { cart = JSON.parse(localStorage.getItem('craftshan_cart') || '[]'); if (!Array.isArray(cart)) cart = []; } catch(e) { cart = []; }
 let wishlist = [];
 let isAnnual = false;
 let productUploadFiles=[];
@@ -4072,29 +4150,37 @@ function openProduct(id) {
     wishBtn.onclick=()=>{ toggleWishlist(id); reflect(); };
   }
   const buyBtn=document.getElementById('prod-buy-btn');
-  if(buyBtn) buyBtn.onclick=()=>{ if(!p.free && !cart.some(c=>c.id===id)) addToCart(id); openCheckout(); showToast(p.free ? '✓ Free design selected!' : '✓ Ready for checkout'); };
+  if(buyBtn) buyBtn.onclick=()=>{ if(!cart.some(c=>c.id===id)) addToCart(id); checkoutItems=cart.map(item=>({...item})); renderCheckout(checkoutItems); showPage('checkout'); showToast(p.free ? '✓ Free design added to checkout!' : '✓ Added to cart and ready for checkout'); };
   showPage('product');
 }
 /* ═══════════════════
    CART
 ═══════════════════ */
+function persistCart(){ try { localStorage.setItem('craftshan_cart', JSON.stringify(cart)); } catch(e) {} }
+
 function addToCart(id) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
   const existing = cart.find(c => c.id === id);
   if (existing) { showToast('Already in cart!'); return; }
   cart.push({...p});
+  persistCart();
   updateCartBadge();
   renderCart();
   showToast((p.free ? '✓ Free download added!' : `✓ ${p.name} added to cart`));
 }
 
 function removeFromCart(id) {
-  cart = cart.filter(c => c.id !== id);
-  updateCartBadge();
-  renderCart();
-}
 
+  cart = cart.filter(c => String(c.id) !== String(id));
+
+  persistCart();
+
+  updateCartBadge();
+
+  renderCart();
+
+}
 function updateCartBadge() {
   const badge = document.getElementById('cart-badge');
   if (cart.length > 0) { badge.textContent = cart.length; badge.classList.add('show'); }
@@ -4143,28 +4229,121 @@ function renderCart() {
 /* ═══════════════════
    CHECKOUT
 ═══════════════════ */
-function renderCheckout(){
-  const items=document.getElementById('checkout-items');
-  if(!items) return;
-  if(!cart.length){
-    items.innerHTML='<div class="cart-empty" style="padding:25px 5px;"><h3>Your cart is empty</h3><p>Add a design before checking out.</p></div>';
+let checkoutItems = [];
+
+function renderCheckout(items = checkoutItems) {
+  const list = Array.isArray(items) ? items : [];
+  const el = document.getElementById('checkout-items');
+
+  if (!el) return;
+
+  if (!list.length) {
+    el.innerHTML = `
+      <div class="cart-empty" style="padding:25px 5px;">
+        <h3>Your checkout is empty</h3>
+        <p>Add a design before checking out.</p>
+      </div>
+    `;
   } else {
-    items.innerHTML=cart.map(p=>{
-      const img=p.thumbnailData||p.previewImage;
-      const visual=img?`<img src="${img}" alt="${escapeHtml(p.name)}">`:(p.svg||'');
-      return `<div class="checkout-item"><div class="checkout-item-thumb">${visual}</div><div class="checkout-item-main"><div class="checkout-item-name">${escapeHtml(p.name)}</div><div class="checkout-item-meta">Digital design • Instant download</div></div><div class="checkout-item-price">${p.free?'Free':'$'+effectivePrice(p).toFixed(2)}</div></div>`;
+    el.innerHTML = list.map(p => {
+      const img = p.thumbnailData || p.previewImage;
+      const visual = img
+        ? `<img src="${img}" alt="${escapeHtml(p.name)}">`
+        : (p.svg || '');
+
+      const price = p.free
+        ? 'Free'
+        : '$' + effectivePrice(p).toFixed(2);
+
+      return `
+        <div class="checkout-item">
+          <div class="checkout-item-thumb">
+            ${visual}
+          </div>
+
+          <div class="checkout-item-main">
+            <div class="checkout-item-name">
+              ${escapeHtml(p.name)}
+            </div>
+
+            <div class="checkout-item-meta">
+              Digital design • Instant download
+            </div>
+          </div>
+
+          <div class="checkout-item-right">
+            <div class="checkout-item-price">
+              ${price}
+            </div>
+
+            <button
+              class="checkout-remove"
+              type="button"
+              onclick="removeFromCheckout(${Number(p.id)})">
+              Remove
+            </button>
+          </div>
+        </div>
+      `;
     }).join('');
   }
-  const sub=getCartSubtotal();
-  const couponDiscount=getCouponDiscount(sub);
-  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
-  set('checkout-subtotal','$'+sub.toFixed(2));
-  set('checkout-discount','–$'+couponDiscount.toFixed(2));
-  set('checkout-total','$'+Math.max(0,sub-couponDiscount).toFixed(2));
+
+  const sub = list.reduce(
+    (sum, p) => sum + (p.free ? 0 : effectivePrice(p)),
+    0
+  );
+
+  const couponDiscount = getCouponDiscount(sub);
+
+  const set = (id, value) => {
+    const node = document.getElementById(id);
+    if (node) node.textContent = value;
+  };
+
+  set('checkout-subtotal', '$' + sub.toFixed(2));
+  set('checkout-discount', '–$' + couponDiscount.toFixed(2));
+  set(
+    'checkout-total',
+    '$' + Math.max(0, sub - couponDiscount).toFixed(2)
+  );
 }
-function openCheckout(){
-  if(!cart.length){ showToast('Your cart is empty.'); showPage('cart'); return; }
-  renderCheckout();
+
+function removeFromCheckout(id) {
+
+  checkoutItems = checkoutItems.filter(
+    c => String(c.id) !== String(id)
+  );
+
+  renderCheckout(checkoutItems);
+
+  showToast('Removed from checkout.');
+
+  if (!checkoutItems.length) {
+    showPage('cart');
+  }
+
+}
+
+function openCheckout() {
+  if (!cart.length) {
+    showToast('Your cart is empty.');
+    showPage('cart');
+    return;
+  }
+
+  // Make a separate copy of the cart for this checkout.
+  // Removing products here will NOT modify the real cart.
+  checkoutItems = cart.map(item => ({ ...item }));
+
+  renderCheckout(checkoutItems);
+  showPage('checkout');
+}
+
+function openCheckoutForItems(items){
+  const selected = Array.isArray(items) ? items.filter(Boolean).map(item => ({...item})) : [];
+  if(!selected.length){ showToast('No product selected.'); return; }
+  checkoutItems = selected;
+  renderCheckout(checkoutItems);
   showPage('checkout');
 }
 
@@ -4297,8 +4476,8 @@ function showPage(name) {
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   const nl = document.getElementById('nl-' + name);
   if (nl) nl.classList.add('active');
-  if (name === 'cart') renderCart();
-  if (name === 'checkout') renderCheckout();
+  if (name === 'cart') { checkoutItems = null; renderCart(); }
+  if (name === 'checkout') renderCheckout(checkoutItems || cart);
   if (name === 'wishlist') renderWishlist();
   if (name === 'account') switchAccountTab('overview',null);
   if (name === 'home' && typeof updateSaleBanner === 'function') updateSaleBanner();
@@ -4411,7 +4590,6 @@ function toggleFaq(el) {
 /* =============================================================
    OWNER / CMS / PLUGIN LOGIC
 ============================================================= */
-const CRAFTSHAN_ADMIN_KEY='Kashan2006@!';
 const CRAFTSHAN_ADMIN_LOG=[];
 const CRAFTSHAN_PLUGINS=[
  {id:'craftshan-cms',name:'Craftshan CMS',version:'1.0.0',author:'Craftshan Studio',desc:'Owner dashboard, homepage CMS, dashboard settings and website controls.',enabled:true,permissions:['settings','products','frontend','storage']},
@@ -4472,44 +4650,96 @@ function craftshanStartIdleWatch(){
   craftshanIdleCheckTimer=setInterval(()=>{
     if(!document.getElementById('admin-shell')?.classList.contains('open')) return;
     if(craftshanSessionExpired()){
-      try{ sessionStorage.removeItem('craftshan_owner'); }catch(e){}
-      closeAdmin();
-      showAdminToast('Session timed out after inactivity. Please log in again.');
-    }
+
+  craftshanSupabase.auth.signOut();
+
+  closeAdmin();
+
+  openOwnerGate();
+
+  showAdminToast('Session timed out after inactivity. Please log in again.');
+}
   },30000);
   ['click','keydown','mousemove','touchstart'].forEach(evt=>{
     document.addEventListener(evt,()=>{ if(document.getElementById('admin-shell')?.classList.contains('open')) craftshanTouchSessionActivity(); },{passive:true});
   });
 }
 
-function ownerLogin(){
-  const input=document.getElementById('owner-key');
-  craftshanRefreshLoginGateUI();
-  if(craftshanLockoutRemaining()>0){ return false; }
-  const key=(input?.value||'').trim();
-  if(key!==CRAFTSHAN_ADMIN_KEY){
-    const s=craftshanLoginState();
-    s.attempts=(s.attempts||0)+1;
-    if(s.attempts>=CRAFTSHAN_LOGIN_MAX_ATTEMPTS){
-      s.lockedUntil=Date.now()+CRAFTSHAN_LOGIN_LOCKOUT_MS;
-      s.attempts=0;
-    }
-    craftshanSetLoginState(s);
-    craftshanRefreshLoginGateUI();
-    const remaining=CRAFTSHAN_LOGIN_MAX_ATTEMPTS-(s.attempts||0);
-    showAdminToast('Incorrect owner key'+(s.lockedUntil?'. Login locked temporarily.':(remaining<=2?' ('+remaining+' attempt'+(remaining===1?'':'s')+' left before a temporary lock)':'')));
-    input?.focus();
+async function ownerLogin() {
+  const emailInput = document.getElementById('owner-email');
+  const passwordInput = document.getElementById('owner-key');
+
+  const email = (emailInput?.value || '').trim();
+  const password = (passwordInput?.value || '').trim();
+
+  if (!email || !password) {
+    craftshanShowLoginStatus('Enter your Owner email and password.');
     return false;
   }
-  const s=craftshanLoginState(); s.attempts=0; delete s.lockedUntil; s.lastActivity=Date.now(); craftshanSetLoginState(s);
-  try{ sessionStorage.setItem('craftshan_owner','1'); }catch(e){}
-  syncOwnerEntry();
-  closeOwnerGate();
-  craftshanShowLoginStatus('');
-  craftshanStartIdleWatch();
-  openAdmin();
-  try{ addAdminLog('Owner logged in'); }catch(e){ console.warn('Activity log unavailable:',e); }
-  return true;
+
+  try {
+    const { data, error } = await craftshanSupabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      console.error('Supabase login error:', error);
+      craftshanShowLoginStatus(error.message || 'Login failed.');
+      return false;
+    }
+
+    const user = data.user;
+
+    if (!user) {
+      craftshanShowLoginStatus('Login failed.');
+      return false;
+    }
+
+    const { data: profile, error: profileError } = await craftshanSupabase
+      .from('profiles')
+      .select('id, email, role')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError || !profile) {
+      console.error('Profile lookup error:', profileError);
+      await craftshanSupabase.auth.signOut();
+      craftshanShowLoginStatus('Owner profile could not be verified.');
+      return false;
+    }
+
+    if (profile.role !== 'owner') {
+      await craftshanSupabase.auth.signOut();
+      craftshanShowLoginStatus('This account does not have Owner access.');
+      return false;
+    }
+
+    const s = craftshanLoginState();
+    s.attempts = 0;
+    delete s.lockedUntil;
+    s.lastActivity = Date.now();
+    craftshanSetLoginState(s);
+
+    syncOwnerEntry();
+    closeOwnerGate();
+    craftshanShowLoginStatus('');
+    craftshanStartIdleWatch();
+    openAdmin();
+
+    try {
+      addAdminLog('Owner logged in');
+    } catch (e) {
+      console.warn('Activity log unavailable:', e);
+    }
+
+    return true;
+
+  } catch (err) {
+    console.error('Unexpected login error:', err);
+    craftshanShowLoginStatus('Something went wrong while logging in.');
+    return false;
+  }
 }
 syncOwnerEntry();
 window.openOwnerGate=openOwnerGate;
@@ -4532,24 +4762,71 @@ function openAdmin(){
     ['products',()=>renderAdminProducts()],
     ['sales',()=>renderAdminSales()],
     ['coupons',()=>renderAdminCoupons()],
+    ['metrics',()=>refreshOwnerOrderCustomerMetrics()],
     ['plugins',()=>renderPlugins()],
     ['activity',()=>renderActivity()]
   ];
   tasks.forEach(([name,fn])=>{try{fn();}catch(err){console.error('Owner Dashboard '+name+' failed:',err);}});
   return true;
 }
-function openOwnerDashboard(){
-  let owner=false;
-  try{owner=sessionStorage.getItem('craftshan_owner')==='1';}catch(e){}
-  if(owner && craftshanSessionExpired()){
-    try{ sessionStorage.removeItem('craftshan_owner'); }catch(e){}
-    owner=false;
+async function openOwnerDashboard() {
+  try {
+    const {
+      data: { session },
+      error: sessionError
+    } = await craftshanSupabase.auth.getSession();
+
+    if (sessionError || !session?.user) {
+      openOwnerGate();
+      return false;
+    }
+
+    const { data: profile, error: profileError } = await craftshanSupabase
+      .from('profiles')
+      .select('role')
+      .eq('id', session.user.id)
+      .single();
+
+    if (profileError || profile?.role !== 'owner') {
+      await craftshanSupabase.auth.signOut();
+      openOwnerGate();
+      return false;
+    }
+
+    craftshanTouchSessionActivity();
+    craftshanStartIdleWatch();
+
+    return openAdmin();
+
+  } catch (error) {
+    console.error('Owner session verification failed:', error);
+    openOwnerGate();
+    return false;
   }
-  if(owner){ craftshanTouchSessionActivity(); craftshanStartIdleWatch(); return openAdmin(); }
-  openOwnerGate();
-  return false;
 }
 function closeAdmin(){const shell=document.getElementById('admin-shell');if(!shell)return;shell.classList.remove('open');shell.classList.remove('sidebar-open');document.body.style.overflow='';}
+
+async function ownerLogout() {
+  try {
+    const { error } = await craftshanSupabase.auth.signOut();
+
+    if (error) {
+      console.error('Owner logout error:', error);
+    }
+  } catch (e) {
+    console.error('Unexpected logout error:', e);
+  }
+
+  try {
+    sessionStorage.removeItem('craftshan_login_state');
+  } catch (e) {}
+
+  closeAdmin();
+  closeAdminSidebar();
+  openOwnerGate();
+  craftshanShowLoginStatus('');
+}
+
 function toggleAdminSidebar(){document.getElementById('admin-shell')?.classList.toggle('sidebar-open');}
 function closeAdminSidebar(){document.getElementById('admin-shell')?.classList.remove('sidebar-open');}
 function logCraftshanActivity(action){try{const arr=JSON.parse(localStorage.getItem('craftshan_activity')||'[]');arr.push({action,time:new Date().toLocaleString()});localStorage.setItem('craftshan_activity',JSON.stringify(arr.slice(-30)));}catch(e){}}
@@ -4570,7 +4847,7 @@ function showAdminPage(name){
   const p=document.getElementById('admin-page-'+name); if(p)p.classList.add('active');
   document.querySelectorAll('.admin-nav button').forEach(b=>b.classList.toggle('active',b.dataset.adminPage===name));
   const labels={dashboard:'Dashboard',frontend:'Frontend',home:'Home Settings','shop-settings':'Shop Settings','about-settings':'About Settings','tools-settings':'Tools Settings','license-settings':'License Settings','contact-settings':'Contact Settings','footer-settings':'Footer Settings','global-settings':'Global Settings','seo-settings':'SEO Settings',products:'Products',categories:'Categories',orders:'Orders',customers:'Customers',reviews:'Reviews',coupons:'Coupons',media:'Media',plugins:'Plugins',integrations:'Integrations',activity:'Activity Log','dashboard-settings':'Dashboard Settings'};
-  document.getElementById('admin-page-title').textContent=labels[name]||name; if(name==='coupons'){try{renderAdminCoupons();}catch(e){console.error(e)}} if(name==='sales'){try{renderAdminSales();}catch(e){console.error(e)}}
+  document.getElementById('admin-page-title').textContent=labels[name]||name; if(name==='coupons'){try{renderAdminCoupons();}catch(e){console.error(e)}} if(name==='sales'){try{renderAdminSales();}catch(e){console.error(e)}} if(name==='orders'){try{loadOwnerOrders();}catch(e){console.error('Orders load failed:',e)}} if(name==='customers'){try{loadOwnerCustomers();}catch(e){console.error('Customers load failed:',e)}}
 }
 document.querySelectorAll('.admin-nav button[data-admin-page]').forEach(btn=>btn.addEventListener('click',()=>{const target=btn.dataset.adminPage;showAdminPage(target);closeAdminSidebar();document.getElementById('admin-content')?.scrollTo?.(0,0);const ac=document.querySelector('.admin-content');if(ac)ac.scrollTop=0;}));
 function showAdminToast(msg){const t=document.getElementById('admin-toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__adminToast);window.__adminToast=setTimeout(()=>t.classList.remove('show'),2200);}
@@ -4854,21 +5131,624 @@ function syncCategorySelectionModeUI(){
     selectAllBtn.onclick=()=>toggleAllCategories(!(total>0 && selected===total));
   }
 }
-function resetProductUploadUI(){productUploadFiles=[];productThumbnailData='';productPreviewData='';const ids=['product-file-input','product-thumb-input','product-preview-input'];ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});renderProductUploadFiles();renderProductImagePreviews();updateProductPricePreview();}
-function renderProductUploadFiles(){const el=document.getElementById('product-file-list');if(!el)return;el.innerHTML=productUploadFiles.length?productUploadFiles.map((f,i)=>`<div class="upload-file-row"><div style="font-weight:800;font-size:.68rem">ZIP</div><div class="file-meta"><strong>${escapeHtml(f.name)}</strong><small>Original size: ${formatBytes(f.size)} • Complete product package</small></div><button class="upload-remove" type="button" onclick="removeProductUploadFile(${i})">Remove</button></div>`).join(''):'<div style="font-size:.7rem;color:var(--ink3);padding:6px 2px">No ZIP package selected yet.</div>'; }
-async function handleProductImage(file,type){if(!file)return;if(!/^image\/(png|jpeg|webp)$/i.test(file.type)){showAdminToast('Please use PNG, JPG or WEBP images');return;}const data=await readFileAsDataURL(file);if(type==='thumb')productThumbnailData=data;else productPreviewData=data;renderProductImagePreviews();}
-function renderProductImagePreviews(){
-  const a=document.getElementById('product-thumb-preview');
-  const b=document.getElementById('product-preview-image-preview');
-  if(a){
-    a.innerHTML=productThumbnailData
-      ? `<img src="${productThumbnailData}" alt="Thumbnail preview"><button type="button" class="upload-remove" onclick="event.stopPropagation();productThumbnailData='';renderProductImagePreviews()">Remove</button>`
-      : '<strong>Browse or drag thumbnail</strong><span>PNG, JPG, WEBP</span>';
+let productThumbnailFile = null;
+let productPreviewFile = null;
+async function migrateCraftshanProductsToSupabase() {
+  if (typeof craftshanSupabase === 'undefined') {
+    console.error('Supabase client is not available.');
+    showAdminToast('Supabase is not available.');
+    return;
   }
-  if(b){
-    b.innerHTML=productPreviewData
-      ? `<img src="${productPreviewData}" alt="Product preview image"><button type="button" class="upload-remove" onclick="event.stopPropagation();productPreviewData='';renderProductImagePreviews()">Remove</button>`
-      : '<strong>Browse or drag preview</strong><span>PNG, JPG, WEBP</span>';
+
+  if (!Array.isArray(PRODUCTS) || !PRODUCTS.length) {
+    console.error('No local PRODUCTS found.');
+    showAdminToast('No local products found.');
+    return;
+  }
+
+  const results = [];
+
+  for (const p of PRODUCTS) {
+    try {
+      // ----------------------------------------------------------
+      // Find category
+      // ----------------------------------------------------------
+
+      const { data: category, error: categoryError } =
+        await craftshanSupabase
+          .from('categories')
+          .select('id, name')
+          .eq('name', p.cat)
+          .maybeSingle();
+
+      if (categoryError) {
+        throw categoryError;
+      }
+
+      if (!category) {
+        results.push({
+          local_id: p.id,
+          name: p.name,
+          status: 'SKIPPED',
+          reason: `Category "${p.cat}" not found in Supabase`
+        });
+        continue;
+      }
+
+      // ----------------------------------------------------------
+      // Check if this product already exists by NAME
+      // ----------------------------------------------------------
+
+      const { data: existing, error: existingError } =
+        await craftshanSupabase
+          .from('products')
+          .select('id, name')
+          .eq('name', p.name)
+          .maybeSingle();
+
+      if (existingError) {
+        throw existingError;
+      }
+
+      if (existing) {
+        // Keep the Supabase UUID attached to the local product.
+        p.supabase_id = existing.id;
+
+        results.push({
+          local_id: p.id,
+          name: p.name,
+          status: 'EXISTS',
+          supabase_id: existing.id
+        });
+
+        continue;
+      }
+
+      // ----------------------------------------------------------
+      // Calculate values
+      // ----------------------------------------------------------
+
+      const price = Number(p.price) || 0;
+      const discount = Number(p.discountPercent) || 0;
+
+      const salePrice =
+        Number.isFinite(Number(p.salePrice))
+          ? Number(p.salePrice)
+          : discount > 0
+            ? Number((price * (1 - discount / 100)).toFixed(2))
+            : price;
+
+      const slug =
+        `${String(p.name)
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '')}-${p.id}`;
+
+      // ----------------------------------------------------------
+      // Insert product
+      // IMPORTANT: DO NOT provide id.
+      // Supabase generates the UUID automatically.
+      // ----------------------------------------------------------
+
+      const { data: inserted, error: insertError } =
+        await craftshanSupabase
+          .from('products')
+          .insert({
+            name: p.name,
+            slug,
+            category_id: category.id,
+            price,
+            sale_price: salePrice,
+            discount_percent: discount,
+            badge: p.badge || p.chip || '',
+            rating: Number(p.rating) || 4.9,
+            description: p.description || '',
+            status: p.status === 'draft'
+              ? 'draft'
+              : 'published',
+            featured: p.featured === true,
+            free: p.free === true
+          })
+          .select()
+          .single();
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      const supabaseProductId = inserted.id;
+
+      // Keep UUID on the existing local product object.
+      p.supabase_id = supabaseProductId;
+
+      // ----------------------------------------------------------
+      // Cover image
+      // ----------------------------------------------------------
+
+      let thumbnailPath = null;
+
+      if (
+        p.thumbnailData &&
+        String(p.thumbnailData).startsWith('data:')
+      ) {
+        const response = await fetch(p.thumbnailData);
+        const blob = await response.blob();
+
+        const extension =
+          blob.type === 'image/png'
+            ? 'png'
+            : blob.type === 'image/webp'
+              ? 'webp'
+              : 'jpg';
+
+        thumbnailPath =
+          `${supabaseProductId}/cover.${extension}`;
+
+        const { error: imageError } =
+          await craftshanSupabase.storage
+            .from('product-images')
+            .upload(thumbnailPath, blob, {
+              contentType: blob.type,
+              upsert: true
+            });
+
+        if (imageError) {
+          throw imageError;
+        }
+      }
+
+      // ----------------------------------------------------------
+      // Preview image
+      // ----------------------------------------------------------
+
+      let previewPath = null;
+
+      if (
+        p.previewImage &&
+        String(p.previewImage).startsWith('data:')
+      ) {
+        const response = await fetch(p.previewImage);
+        const blob = await response.blob();
+
+        const extension =
+          blob.type === 'image/png'
+            ? 'png'
+            : blob.type === 'image/webp'
+              ? 'webp'
+              : 'jpg';
+
+        previewPath =
+          `${supabaseProductId}/preview.${extension}`;
+
+        const { error: previewError } =
+          await craftshanSupabase.storage
+            .from('product-previews')
+            .upload(previewPath, blob, {
+              contentType: blob.type,
+              upsert: true
+            });
+
+        if (previewError) {
+          throw previewError;
+        }
+      }
+
+      // ----------------------------------------------------------
+      // ZIP from browser IndexedDB
+      // ----------------------------------------------------------
+
+      let zipPath = null;
+      let zipFileName = p.zipFileName || '';
+      let zipFileSize = Number(p.zipFileSize) || 0;
+
+      const existingZip = await getProductZip(p.id);
+
+      if (existingZip) {
+        const safeZipName =
+          String(existingZip.name || 'product.zip')
+            .replace(/[^a-zA-Z0-9._-]+/g, '-');
+
+        zipPath =
+          `${supabaseProductId}/${safeZipName}`;
+
+        const { error: zipError } =
+          await craftshanSupabase.storage
+            .from('product-zips')
+            .upload(zipPath, existingZip, {
+              contentType:
+                existingZip.type || 'application/zip',
+              upsert: true
+            });
+
+        if (zipError) {
+          throw zipError;
+        }
+
+        zipFileName =
+          existingZip.name || zipFileName;
+
+        zipFileSize =
+          existingZip.size || zipFileSize;
+      }
+
+      // ----------------------------------------------------------
+      // Save storage paths
+      // ----------------------------------------------------------
+
+      const { error: updateError } =
+        await craftshanSupabase
+          .from('products')
+          .update({
+            thumbnail_path: thumbnailPath,
+            preview_image_path: previewPath,
+            zip_file_name: zipFileName,
+            zip_file_size: zipFileSize,
+            zip_path: zipPath,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', supabaseProductId);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      results.push({
+        local_id: p.id,
+        name: p.name,
+        status: 'MIGRATED',
+        supabase_id: supabaseProductId
+      });
+
+    } catch (error) {
+      console.error(
+        `Failed to migrate product ${p.id} (${p.name}):`,
+        error
+      );
+
+      results.push({
+        local_id: p.id,
+        name: p.name,
+        status: 'FAILED',
+        reason: error?.message || String(error)
+      });
+    }
+  }
+
+  console.table(results);
+
+  const migrated = results.filter(
+    x => x.status === 'MIGRATED'
+  ).length;
+
+  const skipped = results.filter(
+    x => x.status === 'SKIPPED'
+  ).length;
+
+  const failed = results.filter(
+    x => x.status === 'FAILED'
+  ).length;
+
+  showAdminToast(
+    `Migration finished: ${migrated} migrated, ${skipped} skipped, ${failed} failed.`
+  );
+
+  return results;
+}
+async function completeCraftshanProductMigration() {
+  if (typeof craftshanSupabase === 'undefined') {
+    showAdminToast('Supabase is not available.');
+    return;
+  }
+
+  const results = [];
+
+  for (const p of PRODUCTS) {
+    try {
+      // Find the existing Supabase product by name
+      const { data: dbProduct, error: findError } =
+        await craftshanSupabase
+          .from('products')
+          .select(`
+            id,
+            name,
+            thumbnail_path,
+            preview_image_path,
+            zip_path,
+            zip_file_name,
+            zip_file_size
+          `)
+          .eq('name', p.name)
+          .maybeSingle();
+
+      if (findError) throw findError;
+
+      if (!dbProduct) {
+        results.push({
+          local_id: p.id,
+          name: p.name,
+          status: 'NOT_FOUND'
+        });
+        continue;
+      }
+
+      let thumbnailPath = dbProduct.thumbnail_path || null;
+      let previewPath = dbProduct.preview_image_path || null;
+      let zipPath = dbProduct.zip_path || null;
+      let zipFileName = dbProduct.zip_file_name || '';
+      let zipFileSize = Number(dbProduct.zip_file_size) || 0;
+
+      // ----------------------------------------------------------
+      // COVER IMAGE
+      // ----------------------------------------------------------
+
+      if (
+        !thumbnailPath &&
+        p.thumbnailData &&
+        String(p.thumbnailData).startsWith('data:')
+      ) {
+        const response = await fetch(p.thumbnailData);
+        const blob = await response.blob();
+
+        const extension =
+          blob.type === 'image/png'
+            ? 'png'
+            : blob.type === 'image/webp'
+              ? 'webp'
+              : 'jpg';
+
+        thumbnailPath =
+          `${dbProduct.id}/cover.${extension}`;
+
+        const { error } = await craftshanSupabase.storage
+          .from('product-images')
+          .upload(thumbnailPath, blob, {
+            contentType: blob.type,
+            upsert: true
+          });
+
+        if (error) throw error;
+      }
+
+      // ----------------------------------------------------------
+      // PREVIEW IMAGE
+      // ----------------------------------------------------------
+
+      if (
+        !previewPath &&
+        p.previewImage &&
+        String(p.previewImage).startsWith('data:')
+      ) {
+        const response = await fetch(p.previewImage);
+        const blob = await response.blob();
+
+        const extension =
+          blob.type === 'image/png'
+            ? 'png'
+            : blob.type === 'image/webp'
+              ? 'webp'
+              : 'jpg';
+
+        previewPath =
+          `${dbProduct.id}/preview.${extension}`;
+
+        const { error } = await craftshanSupabase.storage
+          .from('product-previews')
+          .upload(previewPath, blob, {
+            contentType: blob.type,
+            upsert: true
+          });
+
+        if (error) throw error;
+      }
+
+      // ----------------------------------------------------------
+      // ZIP
+      // ----------------------------------------------------------
+
+      if (!zipPath) {
+        const existingZip = await getProductZip(p.id);
+
+        if (existingZip) {
+          const safeZipName =
+            String(existingZip.name || 'product.zip')
+              .replace(/[^a-zA-Z0-9._-]+/g, '-');
+
+          zipPath =
+            `${dbProduct.id}/${safeZipName}`;
+
+          const { error } = await craftshanSupabase.storage
+            .from('product-zips')
+            .upload(zipPath, existingZip, {
+              contentType:
+                existingZip.type || 'application/zip',
+              upsert: true
+            });
+
+          if (error) throw error;
+
+          zipFileName =
+            existingZip.name || zipFileName;
+
+          zipFileSize =
+            existingZip.size || zipFileSize;
+        }
+      }
+
+      // ----------------------------------------------------------
+      // UPDATE PRODUCT
+      // ----------------------------------------------------------
+
+      const { error: updateError } =
+        await craftshanSupabase
+          .from('products')
+          .update({
+            thumbnail_path: thumbnailPath,
+            preview_image_path: previewPath,
+            zip_path: zipPath,
+            zip_file_name: zipFileName,
+            zip_file_size: zipFileSize,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', dbProduct.id);
+
+      if (updateError) throw updateError;
+
+      results.push({
+        local_id: p.id,
+        name: p.name,
+        status: 'COMPLETED',
+        supabase_id: dbProduct.id
+      });
+
+    } catch (error) {
+      console.error(
+        `Failed to complete ${p.name}:`,
+        error
+      );
+
+      results.push({
+        local_id: p.id,
+        name: p.name,
+        status: 'FAILED',
+        reason: error?.message || String(error)
+      });
+    }
+  }
+
+  console.table(results);
+
+  showAdminToast('Product file migration finished.');
+
+  return results;
+}
+function resetProductUploadUI() {
+  productUploadFiles = [];
+  productThumbnailData = '';
+  productPreviewData = '';
+  productThumbnailFile = null;
+  productPreviewFile = null;
+
+  const ids = [
+    'product-file-input',
+    'product-thumb-input',
+    'product-preview-input'
+  ];
+
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  renderProductUploadFiles();
+  renderProductImagePreviews();
+  updateProductPricePreview();
+}
+
+function removeProductUploadFile(index) {
+  if (!Array.isArray(productUploadFiles)) return;
+
+  productUploadFiles.splice(index, 1);
+  renderProductUploadFiles();
+}
+
+function renderProductUploadFiles() {
+  const el = document.getElementById('product-file-list');
+  if (!el) return;
+
+  el.innerHTML = productUploadFiles.length
+    ? productUploadFiles.map((f, i) => `
+        <div class="upload-file-row">
+          <div style="font-weight:800;font-size:.68rem">ZIP</div>
+          <div class="file-meta">
+            <strong>${escapeHtml(f.name)}</strong>
+            <small>Original size: ${formatBytes(f.size)} • Complete product package</small>
+          </div>
+          <button
+            class="upload-remove"
+            type="button"
+            onclick="removeProductUploadFile(${i})"
+          >
+            Remove
+          </button>
+        </div>
+      `).join('')
+    : `
+        <div style="font-size:.7rem;color:var(--ink3);padding:6px 2px">
+          No ZIP package selected yet.
+        </div>
+      `;
+}
+
+async function handleProductImage(file, type) {
+  if (!file) return;
+
+  if (!/^image\/(png|jpeg|webp)$/i.test(file.type)) {
+    showAdminToast('Please use PNG, JPG or WEBP images');
+    return;
+  }
+
+  const data = await readFileAsDataURL(file);
+
+  if (type === 'thumb') {
+    productThumbnailFile = file;
+    productThumbnailData = data;
+  } else {
+    productPreviewFile = file;
+    productPreviewData = data;
+  }
+
+  renderProductImagePreviews();
+}
+
+function renderProductImagePreviews() {
+  const a = document.getElementById('product-thumb-preview');
+  const b = document.getElementById('product-preview-image-preview');
+
+  if (a) {
+    a.innerHTML = productThumbnailData
+      ? `
+          <img src="${productThumbnailData}" alt="Thumbnail preview">
+          <button
+            type="button"
+            class="upload-remove"
+            onclick="
+              event.stopPropagation();
+              productThumbnailData='';
+              productThumbnailFile=null;
+              renderProductImagePreviews();
+            "
+          >
+            Remove
+          </button>
+        `
+      : `
+          <strong>Browse or drag thumbnail</strong>
+          <span>PNG, JPG, WEBP</span>
+        `;
+  }
+
+  if (b) {
+    b.innerHTML = productPreviewData
+      ? `
+          <img src="${productPreviewData}" alt="Product preview image">
+          <button
+            type="button"
+            class="upload-remove"
+            onclick="
+              event.stopPropagation();
+              productPreviewData='';
+              productPreviewFile=null;
+              renderProductImagePreviews();
+            "
+          >
+            Remove
+          </button>
+        `
+      : `
+          <strong>Browse or drag preview</strong>
+          <span>PNG, JPG, WEBP</span>
+        `;
   }
 }
 function updateProductPricePreview(){const price=Math.max(0,Number(document.getElementById('edit-product-price')?.value)||0);const discount=Math.max(0,Math.min(90,Number(document.getElementById('edit-product-discount')?.value)||0));const sale=price*(1-discount/100);const el=document.getElementById('product-price-preview'),sub=document.getElementById('product-discount-preview');if(el)el.innerHTML=discount?`<span style="color:#b42318">$${sale.toFixed(2)}</span> <del style="font-size:.75rem;color:var(--ink3)">$${price.toFixed(2)}</del>`:`$${price.toFixed(2)}`;if(sub)sub.textContent=discount?`${discount}% OFF`:'No discount';}
@@ -4929,14 +5809,50 @@ function openProductEditor(id=null){
 function togglePublishSection(button){const section=button.closest('.publish-section');if(section)section.classList.toggle('collapsed');}
 function updateProductTitleCounter(){const input=document.getElementById('edit-product-name'),counter=document.getElementById('product-title-counter');if(input&&counter)counter.textContent=`${input.value.length} / 150`;}
 
-const CRAFTSHAN_ZIP_DB='craftshan_zip_store_v1';
-function openZipDb(){return new Promise((resolve,reject)=>{if(!('indexedDB' in window)){resolve(null);return;}const req=indexedDB.open(CRAFTSHAN_ZIP_DB,1);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('zips'))db.createObjectStore('zips');};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
-async function saveProductZip(productId,file){if(!file)return false;try{const db=await openZipDb();if(!db)return false;await new Promise((resolve,reject)=>{const tx=db.transaction('zips','readwrite');tx.objectStore('zips').put(file, String(productId));tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});db.close();return true;}catch(e){console.warn('ZIP storage unavailable',e);return false;}}
-async function getProductZip(productId){try{const db=await openZipDb();if(!db)return null;const file=await new Promise((resolve,reject)=>{const tx=db.transaction('zips','readonly');const req=tx.objectStore('zips').get(String(productId));req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error);});db.close();return file;}catch(e){return null;}}
-async function downloadProductZip(productId){const p=PRODUCTS.find(x=>Number(x.id)===Number(productId));if(!p){showToast('Product not found.');return;}const file=await getProductZip(productId);if(!file){showToast('This ZIP will be available from your account after purchase once payments are connected.');return;}const url=URL.createObjectURL(file);const a=document.createElement('a');a.href=url;a.download=p.zipFileName||p.name.replace(/[^a-z0-9_-]+/gi,'-')+'.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+async function getProductZip(productId){
+  // ZIPs are no longer kept in browser IndexedDB. They live in private Supabase Storage.
+  return null;
+}
+async function downloadProductZip(productId){
+  const p=PRODUCTS.find(x=>String(x.supabase_id||x.id)===String(productId)||Number(x.id)===Number(productId));
+  if(!p){showToast('Product not found.');return;}
+  if(typeof craftshanSupabase==='undefined'){showToast('Download service is unavailable.');return;}
+  try{
+    const {data:{session}}=await craftshanSupabase.auth.getSession();
+    if(!session?.access_token){showToast('Please sign in to access your download.');return;}
+    const {data,error}=await craftshanSupabase.functions.invoke('secure-product-download',{body:{product_id:p.supabase_id||p.id}});
+    if(error) throw error;
+    if(!data?.url) throw new Error(data?.error||'Download link unavailable.');
+    const a=document.createElement('a');a.href=data.url;a.download=data.file_name||p.zipFileName||`${p.name}.zip`;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
+  }catch(e){console.error('Secure download:',e);showToast(e?.message||'Download is not available yet.');}
+}
+async function uploadCraftshanProductFile(bucket, file, productId, type) {
+  if (!file) return null;
 
+  const safeName = String(file.name || 'file')
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, '-');
+
+  const path = `${productId}/${Date.now()}-${safeName}`;
+
+  const { error } = await craftshanSupabase.storage
+    .from(bucket)
+    .upload(path, file, {
+      upsert: false,
+      contentType: file.type || undefined
+    });
+
+  if (error) {
+    console.error(`Upload failed (${type}):`, error);
+    throw error;
+  }
+
+  return path;
+}
 async function saveProductEditor(){
-  const visibleRating=document.getElementById('edit-product-rating-visible');if(visibleRating)document.getElementById('edit-product-rating').value=visibleRating.value;
+  const visibleRating=document.getElementById('edit-product-rating-visible');
+  if(visibleRating)document.getElementById('edit-product-rating').value=visibleRating.value;
+
   const name=document.getElementById('edit-product-name').value.trim();
   const cat=document.getElementById('edit-product-cat').value||document.getElementById('edit-product-cat-visible').value;
   const price=Number(document.getElementById('edit-product-price').value);
@@ -4945,30 +5861,214 @@ async function saveProductEditor(){
   const description=DEFAULT_PRODUCT_DESCRIPTION;
   const ratingInput=Number(document.getElementById('edit-product-rating').value)||4.9;
   const status=(document.getElementById('edit-product-status')?.value||'published');
+  const featured=document.getElementById('edit-product-featured').classList.contains('on');
+
   if(!name){showAdminToast('Title is required');return;}
   if(!cat){showAdminToast('Category is required');return;}
   if(!Number.isFinite(price)||price<0){showAdminToast('Enter a valid price');return;}
-  const existingProduct=editingProductId?PRODUCTS.find(x=>Number(x.id)===Number(editingProductId)):null;
-  if(!productUploadFiles.length && !existingProduct?.zipFileName){showAdminToast('Please upload one ZIP package containing all product files.');return;}
-  if(productUploadFiles.length && (productUploadFiles.length!==1 || String(productUploadFiles[0].ext||'').toLowerCase()!=='zip')){showAdminToast('The product download must be one ZIP file.');return;}
-  if(!productThumbnailData){showAdminToast('Please upload a cover image');return;}
-  const calculatedSalePrice=discount>0?Number((price*(1-discount/100)).toFixed(2)):price;
-  const zipMeta=productUploadFiles[0] ? {files:[{name:productUploadFiles[0].name,size:productUploadFiles[0].size,type:productUploadFiles[0].type||'application/zip',ext:'zip'}],zipFileName:productUploadFiles[0].name,zipFileSize:productUploadFiles[0].size} : {files:existingProduct?.files||[],zipFileName:existingProduct?.zipFileName||'',zipFileSize:existingProduct?.zipFileSize||0};
-  const data={name,cat,price,salePrice:calculatedSalePrice,discountPercent:discount,badge,chip:badge?String(badge).toLowerCase().includes('sale')?'hot':'new':'',rating:clampRating(ratingInput),description,thumbnailData:productThumbnailData,previewImage:productPreviewData,status,featured:document.getElementById('edit-product-featured').classList.contains('on'),createdAtScore:existingProduct?.createdAtScore||Date.now(),...zipMeta};
+
+  const existingProduct=editingProductId
+    ? PRODUCTS.find(x=>Number(x.id)===Number(editingProductId))
+    : null;
+
+  if(!productUploadFiles.length && !existingProduct?.zipFileName){
+    showAdminToast('Please upload one ZIP package containing all product files.');
+    return;
+  }
+
+  if(productUploadFiles.length && (productUploadFiles.length!==1 || String(productUploadFiles[0].ext||'').toLowerCase()!=='zip')){
+    showAdminToast('The product download must be one ZIP file.');
+    return;
+  }
+
+  if(!productThumbnailData){
+    showAdminToast('Please upload a cover image');
+    return;
+  }
+
+  const calculatedSalePrice=discount>0
+    ? Number((price*(1-discount/100)).toFixed(2))
+    : price;
+
   const zipFile=productUploadFiles[0]?.file||null;
-  if(editingProductId){const p=PRODUCTS.find(x=>x.id===editingProductId);if(!p)return;Object.assign(p,data);if(zipFile)await saveProductZip(p.id,zipFile);addAdminLog('Edited product: '+p.name);showAdminToast(p.status==='draft'?'Draft saved':'Product updated');}
-  else{const id=PRODUCTS.reduce((m,p)=>Math.max(m,p.id),0)+1;PRODUCTS.push({id,...data,bg:'#F6F4F0',free:price===0,svg:`<svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="28" fill="none" stroke="#E8A020" stroke-width="2"/><path d="M35 55l10 10 20-24" stroke="#E8A020" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`});if(zipFile)await saveProductZip(id,zipFile);addAdminLog((status==='draft'?'Saved draft: ':'Created product: ')+name);showAdminToast(status==='draft'?'Draft saved':'Product published successfully');}
-  closeEditorModal('product-editor-modal');renderProducts('home-product-grid',8);renderProducts('shop-product-grid');renderAdminProducts();
+  const zipMeta=zipFile
+    ? {zipFileName:zipFile.name,zipFileSize:zipFile.size}
+    : {zipFileName:existingProduct?.zipFileName||'',zipFileSize:existingProduct?.zipFileSize||0};
+
+  const localData={
+    name,cat,price,salePrice:calculatedSalePrice,discountPercent:discount,badge,
+    chip:badge ? (String(badge).toLowerCase().includes('sale')?'hot':'new') : '',
+    rating:clampRating(ratingInput),description,thumbnailData:productThumbnailData,
+    previewImage:productPreviewData,status,featured,
+    createdAtScore:existingProduct?.createdAtScore||Date.now(),
+    files:zipFile?[{name:zipFile.name,size:zipFile.size,type:zipFile.type||'application/zip',ext:'zip'}]:(existingProduct?.files||[]),
+    ...zipMeta
+  };
+
+  try{
+    if(typeof craftshanSupabase==='undefined') throw new Error('Supabase client is unavailable.');
+
+    // Resolve the existing category UUID used by the products table.
+    const {data:category,error:categoryError}=await craftshanSupabase
+      .from('categories')
+      .select('id,name')
+      .eq('name',cat)
+      .maybeSingle();
+    if(categoryError) throw categoryError;
+    if(!category?.id) throw new Error('Category was not found in Supabase: '+cat);
+
+    const productPayload={
+      name,
+      slug:`${name.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}-${Date.now()}`,
+      category_id:category.id,
+      price,
+      sale_price:calculatedSalePrice,
+      discount_percent:discount,
+      badge:badge||'',
+      rating:clampRating(ratingInput),
+      description,
+      status:status==='draft'?'draft':'published',
+      featured,
+      free:price===0,
+      zip_file_name:zipMeta.zipFileName,
+      zip_file_size:zipMeta.zipFileSize,
+      updated_at:new Date().toISOString()
+    };
+
+    let supabaseProductId=existingProduct?.supabase_id||null;
+    let savedProduct=null;
+
+    if(supabaseProductId){
+      const {slug,...updatePayload}=productPayload;
+      const {data,error}=await craftshanSupabase.from('products')
+        .update(updatePayload)
+        .eq('id',supabaseProductId)
+        .select().single();
+      if(error) throw error;
+      savedProduct=data;
+    }else{
+      delete productPayload.updated_at;
+      const {data,error}=await craftshanSupabase.from('products')
+        .insert(productPayload).select().single();
+      if(error) throw error;
+      savedProduct=data;
+      supabaseProductId=data.id;
+    }
+
+    // Cover image -> public product-images bucket.
+    let thumbnailPath=existingProduct?.thumbnail_path||null;
+    if(productThumbnailData && String(productThumbnailData).startsWith('data:')){
+      const blob=await (await fetch(productThumbnailData)).blob();
+      const ext=blob.type==='image/png'?'png':blob.type==='image/webp'?'webp':'jpg';
+      thumbnailPath=`${supabaseProductId}/cover.${ext}`;
+      const {error}=await craftshanSupabase.storage.from('product-images').upload(thumbnailPath,blob,{contentType:blob.type,upsert:true});
+      if(error) throw error;
+    }
+
+    // Preview image -> public product-previews bucket.
+    let previewPath=existingProduct?.preview_image_path||null;
+    if(productPreviewData && String(productPreviewData).startsWith('data:')){
+      const blob=await (await fetch(productPreviewData)).blob();
+      const ext=blob.type==='image/png'?'png':blob.type==='image/webp'?'webp':'jpg';
+      previewPath=`${supabaseProductId}/preview.${ext}`;
+      const {error}=await craftshanSupabase.storage.from('product-previews').upload(previewPath,blob,{contentType:blob.type,upsert:true});
+      if(error) throw error;
+    }
+
+    // ZIP -> private product-zips bucket.
+    let zipPath=existingProduct?.zip_path||null;
+    if(zipFile){
+      const safeZipName=String(zipFile.name||'product.zip').replace(/[^a-zA-Z0-9._-]+/g,'-');
+      zipPath=`${supabaseProductId}/${safeZipName}`;
+      const {error}=await craftshanSupabase.storage.from('product-zips').upload(zipPath,zipFile,{contentType:zipFile.type||'application/zip',upsert:true});
+      if(error) throw error;
+    }
+
+    const {error:pathError}=await craftshanSupabase.from('products').update({
+      thumbnail_path:thumbnailPath,
+      preview_image_path:previewPath,
+      zip_path:zipPath,
+      zip_file_name:zipMeta.zipFileName,
+      zip_file_size:zipMeta.zipFileSize,
+      updated_at:new Date().toISOString()
+    }).eq('id',supabaseProductId);
+    if(pathError) throw pathError;
+
+    // Update the local object immediately, then re-sync from Supabase so Home,
+    // Shop, and the Owner/Create list all use the same source of truth.
+    if(existingProduct){
+      Object.assign(existingProduct,localData,{supabase_id:supabaseProductId,category_id:category.id,thumbnail_path:thumbnailPath,preview_image_path:previewPath,zip_path:zipPath,free:price===0});
+    }else{
+      const localId=PRODUCTS.reduce((m,p)=>Math.max(m,Number(p.id)||0),0)+1;
+      PRODUCTS.push({id:localId,...localData,supabase_id:supabaseProductId,category_id:category.id,thumbnail_path:thumbnailPath,preview_image_path:previewPath,zip_path:zipPath,bg:'#F6F4F0',free:price===0,svg:`<svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="28" fill="none" stroke="#E8A020" stroke-width="2"/><path d="M35 55l10 10 20-24" stroke="#E8A020" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`});
+    }
+
+    addAdminLog((status==='draft'?'Saved draft: ':'Created product: ')+name);
+    showAdminToast(status==='draft'?'Draft saved':'Product published successfully');
+
+    closeEditorModal('product-editor-modal');
+
+    // Pull the saved row back from Supabase. This makes the homepage,
+    // customer shop, and Create/Products section stay synchronized.
+    await syncCraftshanProductsFromSupabase();
+    renderProducts('home-product-grid',8);
+    renderProducts('shop-product-grid');
+    renderAdminProducts();
+  }catch(error){
+    console.error('Product save failed:',error);
+    showAdminToast('Product could not be saved: '+(error?.message||error));
+  }
 }
 
-function initProductUploadUI(){const fi=document.getElementById('product-file-input'),ti=document.getElementById('product-thumb-input'),pi=document.getElementById('product-preview-input');fi?.addEventListener('change',e=>handleProductFiles(e.target.files));ti?.addEventListener('change',e=>handleProductImage(e.target.files[0],'thumb'));pi?.addEventListener('change',e=>handleProductImage(e.target.files[0],'preview'));[['product-file-drop','files'],['product-thumb-drop','thumb'],['product-preview-drop','preview']].forEach(([id,type])=>{const dz=document.getElementById(id);if(!dz)return;['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();dz.classList.add('dragover')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();dz.classList.remove('dragover') }));dz.addEventListener('drop',e=>{const fs=e.dataTransfer.files;if(type==='files')handleProductFiles(fs);else if(fs[0])handleProductImage(fs[0],type==='thumb'?'thumb':'preview')});});['edit-product-price','edit-product-discount'].forEach(id=>document.getElementById(id)?.addEventListener('input',updateProductPricePreview));}
+function handleProductFiles(files) {
+  const selectedFiles = Array.from(files || []);
+
+  if (!selectedFiles.length) return;
+
+  if (selectedFiles.length !== 1) {
+    showAdminToast('Please upload one ZIP package only.');
+    return;
+  }
+
+  const file = selectedFiles[0];
+  const name = String(file.name || '');
+  const ext = name.includes('.')
+    ? name.split('.').pop().toLowerCase()
+    : '';
+
+  const isZip =
+    ext === 'zip' ||
+    file.type === 'application/zip' ||
+    file.type === 'application/x-zip-compressed';
+
+  if (!isZip) {
+    showAdminToast('The product download must be one ZIP file.');
+    return;
+  }
+
+  productUploadFiles = [{
+    name: file.name,
+    size: file.size,
+    type: file.type || 'application/zip',
+    ext: 'zip',
+    file
+  }];
+
+  renderProductUploadFiles();
+}
+{const fi=document.getElementById('product-file-input'),ti=document.getElementById('product-thumb-input'),pi=document.getElementById('product-preview-input');fi?.addEventListener('change',e=>handleProductFiles(e.target.files));ti?.addEventListener('change',e=>handleProductImage(e.target.files[0],'thumb'));pi?.addEventListener('change',e=>handleProductImage(e.target.files[0],'preview'));[['product-file-drop','files'],['product-thumb-drop','thumb'],['product-preview-drop','preview']].forEach(([id,type])=>{const dz=document.getElementById(id);if(!dz)return;['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();dz.classList.add('dragover')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();dz.classList.remove('dragover') }));dz.addEventListener('drop',e=>{const fs=e.dataTransfer.files;if(type==='files')handleProductFiles(fs);else if(fs[0])handleProductImage(fs[0],type==='thumb'?'thumb':'preview')});});['edit-product-price','edit-product-discount'].forEach(id=>document.getElementById(id)?.addEventListener('input',updateProductPricePreview));}
 function initHomeLivePreviewButtons(){
   const primary=document.getElementById('preview-primary');
   const cta=document.getElementById('preview-cta-primary');
   if(primary && primary.dataset.bound!=='1'){primary.dataset.bound='1';primary.addEventListener('click',()=>showPage('shop'));}
   if(cta && cta.dataset.bound!=='1'){cta.dataset.bound='1';cta.addEventListener('click',()=>showPage('shop'));}
 }
+function removeProductUploadFile(index) {
+  if (!Array.isArray(productUploadFiles)) return;
 
+  productUploadFiles.splice(index, 1);
+  renderProductUploadFiles();
+}
 function initProductPublishEnhancements(){const n=document.getElementById('edit-product-name');if(n)n.addEventListener('input',updateProductTitleCounter);const c=document.getElementById('edit-product-cat-visible');const h=document.getElementById('edit-product-cat');if(c&&h)c.addEventListener('change',()=>h.value=c.value);const rv=document.getElementById('edit-product-rating-visible');if(rv)rv.addEventListener('input',()=>{const v=Math.max(3,Math.min(5,Number(rv.value)||3));rv.value=v.toFixed(1);document.getElementById('edit-product-rating').value=v;});}
 
 function showSaleProducts(){const sale=getActiveSale();if(!sale){showPage('shop');return;}shopFilters={...shopFilters,categories:[],free:false,price:[],bundle:false,formats:[],licenses:[],sale:true,sort:'popular'};showPage('shop');setTimeout(()=>{shopFilters.query='';renderProducts('shop-product-grid');},0);}
@@ -4987,14 +6087,152 @@ function openCategoryEditor(index=null){
   document.getElementById('edit-category-description').value='';
   document.getElementById('category-editor-modal').classList.add('open');
 }
-function saveCategoryEditor(){
-  const name=document.getElementById('edit-category-name').value.trim();
-  if(!name){showAdminToast('Category name is required');return;}
-  const raw=document.getElementById('edit-category-index').value;
-  const index=raw===''?null:Number(raw);
-  if(index===null){if(CRAFTSHAN_CATEGORIES.some(c=>c.toLowerCase()===name.toLowerCase())){showAdminToast('Category already exists');return;} CRAFTSHAN_CATEGORIES.push(name); addAdminLog('Created category: '+name);showAdminToast('Category created');}
-  else {const old=CRAFTSHAN_CATEGORIES[index]; if(CRAFTSHAN_CATEGORIES.some((c,i)=>i!==index&&c.toLowerCase()===name.toLowerCase())){showAdminToast('Category already exists');return;} CRAFTSHAN_CATEGORIES[index]=name; PRODUCTS.forEach(p=>{if(p.cat===old)p.cat=name;}); addAdminLog('Edited category: '+name);showAdminToast('Category updated');}
-  closeEditorModal('category-editor-modal'); renderAdminCategories(); renderAdminProducts(); renderProducts('home-product-grid',8); renderProducts('shop-product-grid');
+async function saveCategoryEditor() {
+  const nameInput = document.getElementById('edit-category-name');
+  const indexInput = document.getElementById('edit-category-index');
+
+  const name = (nameInput?.value || '').trim();
+
+  if (!name) {
+    showAdminToast('Category name is required');
+    return;
+  }
+
+  const raw = indexInput?.value ?? '';
+  const index = raw === '' ? null : Number(raw);
+
+  try {
+    // ------------------------------------------------------------
+    // ADD CATEGORY
+    // ------------------------------------------------------------
+    if (index === null) {
+      const duplicate = CRAFTSHAN_CATEGORIES.some(
+        c => c.toLowerCase() === name.toLowerCase()
+      );
+
+      if (duplicate) {
+        showAdminToast('Category already exists');
+        return;
+      }
+
+      const slug = name
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
+      const { data, error } = await craftshanSupabase
+        .from('categories')
+        .insert({
+          name: name,
+          slug: slug,
+          sort_order: CRAFTSHAN_CATEGORIES.length + 1
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Create category error:', error);
+        showAdminToast(error.message || 'Could not create category');
+        return;
+      }
+
+      CRAFTSHAN_CATEGORIES.push(data.name);
+
+      addAdminLog('Created category: ' + data.name);
+      showAdminToast('Category created');
+    }
+
+    // ------------------------------------------------------------
+    // EDIT CATEGORY
+    // ------------------------------------------------------------
+    else {
+      const old = CRAFTSHAN_CATEGORIES[index];
+
+      if (old === undefined) {
+        showAdminToast('Category not found');
+        return;
+      }
+
+      const duplicate = CRAFTSHAN_CATEGORIES.some(
+        (c, i) =>
+          i !== index &&
+          c.toLowerCase() === name.toLowerCase()
+      );
+
+      if (duplicate) {
+        showAdminToast('Category already exists');
+        return;
+      }
+
+      const oldSlug = old
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
+      const newSlug = name
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
+      // Find the database category by its old slug
+      const { data: existingCategory, error: findError } =
+        await craftshanSupabase
+          .from('categories')
+          .select('id')
+          .eq('slug', oldSlug)
+          .maybeSingle();
+
+      if (findError) {
+        console.error('Find category error:', findError);
+        showAdminToast(findError.message || 'Could not find category');
+        return;
+      }
+
+      if (!existingCategory) {
+        showAdminToast('Database category not found');
+        return;
+      }
+
+      const { error: updateError } = await craftshanSupabase
+        .from('categories')
+        .update({
+          name: name,
+          slug: newSlug
+        })
+        .eq('id', existingCategory.id);
+
+      if (updateError) {
+        console.error('Update category error:', updateError);
+        showAdminToast(updateError.message || 'Could not update category');
+        return;
+      }
+
+      CRAFTSHAN_CATEGORIES[index] = name;
+
+      // Keep the existing product category names working
+      PRODUCTS.forEach(p => {
+        if (p.cat === old) {
+          p.cat = name;
+        }
+      });
+
+      addAdminLog('Edited category: ' + name);
+      showAdminToast('Category updated');
+    }
+
+    closeEditorModal('category-editor-modal');
+    renderAdminCategories();
+    renderAdminProducts();
+    renderProducts('home-product-grid', 8);
+    renderProducts('shop-product-grid');
+
+  } catch (error) {
+    console.error('Unexpected category error:', error);
+    showAdminToast('Something went wrong while saving the category');
+  }
 }
 function toggleAllCategories(checked){
   const boxes=document.querySelectorAll('.category-select');
@@ -5006,20 +6244,73 @@ function updateCategorySelectionUI(){
   const all=document.getElementById('category-select-all'); if(all){const boxes=document.querySelectorAll('.category-select');all.checked=boxes.length>0&&selectedCategoryIndexes.size===boxes.length;}
   syncCategorySelectionModeUI();
 }
-function deleteCategory(index){
-  const name=CRAFTSHAN_CATEGORIES[index];
-  if(!name)return;
-  if(!confirm(`Delete category "${name}"? Products in this category will be moved to Uncategorized.`))return;
-  PRODUCTS.forEach(p=>{if(p.cat===name)p.cat='Uncategorized';});
-  CRAFTSHAN_CATEGORIES.splice(index,1);
-  selectedCategoryIndexes.clear();
-  categorySelectMode=false;
-  renderAdminCategories();
-  renderAdminProducts();
-  renderProducts('home-product-grid',8);
-  renderProducts('shop-product-grid');
-  addAdminLog('Deleted category: '+name);
-  showAdminToast('Category deleted');
+async function deleteCategory(index) {
+  const name = CRAFTSHAN_CATEGORIES[index];
+
+  if (!name) return;
+
+  if (!confirm(
+    `Delete category "${name}"? Products in this category will be moved to Uncategorized.`
+  )) {
+    return;
+  }
+
+  try {
+    // Find the category in Supabase using its current name
+    const { data: category, error: findError } = await craftshanSupabase
+      .from('categories')
+      .select('id, name')
+      .eq('name', name)
+      .maybeSingle();
+
+    if (findError) {
+      console.error('Find category error:', findError);
+      showAdminToast(findError.message || 'Could not find category');
+      return;
+    }
+
+    if (!category) {
+      showAdminToast('Category was not found in the database');
+      return;
+    }
+
+    // Delete the actual database row
+    const { error: deleteError } = await craftshanSupabase
+      .from('categories')
+      .delete()
+      .eq('id', category.id);
+
+    if (deleteError) {
+      console.error('Delete category error:', deleteError);
+      showAdminToast(deleteError.message || 'Could not delete category');
+      return;
+    }
+
+    // Update existing products locally
+    PRODUCTS.forEach(p => {
+      if (p.cat === name) {
+        p.cat = 'Uncategorized';
+      }
+    });
+
+    // Update the local category list
+    CRAFTSHAN_CATEGORIES.splice(index, 1);
+
+    selectedCategoryIndexes.clear();
+    categorySelectMode = false;
+
+    renderAdminCategories();
+    renderAdminProducts();
+    renderProducts('home-product-grid', 8);
+    renderProducts('shop-product-grid');
+
+    addAdminLog('Deleted category: ' + name);
+    showAdminToast('Category deleted');
+
+  } catch (error) {
+    console.error('Unexpected category delete error:', error);
+    showAdminToast('Something went wrong while deleting the category');
+  }
 }
 function deleteSelectedCategories(){
   const indexes=[...selectedCategoryIndexes].sort((a,b)=>b-a); if(!indexes.length){showAdminToast('Select at least one category first');return;}
@@ -5030,11 +6321,82 @@ function deleteSelectedCategories(){
   indexes.forEach(i=>CRAFTSHAN_CATEGORIES.splice(i,1));
   selectedCategoryIndexes.clear(); renderAdminCategories(); renderAdminProducts(); renderProducts('home-product-grid',8); renderProducts('shop-product-grid'); addAdminLog('Deleted categories: '+names); showAdminToast('Categories deleted');
 }
-function renderAdminCategories(){
-  const el=document.getElementById('admin-category-list'); if(!el)return;
-  el.innerHTML=CRAFTSHAN_CATEGORIES.map((c,i)=>`<div class="cms-item">${categorySelectMode?`<input class="select-box category-select" type="checkbox" value="${i}" onchange="toggleCategorySelection(${i},this.checked)" ${selectedCategoryIndexes.has(i)?'checked':''}>`:''}<div class="drag">◈</div><div class="cms-item-main"><strong>${escapeHtml(c)}</strong><small>Home + shop category • ${PRODUCTS.filter(p=>p.cat===c).length} product${PRODUCTS.filter(p=>p.cat===c).length===1?'':'s'}</small></div><div class="cms-actions"><button onclick="openCategoryEditor(${i})">Edit</button><button onclick="deleteCategory(${i})" style="color:#b42318;">Delete</button></div></div>`).join('') || '<div class="cms-item"><div class="cms-item-main"><strong>No categories</strong><small>Add your first category.</small></div></div>';
-  updateCategorySelectionUI();
+async function renderAdminCategories() {
+  const el = document.getElementById('admin-category-list');
+  if (!el) return;
+
+  try {
+    const { data, error } = await craftshanSupabase
+      .from('categories')
+      .select('id, name, slug, sort_order')
+      .order('sort_order', { ascending: true })
+      .order('name', { ascending: true });
+
+    if (error) {
+      console.error('Load categories error:', error);
+      showAdminToast(error.message || 'Could not load categories');
+      return;
+    }
+
+    // Keep the existing frontend code working for now
+    CRAFTSHAN_CATEGORIES.length = 0;
+
+    (data || []).forEach(category => {
+      CRAFTSHAN_CATEGORIES.push(category.name);
+    });
+
+    el.innerHTML = CRAFTSHAN_CATEGORIES.map((c, i) => `
+      <div class="cms-item">
+        ${
+          categorySelectMode
+            ? `<input
+                class="select-box category-select"
+                type="checkbox"
+                value="${i}"
+                onchange="toggleCategorySelection(${i},this.checked)"
+                ${selectedCategoryIndexes.has(i) ? 'checked' : ''}
+              >`
+            : ''
+        }
+
+        <div class="drag">◈</div>
+
+        <div class="cms-item-main">
+          <strong>${escapeHtml(c)}</strong>
+          <small>
+            Home + shop category •
+            ${PRODUCTS.filter(p => p.cat === c).length}
+            product${PRODUCTS.filter(p => p.cat === c).length === 1 ? '' : 's'}
+          </small>
+        </div>
+
+        <div class="cms-actions">
+          <button onclick="openCategoryEditor(${i})">Edit</button>
+          <button
+            onclick="deleteCategory(${i})"
+            style="color:#b42318;"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    `).join('') || `
+      <div class="cms-item">
+        <div class="cms-item-main">
+          <strong>No categories</strong>
+          <small>Add your first category.</small>
+        </div>
+      </div>
+    `;
+
+    updateCategorySelectionUI();
+
+  } catch (error) {
+    console.error('Unexpected category load error:', error);
+    showAdminToast('Something went wrong while loading categories');
+  }
 }
+
 function closeEditorModal(id){document.getElementById(id)?.classList.remove('open');}
 function escapeHtml(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 
@@ -5077,34 +6439,138 @@ function renderAdminProducts(){
  setupAdminProductActions();
  syncProductSelectionModeUI();
 }
-function performProductAction(action,id){
-  const productId=Number(id);
-  if(!Number.isFinite(productId)){showAdminToast('Invalid product');return false;}
-  try{
-    const product=PRODUCTS.find(x=>Number(x.id)===productId);
-    if(!product){showAdminToast('Product not found');return false;}
+async function performProductAction(action, id) {
+  const productId = Number(id);
 
-    if(action==='edit') return openProductEditor(productId);
-    if(action==='preview'){previewAdminProduct(productId);return true;}
-    if(action==='delete'){
-      if(!confirm('Delete this product? This cannot be undone in this prototype.'))return false;
-      const index=PRODUCTS.findIndex(p=>Number(p.id)===productId);
-      if(index<0){showAdminToast('Product not found');return false;}
-      const name=PRODUCTS[index].name;
-      PRODUCTS.splice(index,1);
-      selectedProductIds.delete(productId);
-      renderAdminProducts();
-      renderProducts('home-product-grid',8);
-      renderProducts('shop-product-grid');
-      addAdminLog('Deleted product: '+name);
-      showAdminToast('Product deleted');
+  if (!Number.isFinite(productId)) {
+    showAdminToast('Invalid product');
+    return false;
+  }
+
+  try {
+    const product = PRODUCTS.find(
+      x => Number(x.id) === productId
+    );
+
+    if (!product) {
+      showAdminToast('Product not found');
+      return false;
+    }
+
+    if (action === 'edit') {
+      return openProductEditor(productId);
+    }
+
+    if (action === 'preview') {
+      previewAdminProduct(productId);
       return true;
     }
-    showAdminToast('Unknown product action');
+
+    if (action === 'delete') {
+      if (
+        !confirm(
+          'Delete this product? This cannot be undone.'
+        )
+      ) {
+        return false;
+      }
+
+      // ----------------------------------------------------------
+      // Delete matching Supabase product first, if it exists.
+      // We match BOTH id and name to avoid touching dummy rows
+      // that happen to have the same numeric ID.
+      // ----------------------------------------------------------
+
+if (
+  typeof craftshanSupabase !== 'undefined' &&
+  product.supabase_id
+) {
+  const { data: dbProduct, error: findError } =
+    await craftshanSupabase
+      .from('products')
+      .select(
+        'id, name, thumbnail_path, preview_image_path, zip_path'
+      )
+      .eq('id', product.supabase_id)
+      .maybeSingle();
+
+  if (findError) {
+    console.error(
+      'Supabase product lookup failed:',
+      findError
+    );
+
+    showAdminToast(
+      findError.message ||
+      'Could not verify the database product.'
+    );
+
     return false;
-  }catch(err){
-    console.error('Product action failed:',action,productId,err?.message||err,err);
-    showAdminToast('Could not complete this action. Please try again.');
+  }
+
+  if (dbProduct) {
+    const filesToDelete = [];
+
+    if (dbProduct.thumbnail_path) {
+      filesToDelete.push({
+        bucket: 'product-images',
+        path: dbProduct.thumbnail_path
+      });
+    }
+
+    if (dbProduct.preview_image_path) {
+      filesToDelete.push({
+        bucket: 'product-previews',
+        path: dbProduct.preview_image_path
+      });
+    }
+
+    if (dbProduct.zip_path) {
+      filesToDelete.push({
+        bucket: 'product-zips',
+        path: dbProduct.zip_path
+      });
+    }
+
+    for (const file of filesToDelete) {
+      const { error: storageError } =
+        await craftshanSupabase.storage
+          .from(file.bucket)
+          .remove([file.path]);
+
+      if (storageError) {
+        console.warn(
+          `Could not delete ${file.bucket} file:`,
+          storageError
+        );
+      }
+    }
+
+    const { error: deleteError } =
+      await craftshanSupabase
+        .from('products')
+        .delete()
+        .eq('id', dbProduct.id);
+
+    if (deleteError) {
+      console.error(
+        'Supabase product delete failed:',
+        deleteError
+      );
+
+      showAdminToast(
+        deleteError.message ||
+        'Could not delete product from Supabase.'
+      );
+
+      return false;
+    }
+  }
+}
+    }
+  } catch (error) {
+    console.error('Product action failed:', error);
+    showAdminToast(error?.message || 'Product action failed.');
     return false;
   }
 }
@@ -5289,27 +6755,228 @@ window.addEventListener('keydown',e=>{const key=(e.key||'').toLowerCase();if(((e
    INIT
    Runs after all owner/CMS state is initialized.
 ═══════════════════ */
+async function syncCraftshanProductsFromSupabase() {
+  if (typeof craftshanSupabase === 'undefined') {
+    console.warn('Supabase client unavailable.');
+    return false;
+  }
+
+  try {
+    const { data, error } = await craftshanSupabase
+      .from('products')
+      .select(`
+        id,
+        name,
+        category_id,
+        price,
+        sale_price,
+        discount_percent,
+        badge,
+        rating,
+        description,
+        thumbnail_path,
+        preview_image_path,
+        status,
+        featured,
+        free,
+        zip_file_name,
+        zip_file_size,
+        zip_path,
+        created_at,
+        updated_at,
+        categories (
+          id,
+          name,
+          slug
+        )
+      `)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Supabase product sync failed:', error);
+      return false;
+    }
+
+    const existingProducts = [...PRODUCTS];
+
+    const syncedProducts = (data || []).map((p, index) => {
+      // Keep the old numeric ID used by your existing CMS when possible.
+      const oldProduct =
+        existingProducts.find(x =>
+          x.supabase_id === p.id ||
+          x.name === p.name
+        );
+
+      const localId =
+        oldProduct?.id ??
+        (index + 1);
+
+      const thumbnailUrl = p.thumbnail_path
+        ? craftshanSupabase.storage
+            .from('product-images')
+            .getPublicUrl(p.thumbnail_path)
+            .data.publicUrl
+        : '';
+
+      const previewUrl = p.preview_image_path
+        ? craftshanSupabase.storage
+            .from('product-previews')
+            .getPublicUrl(p.preview_image_path)
+            .data.publicUrl
+        : '';
+
+      return {
+        // Existing CMS ID
+        id: localId,
+
+        // Supabase UUID
+        supabase_id: p.id,
+
+        name: p.name,
+
+        cat:
+          p.categories?.name ||
+          oldProduct?.cat ||
+          'Uncategorized',
+
+        category_id: p.category_id,
+
+        price: Number(p.price) || 0,
+
+        salePrice:
+          Number(p.sale_price) ||
+          Number(p.price) ||
+          0,
+
+        discountPercent:
+          Number(p.discount_percent) || 0,
+
+        badge: p.badge || '',
+
+        chip:
+          p.badge
+            ? String(p.badge).toLowerCase().includes('sale')
+              ? 'hot'
+              : 'new'
+            : oldProduct?.chip || '',
+
+        rating:
+          Number(p.rating) ||
+          oldProduct?.rating ||
+          4.9,
+
+        description:
+          p.description ||
+          oldProduct?.description ||
+          '',
+
+        // These are what your existing product UI expects.
+        thumbnailData: thumbnailUrl,
+
+        previewImage: previewUrl,
+
+        thumbnail_path: p.thumbnail_path,
+
+        preview_image_path:
+          p.preview_image_path,
+
+        status:
+          p.status || 'published',
+
+        featured:
+          p.featured === true,
+
+        free:
+          p.free === true,
+
+        zipFileName:
+          p.zip_file_name ||
+          oldProduct?.zipFileName ||
+          '',
+
+        zipFileSize:
+          Number(p.zip_file_size) ||
+          oldProduct?.zipFileSize ||
+          0,
+
+        zip_path:
+          p.zip_path || '',
+
+        createdAtScore:
+          Date.parse(p.created_at) ||
+          oldProduct?.createdAtScore ||
+          Date.now(),
+
+        bg:
+          oldProduct?.bg ||
+          '#F6F4F0',
+
+        svg:
+          oldProduct?.svg ||
+          ''
+      };
+    });
+
+    PRODUCTS.length = 0;
+    PRODUCTS.push(...syncedProducts);
+
+    console.log(
+      `Synced ${PRODUCTS.length} products from Supabase.`
+    );
+
+    // Refresh the existing UI.
+    renderProducts('home-product-grid', 8);
+    renderProducts('shop-product-grid');
+    renderAdminProducts();
+
+    return true;
+
+  } catch (error) {
+    console.error(
+      'Unexpected product sync error:',
+      error
+    );
+
+    return false;
+  }
+}
 function initCraftshanApp(){
-  /* Accessibility: make non-<button> click controls (a[onclick], span[onclick])
-     keyboard-operable and focusable, and let Enter/Space activate them. */
   try{
     document.querySelectorAll('a[onclick]:not([href]), span[onclick]').forEach(el=>{
       if(!el.hasAttribute('role')) el.setAttribute('role','button');
       if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex','0');
     });
+
     document.addEventListener('keydown',e=>{
       if(e.key!=='Enter' && e.key!==' ' && e.key!=='Spacebar') return;
+
       const el=e.target;
-      if(!el || el.tagName==='BUTTON' || el.tagName==='INPUT' || el.tagName==='TEXTAREA' || el.tagName==='SELECT') return;
-      if(el.getAttribute && el.getAttribute('role')==='button' && (el.hasAttribute('onclick')||el.onclick)){
+
+      if(
+        !el ||
+        el.tagName==='BUTTON' ||
+        el.tagName==='INPUT' ||
+        el.tagName==='TEXTAREA' ||
+        el.tagName==='SELECT'
+      ) return;
+
+      if(
+        el.getAttribute &&
+        el.getAttribute('role')==='button' &&
+        (el.hasAttribute('onclick') || el.onclick)
+      ){
         e.preventDefault();
         el.click();
       }
     });
-  }catch(e){ console.warn('A11y keyboard binding skipped:',e); }
+
+  }catch(e){
+    console.warn('A11y keyboard binding skipped:',e);
+  }
+
   renderProducts('home-product-grid', 8);
-updateOwnerDashboardStats();
-loadCustomerProfile();
+  updateOwnerDashboardStats();
+  loadCustomerProfile();
   renderProducts('shop-product-grid');
   renderAdminCategories();
   renderAdminProducts();
@@ -5323,7 +6990,9 @@ loadCustomerProfile();
   setupShopControls();
   setupHomeFilters();
   syncOwnerEntry();
+  syncCraftshanProductsFromSupabase();
 }
+initCraftshanApp();
 
 function resetHomeSettings(){
   const page=document.getElementById('admin-page-home');
@@ -5386,7 +7055,70 @@ initCraftshanApp();
 try{  syncHomePublicText(); syncHomePreview(); setPreviewMode('desktop'); }catch(e){ console.warn('CMS sync skipped:',e); }
 try{ renderShopCategoryFilters(); syncShopFilterUI(); renderProducts('shop-product-grid'); }catch(e){ console.warn('Initial shop render skipped:',e); }
 
-initProductUploadUI();updateSaleBanner();
+function initProductUploadUI() {
+  const fi = document.getElementById('product-file-input');
+  const ti = document.getElementById('product-thumb-input');
+  const pi = document.getElementById('product-preview-input');
+
+  fi?.addEventListener('change', e => {
+    handleProductFiles(e.target.files);
+  });
+
+  ti?.addEventListener('change', e => {
+    handleProductImage(e.target.files[0], 'thumb');
+  });
+
+  pi?.addEventListener('change', e => {
+    handleProductImage(e.target.files[0], 'preview');
+  });
+
+  [
+    ['product-file-drop', 'files'],
+    ['product-thumb-drop', 'thumb'],
+    ['product-preview-drop', 'preview']
+  ].forEach(([id, type]) => {
+    const dz = document.getElementById(id);
+    if (!dz) return;
+
+    ['dragenter', 'dragover'].forEach(ev => {
+      dz.addEventListener(ev, e => {
+        e.preventDefault();
+        e.stopPropagation();
+        dz.classList.add('dragover');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(ev => {
+      dz.addEventListener(ev, e => {
+        e.preventDefault();
+        e.stopPropagation();
+        dz.classList.remove('dragover');
+      });
+    });
+
+    dz.addEventListener('drop', e => {
+      const fs = e.dataTransfer.files;
+
+      if (type === 'files') {
+        handleProductFiles(fs);
+      } else if (fs[0]) {
+        handleProductImage(
+          fs[0],
+          type === 'thumb' ? 'thumb' : 'preview'
+        );
+      }
+    });
+  });
+
+  ['edit-product-price', 'edit-product-discount'].forEach(id => {
+    document
+      .getElementById(id)
+      ?.addEventListener('input', updateProductPricePreview);
+  });
+}
+
+initProductUploadUI();
+updateSaleBanner();
 </script>
 
 <script>document.addEventListener('DOMContentLoaded',()=>{try{initProductPublishEnhancements();}catch(e){console.warn('Product publish enhancement init:',e);}});
@@ -5449,20 +7181,102 @@ document.addEventListener('DOMContentLoaded',()=>{
   load();
 })();
 
-function refreshOwnerOrderCustomerMetrics(){
+function ownerAdminEscape(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function ownerFormatDate(value){
+  if(!value) return '—';
+  const d=new Date(value);
+  return Number.isNaN(d.getTime()) ? ownerAdminEscape(value) : d.toLocaleString(undefined,{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+function ownerMoney(value){
+  const n=Number(value);
+  return Number.isFinite(n) ? '$'+n.toFixed(2) : '—';
+}
+function ownerStatusClass(status){
+  const s=String(status||'').toLowerCase();
+  return ['paid','completed','fulfilled','success'].includes(s) ? '' : ' off';
+}
+function setOwnerMetric(id,val){const el=document.getElementById(id);if(el)el.textContent=String(val);}
+function ownerLoadingState(el,label){if(el)el.innerHTML='<div class="admin-empty-state"><div class="admin-empty-icon">↻</div><h4>Loading '+ownerAdminEscape(label)+'…</h4><p>Reading live data from Supabase.</p></div>';}
+function ownerErrorState(el,label,error){if(el)el.innerHTML='<div class="admin-empty-state"><div class="admin-empty-icon">!</div><h4>Could not load '+ownerAdminEscape(label)+'</h4><p>'+ownerAdminEscape(error||'Please try again.')+'</p><button type="button" class="admin-btn gold" onclick="'+(label==='orders'?'loadOwnerOrders()':'loadOwnerCustomers()')+'">Retry</button></div>';}
+
+async function loadOwnerOrders(){
+  const list=document.getElementById('owner-orders-list');
+  if(!list || typeof craftshanSupabase==='undefined') return;
+  ownerLoadingState(list,'orders');
   try{
-    const orders = JSON.parse(localStorage.getItem('craftshanOrders')||'[]');
-    const customers = JSON.parse(localStorage.getItem('craftshanCustomers')||'[]');
-    const set=(id,val)=>{const el=document.getElementById(id); if(el) el.textContent=String(val);};
-    set('orders-metric-total',Array.isArray(orders)?orders.length:0);
-    set('orders-metric-complete',Array.isArray(orders)?orders.filter(o=>['paid','completed','fulfilled'].includes(String(o.status||o.paymentStatus||'').toLowerCase())).length:0);
-    set('orders-metric-downloads',Array.isArray(orders)?orders.filter(o=>Number(o.downloads||0)>0).reduce((n,o)=>n+Number(o.downloads||0),0):0);
-    set('orders-metric-pending',Array.isArray(orders)?orders.filter(o=>String(o.paymentStatus||o.status||'').toLowerCase().includes('pending')).length:0);
-    set('customers-metric-total',Array.isArray(customers)?customers.length:0);
-    set('customers-metric-buyers',Array.isArray(customers)?customers.filter(c=>Number(c.orders||c.purchases||0)>0).length:0);
-    set('customers-metric-liked',Array.isArray(customers)?customers.reduce((n,c)=>n+Number(c.likedCount||c.favorites||0),0):0);
-    set('customers-metric-support',Array.isArray(customers)?customers.reduce((n,c)=>n+Number(c.supportRequests||0),0):0);
-  }catch(e){console.warn('Owner metrics skipped:',e);}
+    const {data:orders,error}=await craftshanSupabase.from('orders').select('id,customer_id,customer_email,subtotal,discount,total,coupon_id,status,ls_order_id,download_count,created_at,order_items(id,product_id,product_name,price)').order('created_at',{ascending:false}).limit(200);
+    if(error) throw error;
+    const rows=Array.isArray(orders)?orders:[];
+    setOwnerMetric('orders-metric-total',rows.length);
+    setOwnerMetric('orders-metric-complete',rows.filter(o=>['paid','completed','fulfilled','success'].includes(String(o.status||'').toLowerCase())).length);
+    setOwnerMetric('orders-metric-downloads',rows.reduce((n,o)=>n+Number(o.download_count||0),0));
+    setOwnerMetric('orders-metric-pending',rows.filter(o=>String(o.status||'').toLowerCase().includes('pending')).length);
+    const head='<div style="overflow:auto"><table class="owner-data-table"><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Downloads</th><th>Date</th></tr></thead><tbody>';
+    const body=rows.map(o=>{
+      const items=Array.isArray(o.order_items)?o.order_items:[];
+      const itemText=items.length ? items.map(i=>ownerAdminEscape(i.product_name)).join(', ') : '—';
+      const orderId=String(o.ls_order_id||o.id||'').slice(0,18);
+      const status=ownerAdminEscape(o.status||'pending');
+      return '<tr><td><strong>#'+ownerAdminEscape(orderId)+'</strong></td><td>'+ownerAdminEscape(o.customer_email||'—')+'</td><td>'+itemText+'</td><td>'+ownerMoney(o.total)+'</td><td><span class="status-pill'+ownerStatusClass(o.status)+'">'+status+'</span></td><td>'+Number(o.download_count||0)+'</td><td>'+ownerFormatDate(o.created_at)+'</td></tr>';
+    }).join('');
+    list.className=rows.length?'owner-data-wrap':'admin-empty-state';
+    list.innerHTML=rows.length ? head+body+'</tbody></table></div>' : '<div class="admin-empty-icon">▢</div><h4>No orders yet</h4><p>Real orders will appear here automatically after a completed checkout is recorded in Supabase.</p>';
+  }catch(err){console.error('Owner orders:',err);ownerErrorState(list,'orders',err?.message||'Supabase could not return the orders.');}
+}
+
+async function loadOwnerCustomers(){
+  const list=document.getElementById('owner-customers-list');
+  if(!list || typeof craftshanSupabase==='undefined') return;
+  ownerLoadingState(list,'customers');
+  try{
+    const [{data:customers,error:customerError},{data:orders,error:orderError}]=await Promise.all([
+      craftshanSupabase.from('customers').select('id,email,name,created_at').order('created_at',{ascending:false}).limit(500),
+      craftshanSupabase.from('orders').select('id,customer_id,customer_email,total,status,created_at').limit(1000)
+    ]);
+    if(customerError) throw customerError;
+    if(orderError) throw orderError;
+    const cs=Array.isArray(customers)?customers:[];
+    const os=Array.isArray(orders)?orders:[];
+    const byId=new Map();const byEmail=new Map();
+    os.forEach(o=>{
+      const key=o.customer_id||String(o.customer_email||'').toLowerCase();
+      const prev=byId.get(key)||{orders:0,total:0,last:null};
+      prev.orders+=1;prev.total+=Number(o.total||0);
+      if(!prev.last || new Date(o.created_at)>new Date(prev.last)) prev.last=o.created_at;
+      byId.set(key,prev);
+      if(o.customer_email) byEmail.set(String(o.customer_email).toLowerCase(),prev);
+    });
+    setOwnerMetric('customers-metric-total',cs.length);
+    setOwnerMetric('customers-metric-buyers',cs.filter(c=>{const x=byId.get(c.id)||byEmail.get(String(c.email||'').toLowerCase());return x&&x.orders>0;}).length);
+    setOwnerMetric('customers-metric-liked','—');
+    setOwnerMetric('customers-metric-support','—');
+    const head='<div style="overflow:auto"><table class="owner-data-table"><thead><tr><th>Customer</th><th>Email</th><th>Orders</th><th>Total spent</th><th>Last order</th><th>Joined</th></tr></thead><tbody>';
+    const body=cs.map(c=>{
+      const stat=byId.get(c.id)||byEmail.get(String(c.email||'').toLowerCase())||{orders:0,total:0,last:null};
+      return '<tr><td><strong>'+ownerAdminEscape(c.name||'Customer')+'</strong></td><td>'+ownerAdminEscape(c.email||'—')+'</td><td>'+stat.orders+'</td><td>'+ownerMoney(stat.total)+'</td><td>'+ownerFormatDate(stat.last)+'</td><td>'+ownerFormatDate(c.created_at)+'</td></tr>';
+    }).join('');
+    list.className=cs.length?'owner-data-wrap':'admin-empty-state';
+    list.innerHTML=cs.length ? head+body+'</tbody></table></div>' : '<div class="admin-empty-icon">◎</div><h4>No customer accounts yet</h4><p>Customer records will appear here automatically when they are created in Supabase.</p>';
+  }catch(err){console.error('Owner customers:',err);ownerErrorState(list,'customers',err?.message||'Supabase could not return the customers.');}
+}
+
+async function refreshOwnerOrderCustomerMetrics(){
+  if(typeof craftshanSupabase==='undefined') return;
+  try{
+    const [{data:orders,error:oe},{data:customers,error:ce}]=await Promise.all([
+      craftshanSupabase.from('orders').select('status,download_count'),
+      craftshanSupabase.from('customers').select('id')
+    ]);
+    if(oe) throw oe; if(ce) throw ce;
+    const os=Array.isArray(orders)?orders:[], cs=Array.isArray(customers)?customers:[];
+    setOwnerMetric('orders-metric-total',os.length);
+    setOwnerMetric('orders-metric-complete',os.filter(o=>['paid','completed','fulfilled','success'].includes(String(o.status||'').toLowerCase())).length);
+    setOwnerMetric('orders-metric-downloads',os.reduce((n,o)=>n+Number(o.download_count||0),0));
+    setOwnerMetric('orders-metric-pending',os.filter(o=>String(o.status||'').toLowerCase().includes('pending')).length);
+    setOwnerMetric('customers-metric-total',cs.length);
+  }catch(e){console.warn('Owner Supabase metrics skipped:',e);}
 }
 document.addEventListener('DOMContentLoaded',function(){refreshOwnerOrderCustomerMetrics();});
 </script>
@@ -5689,6 +7503,7 @@ document.addEventListener('DOMContentLoaded',function(){refreshOwnerOrderCustome
 .checkout-summary{background:#fff;border:1px solid var(--border);border-radius:var(--r-xl);padding:28px;position:sticky;top:90px;box-shadow:var(--shadow);} 
 .checkout-summary-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:14px;}
 .checkout-status{background:var(--gold-dim);border:1px solid rgba(232,160,32,.25);}
+
 @media(max-width:900px){.checkout-page-shell{padding:40px 1.5rem 70px}.checkout-wrap{grid-template-columns:1fr;gap:20px}.checkout-summary{position:static}.checkout-heading-panel{margin:0 0 18px;}}
 @media(max-width:600px){.checkout-page-shell{padding:30px 1rem 60px}.checkout-main{padding:20px}.checkout-summary{padding:22px}.checkout-heading-panel{padding:18px 18px;margin:0 0 16px;}}
 
@@ -5718,8 +7533,8 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
 </script>
 
 <style id="craftshan-tools-links-style">
-.tools-open-btn{margin-top:12px;border:1px solid var(--border);background:#fff;color:var(--ink);padding:8px 13px;border-radius:999px;font-size:.76rem;font-weight:700;cursor:pointer;transition:all .18s;}
-.tools-open-btn:hover{border-color:var(--gold);color:var(--gold);transform:translateX(2px);}
+.tools-open-btn{margin-top:16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid rgba(232,160,32,.65);background:linear-gradient(135deg,#E8A020,#C98612);color:#111;padding:10px 17px;border-radius:10px;font-size:.76rem;font-weight:800;letter-spacing:.01em;cursor:pointer;box-shadow:0 6px 18px rgba(232,160,32,.18);transition:transform .18s,box-shadow .18s,filter .18s;}
+.tools-open-btn:hover{transform:translateY(-2px);box-shadow:0 9px 24px rgba(232,160,32,.28);filter:brightness(1.05);}
 .tools-link-status{font-size:.72rem;color:var(--ink3);margin-top:8px;display:block;}
 .tools-link-fields{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
 .tools-link-fields .form-box{margin-bottom:10px;}
@@ -5731,7 +7546,12 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
 <script id="craftshan-tools-link-manager">
 (function(){
   const DB_NAME='craftshan-tool-links-v1', STORE='tools';
-  const defaults={1:{name:'SVG Cleaner',desc:'Prepare vectors with a cleaner structure and more reliable files for everyday cutting workflows.',status:'Coming soon'},2:{name:'Image to Vector',desc:'Turn a suitable PNG or JPG reference into a cleaner vector workflow for tracing and laser-cut preparation.',status:'Coming soon'},3:{name:'Design Preview',desc:'Preview your design cleanly before publishing or using it in a product listing.',status:'Planned'},4:{name:'Laser File Checker',desc:'Check common file details and help spot issues before a design is sent into your cutting workflow.',status:'Planned'}};
+  const defaults={
+    1:{name:'SVG Cleaner',desc:'Prepare vectors with a cleaner structure and more reliable files for everyday cutting workflows.',status:'Coming soon'},
+    2:{name:'Image to Vector',desc:'Turn a suitable PNG or JPG reference into a cleaner vector workflow for tracing and laser-cut preparation.',status:'Coming soon'},
+    3:{name:'Design Preview',desc:'Preview your design cleanly before publishing or using it in a product listing.',status:'Planned'},
+    4:{name:'Laser File Checker',desc:'Check common file details and help spot issues before a design is sent into your cutting workflow.',status:'Planned'}
+  };
   const KEY='craftshan_tools_links_v1';
   const state=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){return {};}};
   const saveState=o=>{try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}};
@@ -5740,26 +7560,62 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
   async function putFile(id,file){const d=await db();return new Promise((res,rej)=>{const tx=d.transaction(STORE,'readwrite');tx.objectStore(STORE).put({id,name:file.name,size:file.size,type:file.type||'application/octet-stream',blob:file});tx.oncomplete=res;tx.onerror=()=>rej(tx.error);});}
   async function getFile(id){const d=await db();return new Promise((res,rej)=>{const tx=d.transaction(STORE,'readonly');const q=tx.objectStore(STORE).get(id);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error);});}
   async function deleteFile(id){const d=await db();return new Promise((res,rej)=>{const tx=d.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(id);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);});}
-  const toolCard=(i)=>document.querySelector('#page-tools .tools-page-card:nth-child('+i+')');
-  async function apply(){
-    const s=state();
+  function esc(v){return String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));}
+  function icon(i){
+    const paths=[
+      '<path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="8"/>',
+      '<path d="M4 6h16M4 12h10M4 18h7"/><path d="m16 15 4 4m0-4-4 4"/>',
+      '<path d="M5 5h14v14H5z"/><path d="M9 9h6v6H9z"/><path d="M3 12h2m14 0h2M12 3v2m0 14v2"/>',
+      '<path d="M7 3h10v4H7z"/><path d="M5 7h14v14H5z"/><path d="M8 11h8M8 15h6"/>'
+    ];
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">${paths[(i-1)%paths.length]}</svg>`;
+  }
+  function statusClass(status){return String(status||'').toLowerCase().replace(/\s+/g,'-');}
+  function runtimeTarget(cfg,i){return (cfg?.target&&String(cfg.target).indexOf('__file__:')===0)?(objectUrls[i]||''):(cfg?.target||'');}
+  async function resolveObjectUrls(s){
     for(let i=1;i<=4;i++){
-      const cfg=s[i]||defaults[i], c=toolCard(i); if(!c)continue;
-      const n=c.querySelector('h3'), d=c.querySelector('p'), st=c.querySelector('.tools-page-status'), b=c.querySelector('[data-tool-open]');
-      if(n)n.textContent=cfg.name||defaults[i].name; if(d)d.textContent=cfg.desc||defaults[i].desc; if(st)st.textContent=cfg.status||defaults[i].status;
-      if(b){
-        const runtimeTarget = (cfg.target && String(cfg.target).indexOf('__file__:')===0) ? (objectUrls[i]||'') : (cfg.target||'');
-        b.style.display=runtimeTarget?'inline-flex':'none';
-        b.onclick=()=>{ if(runtimeTarget) window.open(runtimeTarget,'_blank','noopener,noreferrer'); };
+      if(s[i]?.target==='__file__:'+i){
+        try{const rec=await getFile(i);if(rec?.blob){if(objectUrls[i])URL.revokeObjectURL(objectUrls[i]);objectUrls[i]=URL.createObjectURL(rec.blob);}}catch(e){console.warn('Tool file URL error',e);}
       }
     }
   }
+  function currentTools(){const s=state();return [1,2,3,4].map(i=>({i,cfg:s[i]||defaults[i]})).filter(x=>x.cfg.name||defaults[x.i].name);}
+  function openTool(i){
+    const s=state(),cfg=s[i]||defaults[i],target=runtimeTarget(cfg,i);
+    if(target) window.open(target,'_blank','noopener,noreferrer');
+    else if(typeof showAdminToast==='function') showAdminToast('This tool is not connected yet.');
+  }
+  function renderHomeTools(){
+    const grid=document.getElementById('home-tools-grid'); if(!grid)return;
+    grid.innerHTML=currentTools().map(({i,cfg})=>`<div class="tool-card" data-tool-index="${i}" onclick="openCraftshanTool(${i})"><div class="tool-icon-wrap">${icon(i)}</div><div class="tool-name">${esc(cfg.name||defaults[i].name)}</div><p class="tool-desc">${esc(cfg.desc||defaults[i].desc)}</p><span class="tool-pill ${statusClass(cfg.status)}">${esc(cfg.status||defaults[i].status)}</span></div>`).join('');
+  }
+  function renderToolsPage(){
+    const grid=document.getElementById('tools-page-grid'); if(!grid)return;
+    grid.innerHTML=currentTools().map(({i,cfg})=>{
+      const status=cfg.status||defaults[i].status;
+      const isAvailable=String(status).toLowerCase()==='available';
+      const hasTarget=!!runtimeTarget(cfg,i);
+      const statusMarkup=isAvailable
+        ? ''
+        : `<span class="tools-page-status">${esc(status)}</span>`;
+      const openMarkup=isAvailable && hasTarget
+        ? `<button type="button" class="tools-open-btn" data-tool-open="${i}" onclick="openCraftshanTool(${i});event.stopPropagation();">Open Tool <span aria-hidden="true">↗</span></button>`
+        : '';
+      return `<article class="tools-page-card"><div class="tools-page-icon">${icon(i)}</div><div><h3>${esc(cfg.name||defaults[i].name)}</h3><p>${esc(cfg.desc||defaults[i].desc)}</p>${statusMarkup}${openMarkup}</div></article>`;
+    }).join('');
+  }
+  function renderFooterTools(){
+    const list=document.getElementById('footer-tools-list'); if(!list)return;
+    list.innerHTML=currentTools().map(({i,cfg})=>`<li><a onclick="openCraftshanTool(${i})">${esc(cfg.name||defaults[i].name)} <em>(${esc(cfg.status||defaults[i].status)})</em></a></li>`).join('');
+  }
+  async function apply(){await resolveObjectUrls(state());renderHomeTools();renderToolsPage();renderFooterTools();}
   async function loadFields(){
     const s=state();
-    for(let i=1;i<=4;i++){const cfg=s[i]||defaults[i];const n=document.querySelector('[data-tool-name="'+i+'"]'),d=document.querySelector('[data-tool-desc="'+i+'"]'),st=document.querySelector('[data-tool-status="'+i+'"]'),u=document.querySelector('[data-tool-url="'+i+'"]'),m=document.getElementById('tool-file-meta-'+i);if(n)n.value=cfg.name||defaults[i].name;if(d)d.value=cfg.desc||defaults[i].desc;if(st)st.value=cfg.status||defaults[i].status;if(u)u.value=cfg.link||'';if(m)m.textContent=cfg.fileName?('Connected file: '+cfg.fileName+' · '+formatBytes(cfg.fileSize||0)):'No file connected.';}
+    for(let i=1;i<=4;i++){const cfg=s[i]||defaults[i],n=document.querySelector('[data-tool-name="'+i+'"]'),d=document.querySelector('[data-tool-desc="'+i+'"]'),st=document.querySelector('[data-tool-status="'+i+'"]'),u=document.querySelector('[data-tool-url="'+i+'"]'),m=document.getElementById('tool-file-meta-'+i);if(n)n.value=cfg.name||defaults[i].name;if(d)d.value=cfg.desc||defaults[i].desc;if(st)st.value=cfg.status||defaults[i].status;if(u)u.value=cfg.link||'';if(m)m.textContent=cfg.fileName?('Connected file: '+cfg.fileName+' · '+formatBytes(cfg.fileSize||0)):'No file connected.';}
     await apply();
   }
   function formatBytes(n){if(!n)return '0 B';const u=['B','KB','MB','GB'];let i=0,x=n;while(x>=1024&&i<u.length-1){x/=1024;i++;}return (x>=10||i===0?x.toFixed(0):x.toFixed(1))+' '+u[i];}
+  window.openCraftshanTool=function(i){openTool(Number(i));};
   window.saveToolLinksAndSettings=async function(){
     const s={};
     for(let i=1;i<=4;i++){
@@ -5768,24 +7624,13 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
       s[i]={name:n?.value?.trim()||defaults[i].name,desc:d?.value?.trim()||defaults[i].desc,status:st?.value||defaults[i].status,link:u?.value?.trim()||'',fileName:prev.fileName||'',fileSize:prev.fileSize||0,target:u?.value?.trim()||''};
       if(f?.files?.[0]){await putFile(i,f.files[0]);s[i].fileName=f.files[0].name;s[i].fileSize=f.files[0].size;s[i].target='__file__:'+i;}
     }
-    saveState(s);
-    // Resolve file targets to blob URLs after persisting.
-    for(let i=1;i<=4;i++){if(s[i].target==='__file__:'+i){try{const rec=await getFile(i);if(rec?.blob){if(objectUrls[i])URL.revokeObjectURL(objectUrls[i]);objectUrls[i]=URL.createObjectURL(rec.blob);/* keep persistent marker; objectUrls is runtime-only */}}catch(e){console.warn('Tool file URL error',e);}}}
-    saveState(s);await apply();
+    saveState(s);await resolveObjectUrls(s);saveState(s);await apply();
     if(typeof addAdminLog==='function')addAdminLog('Updated Tools links');if(typeof showAdminToast==='function')showAdminToast('Tools settings saved');
   };
-  window.resetToolLinksAndSettings=async function(){
-    const current=state();for(let i=1;i<=4;i++){if(current[i]?.fileName)try{await deleteFile(i);}catch(e){}}
-    localStorage.removeItem(KEY);await loadFields();if(typeof showAdminToast==='function')showAdminToast('Tools reset to defaults');
-  };
-  document.addEventListener('change',e=>{
-    const f=e.target.closest('[data-tool-file]');if(f){const i=f.dataset.toolFile,m=document.getElementById('tool-file-meta-'+i);if(m)m.textContent=f.files?.[0]?('Selected: '+f.files[0].name+' · '+formatBytes(f.files[0].size)):'No file selected.';}
-  });
-  document.addEventListener('DOMContentLoaded',async()=>{
-    // Rehydrate saved file targets as blob URLs.
-    const s=state();let changed=false;for(let i=1;i<=4;i++){if(s[i]?.target==='__file__:'+i){try{const rec=await getFile(i);if(rec?.blob){objectUrls[i]=URL.createObjectURL(rec.blob);/* keep persistent marker; objectUrls is runtime-only */changed=true;}}catch(e){}}}
-    if(changed)saveState(s);await loadFields();
-  });
+  window.resetToolLinksAndSettings=async function(){const current=state();for(let i=1;i<=4;i++){if(current[i]?.fileName)try{await deleteFile(i);}catch(e){}}localStorage.removeItem(KEY);await loadFields();if(typeof showAdminToast==='function')showAdminToast('Tools reset to defaults');};
+  document.addEventListener('change',e=>{const f=e.target.closest('[data-tool-file]');if(f){const i=f.dataset.toolFile,m=document.getElementById('tool-file-meta-'+i);if(m)m.textContent=f.files?.[0]?('Selected: '+f.files[0].name+' · '+formatBytes(f.files[0].size)):'No file selected.';}});
+  document.addEventListener('DOMContentLoaded',()=>loadFields());
+  window.refreshCraftshanTools=apply;
 })();
 </script>
 <script id="craftshan-seo-settings-js">
@@ -5815,5 +7660,6 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
 })();
 </script>
 
+<script>document.addEventListener('DOMContentLoaded',()=>{updateCartBadge();renderCart();});</script>
 </body>
 </html>
