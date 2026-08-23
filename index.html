@@ -2524,7 +2524,7 @@ input,select,textarea{min-width:0;}
         <h1 class="checkout-title">Complete your order</h1>
         <p class="checkout-sub">Your digital files will be delivered after a successful payment. No shipping is required.</p>
       </div>
-      <div class="checkout-status">
+      <div class="checkout-status" id="checkout-status">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
         <div><strong>Payments are not connected yet.</strong>This store is ready for a payment provider to be added later. No payment or purchase will be recorded from this prototype checkout.</div>
       </div>
@@ -2542,7 +2542,7 @@ input,select,textarea{min-width:0;}
       <div class="order-row"><span>Subtotal</span><span class="val" id="checkout-subtotal">$0.00</span></div>
       <div class="order-row"><span>Discount</span><span class="val" style="color:var(--green);" id="checkout-discount">–$0.00</span></div>
       <div class="order-row total"><span>Total</span><span class="val" id="checkout-total">$0.00</span></div>
-      <button class="checkout-pay-btn" disabled>Payment provider not connected</button>
+      <button class="checkout-pay-btn" id="checkout-pay-btn" disabled>Payment provider not connected</button>
     </aside>
   </div>
     </div>
@@ -2804,17 +2804,26 @@ input,select,textarea{min-width:0;}
       </button>
     </div>
 
+    <div class="account-empty" id="account-guest" style="padding:60px 20px;">
+      <div class="account-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.4 3.2-5.2 7-5.2s6.2 1.8 7 5.2"/></svg></div>
+      <div class="account-row-name">You're not signed in</div>
+      <div class="account-row-meta" style="margin-top:7px;">Log in or create a free account to see your orders, downloads and licenses.</div>
+      <button class="btn-gold" style="margin-top:16px;" onclick="setCustomerGateMode('login');openCustomerGate();">Log in or sign up</button>
+    </div>
+
+    <div id="account-logged-in" style="display:none;">
     <div class="account-head">
       <div class="account-head-main">
         <div class="account-avatar" id="account-avatar">MK</div>
         <div>
           <div class="account-kicker">↳ your account</div>
           <h1 class="account-title">My Craftshan account</h1>
-          <p class="account-sub">Keep your purchases, ZIP downloads, liked designs, and licenses together in one place.</p>
+          <p class="account-sub" id="account-sub-email">Keep your purchases, ZIP downloads, liked designs, and licenses together in one place.</p>
         </div>
       </div>
       <div class="account-head-actions">
         <button class="btn-outline" onclick="switchAccountTab('profile',null)">Profile &amp; settings</button>
+        <button class="btn-outline" onclick="customerLogout()">Log out</button>
       </div>
     </div>
 
@@ -2883,6 +2892,7 @@ input,select,textarea{min-width:0;}
         </div>
       </div>
     </div>
+    </div><!-- /account-logged-in -->
   </div>
 </div><!-- /page-account -->
 
@@ -3339,6 +3349,59 @@ input,select,textarea{min-width:0;}
 
     <div
       id="owner-login-status"
+      style="font-size:.7rem;color:var(--ink3);margin-top:10px;text-align:center;min-height:14px;"
+    ></div>
+  </div>
+</div>
+
+<div class="owner-gate" id="customer-gate" aria-hidden="true">
+  <div class="owner-gate-card">
+    <button class="close" onclick="closeCustomerGate()">×</button>
+
+    <div class="kicker">↳ your account</div>
+
+    <h3 id="customer-gate-title">Sign in to Craftshan Studio</h3>
+
+    <p id="customer-gate-sub">Log in to view your orders, downloads and licenses.</p>
+
+    <div style="display:flex;gap:8px;margin:14px 0 4px;">
+      <button type="button" id="customer-gate-tab-login" class="btn-outline" style="flex:1;" onclick="setCustomerGateMode('login')">Log in</button>
+      <button type="button" id="customer-gate-tab-signup" class="btn-outline" style="flex:1;" onclick="setCustomerGateMode('signup')">Sign up</button>
+    </div>
+
+    <div class="form-box">
+      <label>Email</label>
+      <input
+        id="customer-email"
+        type="email"
+        autocomplete="username"
+        placeholder="you@example.com"
+        onkeydown="if(event.key==='Enter')submitCustomerGate()"
+      >
+    </div>
+
+    <div class="form-box">
+      <label>Password</label>
+      <input
+        id="customer-password"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Enter your password"
+        onkeydown="if(event.key==='Enter')submitCustomerGate()"
+      >
+    </div>
+
+    <button
+      class="btn-gold"
+      style="width:100%;"
+      id="customer-gate-submit"
+      onclick="submitCustomerGate()"
+    >
+      Log in →
+    </button>
+
+    <div
+      id="customer-login-status"
       style="font-size:.7rem;color:var(--ink3);margin-top:10px;text-align:center;min-height:14px;"
     ></div>
   </div>
@@ -4302,11 +4365,61 @@ function renderCheckout(items = checkoutItems) {
 
   set('checkout-subtotal', '$' + sub.toFixed(2));
   set('checkout-discount', '–$' + couponDiscount.toFixed(2));
-  set(
-    'checkout-total',
-    '$' + Math.max(0, sub - couponDiscount).toFixed(2)
-  );
+  const total = Math.max(0, sub - couponDiscount);
+  set('checkout-total', '$' + total.toFixed(2));
+
+  const payBtn = document.getElementById('checkout-pay-btn');
+  const statusBox = document.getElementById('checkout-status');
+  if (payBtn) {
+    if (list.length && total === 0) {
+      payBtn.disabled = false;
+      payBtn.textContent = 'Get Free Files →';
+      payBtn.onclick = completeFreeCheckout;
+      if (statusBox) statusBox.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg><div><strong>These files are free.</strong>Log in (or create a free account) and click below to unlock instant download.</div>`;
+    } else {
+      payBtn.disabled = true;
+      payBtn.textContent = 'Payment provider not connected';
+      payBtn.onclick = null;
+      if (statusBox) statusBox.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div><strong>Payments are not connected yet.</strong>This store is ready for a payment provider to be added later. No payment or purchase will be recorded from this prototype checkout.</div>`;
+    }
+  }
 }
+
+async function completeFreeCheckout(){
+  if (!checkoutItems.length) { showToast('Your checkout is empty.'); return; }
+  if (typeof craftshanSupabase === 'undefined') { showToast('Account service is unavailable right now.'); return; }
+  const {data:{session}} = await craftshanSupabase.auth.getSession();
+  if (!session) {
+    pendingFreeCheckout = true;
+    setCustomerGateMode('login');
+    openCustomerGate();
+    showToast('Log in or sign up to claim your free files.');
+    return;
+  }
+  const payBtn = document.getElementById('checkout-pay-btn');
+  if (payBtn) { payBtn.disabled = true; payBtn.textContent = 'Unlocking…'; }
+  try {
+    for (const item of checkoutItems) {
+      const productId = item.supabase_id || (PRODUCTS.find(p => String(p.id) === String(item.id))?.supabase_id);
+      if (!productId) continue;
+      const { error } = await craftshanSupabase.rpc('claim_free_product', { p_product_id: productId });
+      if (error) throw error;
+    }
+    checkoutItems.forEach(item => { cart = cart.filter(c => String(c.id) !== String(item.id)); });
+    updateCartBadge();
+    showToast('Your free files are ready — check your Downloads.');
+    checkoutItems = [];
+    await refreshAccountData();
+    showPage('account');
+    switchAccountTab('downloads', null);
+  } catch (e) {
+    console.error('Free checkout error:', e);
+    showToast(e?.message || 'Could not unlock your download. Please try again.');
+  } finally {
+    if (payBtn) { payBtn.disabled = false; }
+  }
+}
+let pendingFreeCheckout = false;
 
 function removeFromCheckout(id) {
 
@@ -4392,11 +4505,18 @@ function renderWishlist(){
   }).join('');
 }
 
+/* ═══════════════════
+   CUSTOMER AUTH (Supabase)
+═══════════════════ */
+let customerSession = null;
+let customerOrders = [];
+
 function loadCustomerProfile(){
   try{const d=JSON.parse(localStorage.getItem('craftshanCustomerProfile')||'{}');
     const n=document.getElementById('account-profile-name'),e=document.getElementById('account-profile-email'),a=document.getElementById('account-avatar');
-    if(n) n.value=d.name||''; if(e) e.value=d.email||'';
-    if(a){const initials=(d.name||'MK').trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('')||'MK'; a.textContent=initials;}
+    if(n) n.value=d.name||''; if(e) e.value=customerSession?.user?.email||d.email||'';
+    const label=d.name||customerSession?.user?.email||'MK';
+    if(a){const initials=String(label).trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('')||'MK'; a.textContent=initials;}
   }catch(err){}
 }
 function saveCustomerProfile(){
@@ -4412,11 +4532,150 @@ function switchAccountTab(tab,btn){
   document.querySelectorAll('.account-nav-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   else { const idx={overview:0,orders:1,downloads:2,licenses:4,profile:5}[tab]; const buttons=document.querySelectorAll('.account-nav-btn'); if(buttons[idx]) buttons[idx].classList.add('active'); }
-  const pc=document.getElementById('account-purchases-count'); if(pc) pc.textContent='0';
-  const dc=document.getElementById('account-downloads-count'); if(dc) dc.textContent='0';
-  const lc=document.getElementById('account-license-count'); if(lc) lc.textContent='0';
   updateWishlistBadge(); loadCustomerProfile();
 }
+
+function openCustomerGate(){
+  const gate=document.getElementById('customer-gate'); if(!gate) return;
+  gate.classList.add('open'); gate.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+  setTimeout(()=>document.getElementById('customer-email')?.focus(),80);
+}
+function closeCustomerGate(){
+  const gate=document.getElementById('customer-gate'); if(!gate) return;
+  gate.classList.remove('open'); gate.setAttribute('aria-hidden','true'); document.body.style.overflow='';
+}
+function setCustomerGateMode(mode){
+  document.getElementById('customer-gate').dataset.mode=mode;
+  const isLogin=mode==='login';
+  document.getElementById('customer-gate-title').textContent=isLogin?'Log in to Craftshan Studio':'Create your account';
+  document.getElementById('customer-gate-sub').textContent=isLogin?'Log in to view your orders, downloads and licenses.':'Sign up with email and a password to get started.';
+  document.getElementById('customer-gate-submit').textContent=isLogin?'Log in →':'Create account →';
+  document.getElementById('customer-gate-tab-login').style.borderColor=isLogin?'var(--ink2)':'';
+  document.getElementById('customer-gate-tab-signup').style.borderColor=!isLogin?'var(--ink2)':'';
+  const status=document.getElementById('customer-login-status'); if(status) status.textContent='';
+}
+async function submitCustomerGate(){
+  const mode=document.getElementById('customer-gate').dataset.mode||'login';
+  const email=(document.getElementById('customer-email')?.value||'').trim();
+  const password=(document.getElementById('customer-password')?.value||'').trim();
+  const status=document.getElementById('customer-login-status');
+  if(!email||!password){ if(status) status.textContent='Enter your email and password.'; return; }
+  if(password.length<6){ if(status) status.textContent='Password must be at least 6 characters.'; return; }
+  if(typeof craftshanSupabase==='undefined'){ if(status) status.textContent='Account service is unavailable right now.'; return; }
+  if(status) status.textContent = mode==='login' ? 'Logging in…' : 'Creating account…';
+  try{
+    if(mode==='signup'){
+      const {data,error}=await craftshanSupabase.auth.signUp({email,password});
+      if(error) throw error;
+      if(!data?.session){
+        if(status) status.textContent='Account created. Check your email to confirm, then log in.';
+        setCustomerGateMode('login');
+        return;
+      }
+    } else {
+      const {data,error}=await craftshanSupabase.auth.signInWithPassword({email,password});
+      if(error) throw error;
+    }
+    closeCustomerGate();
+    document.getElementById('customer-email').value='';
+    document.getElementById('customer-password').value='';
+    if (pendingFreeCheckout) {
+      pendingFreeCheckout = false;
+      await completeFreeCheckout();
+    } else {
+      await refreshAccountData();
+      showPage('account');
+      showToast(mode==='signup' ? 'Welcome to Craftshan Studio!' : 'Logged in.');
+    }
+  }catch(e){
+    console.error('Customer auth error:',e);
+    if(status) status.textContent=e?.message||'Something went wrong.';
+  }
+}
+async function customerLogout(){
+  if(typeof craftshanSupabase==='undefined') return;
+  await craftshanSupabase.auth.signOut();
+  customerSession=null; customerOrders=[];
+  renderAccountLoggedOut();
+  showToast('Logged out.');
+}
+function renderAccountLoggedOut(){
+  const guest=document.getElementById('account-guest'), shell=document.getElementById('account-logged-in');
+  if(guest) guest.style.display='block';
+  if(shell) shell.style.display='none';
+}
+async function refreshAccountData(){
+  if(typeof craftshanSupabase==='undefined') return;
+  const {data:{session}}=await craftshanSupabase.auth.getSession();
+  customerSession=session||null;
+  const guest=document.getElementById('account-guest'), shell=document.getElementById('account-logged-in');
+  if(!customerSession){ renderAccountLoggedOut(); return; }
+  if(guest) guest.style.display='none';
+  if(shell) shell.style.display='block';
+  const emailLine=document.getElementById('account-sub-email');
+  if(emailLine) emailLine.textContent=customerSession.user.email;
+  loadCustomerProfile();
+  try{
+    const {data:orders,error}=await craftshanSupabase
+      .from('orders')
+      .select('id,status,total,created_at,order_items(id,product_id,product_name,price)')
+      .order('created_at',{ascending:false});
+    if(error) throw error;
+    customerOrders=orders||[];
+  }catch(e){
+    console.error('Failed to load orders:',e);
+    customerOrders=[];
+  }
+  renderAccountOverview();
+  renderAccountOrders();
+  renderAccountDownloads();
+  renderAccountLicenses();
+}
+function renderAccountOverview(){
+  const paidOrders=customerOrders.filter(o=>['paid','completed'].includes(o.status));
+  const items=paidOrders.flatMap(o=>o.order_items||[]);
+  const pc=document.getElementById('account-purchases-count'); if(pc) pc.textContent=String(items.length);
+  const dc=document.getElementById('account-downloads-count'); if(dc) dc.textContent=String(items.length);
+  const lc=document.getElementById('account-license-count'); if(lc) lc.textContent=String(items.length);
+}
+function renderAccountOrders(){
+  const wrap=document.getElementById('account-tab-orders'); if(!wrap) return;
+  if(!customerOrders.length){
+    wrap.innerHTML=`<div class="account-order-head"><div><h2 class="account-section-title">Orders</h2><p class="account-section-desc" style="margin-bottom:0;">Your completed purchases and order details will appear here.</p></div></div><div class="account-empty"><div class="account-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h12v18H6z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg></div><div class="account-row-name">No orders yet</div><div class="account-row-meta" style="margin-top:7px;">When you place an order, the order number, items, date, and status will appear here.</div><button class="btn-gold" style="margin-top:16px;" onclick="showPage('shop')">Explore designs</button></div>`;
+    return;
+  }
+  wrap.innerHTML=`<div class="account-order-head"><div><h2 class="account-section-title">Orders</h2><p class="account-section-desc" style="margin-bottom:0;">Your completed purchases and order details.</p></div></div><div class="account-list">`+
+    customerOrders.map(o=>{
+      const itemNames=(o.order_items||[]).map(i=>escapeHtml(i.product_name)).join(', ')||'—';
+      const date=o.created_at?new Date(o.created_at).toLocaleDateString():'';
+      return `<div class="account-row"><div class="account-row-thumb">#</div><div class="account-row-main"><div class="account-row-name">${itemNames}</div><div class="account-row-meta">${date} · ${escapeHtml(o.status)} · $${Number(o.total||0).toFixed(2)}</div></div></div>`;
+    }).join('')+`</div>`;
+}
+function renderAccountDownloads(){
+  const wrap=document.getElementById('account-download-list'); if(!wrap) return;
+  const paidOrders=customerOrders.filter(o=>['paid','completed'].includes(o.status));
+  const items=paidOrders.flatMap(o=>o.order_items||[]);
+  if(!items.length){
+    wrap.innerHTML=`<div class="account-empty"><div class="account-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v11"/><path d="m8 10 4 4 4-4"/><path d="M5 19h14"/></svg></div><div class="account-row-name">No downloads available</div><div class="account-row-meta" style="margin-top:7px;">Your purchased ZIP files will appear here after an order is completed.</div></div>`;
+    return;
+  }
+  wrap.innerHTML=items.map(i=>`<div class="account-row"><div class="account-row-thumb">⇩</div><div class="account-row-main"><div class="account-row-name">${escapeHtml(i.product_name)}</div><div class="account-row-meta">ZIP package</div></div><button class="account-row-action" onclick="downloadProductZip('${i.product_id}')">Download</button></div>`).join('');
+}
+function renderAccountLicenses(){
+  const wrap=document.getElementById('account-tab-licenses'); if(!wrap) return;
+  const paidOrders=customerOrders.filter(o=>['paid','completed'].includes(o.status));
+  const items=paidOrders.flatMap(o=>o.order_items||[]);
+  if(!items.length){
+    wrap.innerHTML=`<h2 class="account-section-title">Licenses</h2><p class="account-section-desc">Your purchased designs and their applicable usage rights.</p><div class="account-empty"><div class="account-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 3h10v18H7z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg></div><div class="account-row-name">No licenses yet</div><div class="account-row-meta" style="margin-top:7px;">Licenses for your purchased designs will appear here after an order is completed.</div><button class="account-row-action" style="margin-top:14px;" onclick="showPage('license')">Read license guide</button></div>`;
+    return;
+  }
+  wrap.innerHTML=`<h2 class="account-section-title">Licenses</h2><p class="account-section-desc">Your purchased designs and their applicable usage rights.</p><div class="account-list">`+
+    items.map(i=>`<div class="account-row"><div class="account-row-thumb">©</div><div class="account-row-main"><div class="account-row-name">${escapeHtml(i.product_name)}</div><div class="account-row-meta">Commercial use license · finished physical products only</div></div><button class="account-row-action" onclick="showPage('license')">View terms</button></div>`).join('')+`</div>`;
+}
+craftshanSupabase.auth.onAuthStateChange((_event,session)=>{
+  customerSession=session||null;
+  if(currentPage==='account') refreshAccountData();
+});
 function submitNavDesignSearch(){
   const input=document.getElementById('nav-design-search');
   const q=String(input?.value||'').trim();
@@ -4472,6 +4731,7 @@ function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   target.classList.add('active');
   currentPage = name;
+  if (name === 'account') refreshAccountData();
   window.scrollTo({top:0,behavior:'smooth'});
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   const nl = document.getElementById('nl-' + name);
@@ -7655,7 +7915,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
   window.saveSeoSettings=function(){const o=read();fields().forEach(e=>o[e.dataset.seoKey]=e.value);write(o);apply(o);if(window.addAdminLog)window.addAdminLog('Updated SEO settings');if(window.showAdminToast)window.showAdminToast('SEO settings saved');};
   window.resetSeoSettings=function(){write(defaults);load();if(window.showAdminToast)window.showAdminToast('SEO settings reset');};
   document.addEventListener('input',e=>{if(e.target.matches('[data-seo-key]')){const o=read();o[e.target.dataset.seoKey]=e.target.value;apply(o);}});
-  document.addEventListener('change',e=>{if(e.target.matches('[data-seo-key]')){const o=read();o[e.target.dataset.seo-key]=e.target.value;apply(o);}});
+  document.addEventListener('change',e=>{if(e.target.matches('[data-seo-key]')){const o=read();o[e.target.dataset.seoKey]=e.target.value;apply(o);}});
   document.addEventListener('DOMContentLoaded',load);
 })();
 </script>
