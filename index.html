@@ -4732,6 +4732,7 @@ function showPage(name) {
   target.classList.add('active');
   currentPage = name;
   if (name === 'account') refreshAccountData();
+  if (name === 'shop' && typeof renderShopCategoryFilters === 'function') renderShopCategoryFilters();
   window.scrollTo({top:0,behavior:'smooth'});
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   const nl = document.getElementById('nl-' + name);
@@ -5107,7 +5108,7 @@ function showAdminPage(name){
   const p=document.getElementById('admin-page-'+name); if(p)p.classList.add('active');
   document.querySelectorAll('.admin-nav button').forEach(b=>b.classList.toggle('active',b.dataset.adminPage===name));
   const labels={dashboard:'Dashboard',frontend:'Frontend',home:'Home Settings','shop-settings':'Shop Settings','about-settings':'About Settings','tools-settings':'Tools Settings','license-settings':'License Settings','contact-settings':'Contact Settings','footer-settings':'Footer Settings','global-settings':'Global Settings','seo-settings':'SEO Settings',products:'Products',categories:'Categories',orders:'Orders',customers:'Customers',reviews:'Reviews',coupons:'Coupons',media:'Media',plugins:'Plugins',integrations:'Integrations',activity:'Activity Log','dashboard-settings':'Dashboard Settings'};
-  document.getElementById('admin-page-title').textContent=labels[name]||name; if(name==='coupons'){try{renderAdminCoupons();}catch(e){console.error(e)}} if(name==='sales'){try{renderAdminSales();}catch(e){console.error(e)}} if(name==='orders'){try{loadOwnerOrders();}catch(e){console.error('Orders load failed:',e)}} if(name==='customers'){try{loadOwnerCustomers();}catch(e){console.error('Customers load failed:',e)}}
+  document.getElementById('admin-page-title').textContent=labels[name]||name; if(name==='coupons'){try{renderAdminCoupons();}catch(e){console.error(e)}} if(name==='sales'){try{renderAdminSales();}catch(e){console.error(e)}} if(name==='orders'){try{loadOwnerOrders();}catch(e){console.error('Orders load failed:',e)}} if(name==='customers'){try{loadOwnerCustomers();}catch(e){console.error('Customers load failed:',e)}} if(name==='categories'){try{renderAdminCategories();}catch(e){console.error('Categories load failed:',e)}} if(name==='products'){try{renderAdminProducts();}catch(e){console.error('Products render failed:',e)}}
 }
 document.querySelectorAll('.admin-nav button[data-admin-page]').forEach(btn=>btn.addEventListener('click',()=>{const target=btn.dataset.adminPage;showAdminPage(target);closeAdminSidebar();document.getElementById('admin-content')?.scrollTo?.(0,0);const ac=document.querySelector('.admin-content');if(ac)ac.scrollTop=0;}));
 function showAdminToast(msg){const t=document.getElementById('admin-toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__adminToast);window.__adminToast=setTimeout(()=>t.classList.remove('show'),2200);}
@@ -6581,9 +6582,15 @@ function deleteSelectedCategories(){
   indexes.forEach(i=>CRAFTSHAN_CATEGORIES.splice(i,1));
   selectedCategoryIndexes.clear(); renderAdminCategories(); renderAdminProducts(); renderProducts('home-product-grid',8); renderProducts('shop-product-grid'); addAdminLog('Deleted categories: '+names); showAdminToast('Categories deleted');
 }
-async function renderAdminCategories() {
+async function renderAdminCategories(attempt) {
   const el = document.getElementById('admin-category-list');
   if (!el) return;
+  if (!attempt) el.innerHTML = `<div class="cms-item"><div class="cms-item-main"><strong>Loading categories…</strong></div></div>`;
+
+  if (typeof craftshanSupabase === 'undefined') {
+    el.innerHTML = `<div class="cms-item"><div class="cms-item-main"><strong>Could not connect</strong><small>The database connection isn't available right now. Refresh the page and try again.</small></div></div>`;
+    return;
+  }
 
   try {
     const { data, error } = await craftshanSupabase
@@ -6594,6 +6601,11 @@ async function renderAdminCategories() {
 
     if (error) {
       console.error('Load categories error:', error);
+      // Transient failures (cold connection, brief network blip) are common
+      // on the very first request after a fresh page load — retry once
+      // automatically before bothering the owner with an error.
+      if (!attempt) { setTimeout(() => renderAdminCategories(1), 1200); return; }
+      el.innerHTML = `<div class="cms-item"><div class="cms-item-main"><strong>Could not load categories</strong><small>${escapeHtml(error.message || 'Unknown error')}</small></div></div><div class="cms-item"><div class="cms-item-main"><button type="button" class="btn-outline" onclick="renderAdminCategories()">Try again</button></div></div>`;
       showAdminToast(error.message || 'Could not load categories');
       return;
     }
@@ -6653,6 +6665,8 @@ async function renderAdminCategories() {
 
   } catch (error) {
     console.error('Unexpected category load error:', error);
+    if (!attempt) { setTimeout(() => renderAdminCategories(1), 1200); return; }
+    el.innerHTML = `<div class="cms-item"><div class="cms-item-main"><strong>Something went wrong</strong><small>${escapeHtml(error?.message || String(error))}</small></div></div><div class="cms-item"><div class="cms-item-main"><button type="button" class="btn-outline" onclick="renderAdminCategories()">Try again</button></div></div>`;
     showAdminToast('Something went wrong while loading categories');
   }
 }
@@ -7188,6 +7202,7 @@ async function syncCraftshanProductsFromSupabase() {
     renderProducts('home-product-grid', 8);
     renderProducts('shop-product-grid');
     renderAdminProducts();
+    if (typeof renderShopCategoryFilters === 'function') renderShopCategoryFilters();
 
     return true;
 
