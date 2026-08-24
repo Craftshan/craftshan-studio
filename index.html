@@ -3982,6 +3982,30 @@ let couponEditorId=null;function toggleCouponEditorState(btn){btn.classList.togg
 ═══════════════════ */
 
 let shopFilters={categories:[],free:false,price:[],bundle:false,formats:[],licenses:[],sale:false,sort:'popular',query:''};
+/* ── Shop filter state helpers (v42) ──
+   Every "show everything again" path goes through resetShopFilters() so the
+   search query, the sidebar checkboxes and the visible search box can never
+   drift apart. Previously `query` was only cleared by the Clear-filters
+   button, which left "All Files" unable to restore the full grid. */
+function craftshanDefaultShopFilters(sort){
+  return {categories:[],free:false,price:[],bundle:false,formats:[],licenses:[],sale:false,sort:sort||'popular',query:''};
+}
+function shopFiltersAreActive(){
+  return !!(shopFilters.categories.length || shopFilters.free || shopFilters.price.length ||
+            shopFilters.bundle || shopFilters.formats.length || shopFilters.licenses.length ||
+            shopFilters.sale || String(shopFilters.query||'').trim());
+}
+function clearShopSearchInput(){
+  const input=document.getElementById('nav-design-search');
+  if(input) input.value='';
+}
+function resetShopFilters(options){
+  const keepSort=!!(options&&options.keepSort);
+  shopFilters=craftshanDefaultShopFilters(keepSort?shopFilters.sort:'popular');
+  clearShopSearchInput();
+  syncShopFilterUI();
+  renderProducts('shop-product-grid');
+}
 let homeFilter='all';
 function effectivePrice(p){return getProductPricing(p).salePrice;}
 function productPopularity(p){return Number(p.popularity ?? p.faves ?? (p.id*17));}
@@ -4025,8 +4049,8 @@ function renderProductList(containerId, items, limit){
       <div class="p-info"><div class="p-name">${escapeHtml(p.name)}</div><div class="p-row"><span class="p-price${p.free?' free':''}">${p.free?'Free':'$'+effectivePrice(p).toFixed(2)}</span></div><button class="p-add-btn" onclick="event.stopPropagation();openProduct(${p.id})">View Design</button></div>
     </div>`).join('') || '<div style="grid-column:1/-1;padding:54px 20px;text-align:center;color:var(--ink3);border:1px dashed var(--border);border-radius:var(--r-lg);background:#fff;"><div style="font-family:Playfair Display,serif;font-size:1.25rem;color:var(--ink);margin-bottom:6px;">No designs found</div><div style="font-size:.82rem;margin-bottom:14px;">Try another search or clear the filters.</div><button class="btn-outline" type="button" onclick="document.getElementById(\'shop-clear-filters\')?.click()">Clear filters</button></div>';
 }
-function showFreeFiles(){shopFilters={categories:[],free:true,price:[],bundle:false,formats:[],licenses:[],sale:false,sort:'recent',query:''};syncShopFilterUI();showPage('shop');renderProducts('shop-product-grid');}
-function showBundles(){shopFilters={categories:[],free:false,price:[],bundle:true,formats:[],licenses:[],sale:false,sort:'popular',query:''};syncShopFilterUI();showPage('shop');renderProducts('shop-product-grid');}
+function showFreeFiles(){shopFilters=craftshanDefaultShopFilters('recent');shopFilters.free=true;clearShopSearchInput();syncShopFilterUI();showPage('shop');renderProducts('shop-product-grid');}
+function showBundles(){shopFilters=craftshanDefaultShopFilters('popular');shopFilters.bundle=true;clearShopSearchInput();syncShopFilterUI();showPage('shop');renderProducts('shop-product-grid');}
 function applyShopFilters(){
   const boxes=[...document.querySelectorAll('#page-shop .sidebar-check input[data-filter]')];
   shopFilters.categories=boxes.filter(x=>x.checked&&x.dataset.filter.startsWith('cat:')).map(x=>x.dataset.filter.slice(4));
@@ -4035,17 +4059,19 @@ function applyShopFilters(){
   shopFilters.bundle=boxes.some(x=>x.checked&&x.dataset.filter==='bundle');
   shopFilters.formats=boxes.filter(x=>x.checked&&x.dataset.filter.startsWith('format:')).map(x=>x.dataset.filter.slice(7));
   shopFilters.licenses=boxes.filter(x=>x.checked&&x.dataset.filter.startsWith('license:')).map(x=>x.dataset.filter.slice(8));
+  // Keep the "All Files" indicator honest after every sidebar change.
+  syncShopFilterUI();
   renderProducts('shop-product-grid');
 }
 function renderShopCategoryFilters(){
   const host=document.getElementById('shop-category-filters');
   if(!host)return;
   const counts=CRAFTSHAN_CATEGORIES.map(c=>[c,PRODUCTS.filter(p=>p.cat===c).length]);
-  host.innerHTML=`<label class="sidebar-check"><input type="checkbox" data-filter="all" ${shopFilters.categories.length===0?'checked':''}/> All Files <span class="sidebar-count">${PRODUCTS.length}</span></label>`+counts.map(([c,count])=>`<label class="sidebar-check"><input type="checkbox" data-filter="cat:${escapeHtml(c)}" ${shopFilters.categories.includes(c)?'checked':''}/> ${escapeHtml(c)} <span class="sidebar-count">${count}</span></label>`).join('');
+  host.innerHTML=`<label class="sidebar-check"><input type="checkbox" data-filter="all" ${shopFiltersAreActive()?'':'checked'}/> All Files <span class="sidebar-count">${PRODUCTS.length}</span></label>`+counts.map(([c,count])=>`<label class="sidebar-check"><input type="checkbox" data-filter="cat:${escapeHtml(c)}" ${shopFilters.categories.includes(c)?'checked':''}/> ${escapeHtml(c)} <span class="sidebar-count">${count}</span></label>`).join('');
 }
 function syncShopFilterUI(){
   renderShopCategoryFilters();
-  document.querySelectorAll('#page-shop .sidebar-check input[data-filter]').forEach(x=>{const f=x.dataset.filter;x.checked=f==='free'?shopFilters.free:f.startsWith('cat:')?shopFilters.categories.includes(f.slice(4)):f.startsWith('price:')?shopFilters.price.includes(f.split(':')[1]):f==='bundle'?shopFilters.bundle:f.startsWith('format:')?shopFilters.formats.includes(f.slice(7)):f.startsWith('license:')?shopFilters.licenses.includes(f.slice(8)):f==='all';});
+  document.querySelectorAll('#page-shop .sidebar-check input[data-filter]').forEach(x=>{const f=x.dataset.filter;x.checked=f==='free'?shopFilters.free:f.startsWith('cat:')?shopFilters.categories.includes(f.slice(4)):f.startsWith('price:')?shopFilters.price.includes(f.split(':')[1]):f==='bundle'?shopFilters.bundle:f.startsWith('format:')?shopFilters.formats.includes(f.slice(7)):f.startsWith('license:')?shopFilters.licenses.includes(f.slice(8)):f==='all'?!shopFiltersAreActive():false;});
   const s=document.getElementById('shop-sort');if(s)s.value=shopFilters.sort==='low'?'Price: low to high':shopFilters.sort==='high'?'Price: high to low':shopFilters.sort==='recent'?'Most recent':shopFilters.sort==='rating'?'Best rated':'Most popular';
 }
 /* v29 customer review display — no fake reviews */
@@ -4072,16 +4098,16 @@ function setupShopControls(){
   page.addEventListener('change',e=>{
     const x=e.target.closest('.sidebar-check input[data-filter]');
     if(!x)return;
-    if(x.dataset.filter==='all' && x.checked){
-      shopFilters.categories=[]; shopFilters.free=false; shopFilters.price=[]; shopFilters.bundle=false; shopFilters.formats=[]; shopFilters.licenses=[]; shopFilters.sale=false;
-    }else{
-      if(x.checked){const all=page.querySelector('input[data-filter="all"]');if(all)all.checked=false;}
-      applyShopFilters(); return;
+    // "All Files" always means "show everything" — including clearing an
+    // active search — no matter which way the checkbox happened to be sitting.
+    if(x.dataset.filter==='all'){
+      resetShopFilters({keepSort:true}); return;
     }
-    syncShopFilterUI(); renderProducts('shop-product-grid');
+    if(x.checked){const all=page.querySelector('input[data-filter="all"]');if(all)all.checked=false;}
+    applyShopFilters();
   });
   page.addEventListener('click',e=>{
-    if(e.target.closest('#shop-clear-filters')){shopFilters={categories:[],free:false,price:[],bundle:false,formats:[],licenses:[],sale:false,sort:'popular',query:''};syncShopFilterUI();renderProducts('shop-product-grid');}
+    if(e.target.closest('#shop-clear-filters')){resetShopFilters();}
   });
   const s=document.getElementById('shop-sort');
   if(s)s.addEventListener('change',()=>{shopFilters.sort=s.value==='Price: low to high'?'low':s.value==='Price: high to low'?'high':s.value==='Most recent'?'recent':s.value==='Best rated'?'rating':'popular';renderProducts('shop-product-grid');});
@@ -5046,11 +5072,39 @@ window.ownerLogin=ownerLogin;
 window.openOwnerDashboard=openOwnerDashboard;
 function openOwnerGate(){const gate=document.getElementById('owner-gate');if(!gate)return;gate.classList.add('open');gate.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';craftshanRefreshLoginGateUI();setTimeout(()=>document.getElementById('owner-key')?.focus(),80);}
 function closeOwnerGate(){const gate=document.getElementById('owner-gate');if(!gate)return;gate.classList.remove('open');gate.setAttribute('aria-hidden','true');if(!document.getElementById('admin-shell')?.classList.contains('open'))document.body.style.overflow='';}
-function openAdmin(){
+/* Verifies the *server* state: a live Supabase session whose profiles.role is
+   'owner'. This is a UI gate only — RLS + is_owner() remain the real security
+   boundary for every row of data. */
+async function craftshanVerifyOwnerSession(){
+  if (typeof craftshanSupabase === 'undefined') return false;
+  try{
+    const { data: { session }, error } = await craftshanSupabase.auth.getSession();
+    if (error || !session?.user) return false;
+    const { data: profile, error: profileError } = await craftshanSupabase
+      .from('profiles')
+      .select('role')
+      .eq('id', session.user.id)
+      .maybeSingle();
+    if (profileError || profile?.role !== 'owner') return false;
+    return true;
+  }catch(e){
+    console.warn('Owner session verification failed:', e);
+    return false;
+  }
+}
+async function openAdmin(){
   const shell=document.getElementById('admin-shell');
   if(!shell){
     console.error('Owner Dashboard: #admin-shell was not found.');
     showAdminToast('Owner Dashboard could not be opened.');
+    return false;
+  }
+  // Nobody opens the Owner Centre without a verified owner session — not via
+  // the keyboard shortcut, not by calling this from devtools.
+  if(!(await craftshanVerifyOwnerSession())){
+    closeAdmin();
+    openOwnerGate();
+    craftshanShowLoginStatus('Please log in with the Owner account.');
     return false;
   }
   shell.classList.add('open');
@@ -5276,7 +5330,41 @@ function clampDiscount(value){
 }
 function addAdminLog(action){CRAFTSHAN_ADMIN_LOG.unshift({action,at:new Date().toLocaleString()});renderActivity();}
 function renderActivity(){const el=document.getElementById('activity-list');if(!el)return;const rows=CRAFTSHAN_ADMIN_LOG.length?CRAFTSHAN_ADMIN_LOG:[{action:'Owner control center enabled',at:'Just now'},{action:'Craftshan CMS plugin installed',at:'Just now'}];el.innerHTML=rows.slice(0,12).map(x=>`<div class="cms-item"><div class="drag">◷</div><div class="cms-item-main"><strong>${x.action}</strong><small>${x.at}</small></div></div>`).join('');}
-let CRAFTSHAN_CATEGORIES = ['Round Door Signs','3D Layered','Paper Cuts','Keychains','Earrings','Ornaments','Home Decor','Others'];
+/* Fallback only — the real list is loaded from the Supabase `categories`
+   table by loadCraftshanCategories() and this array is replaced in place.
+   "Paper Cuts" and "Earrings" were intentionally removed from the database
+   and must not reappear here. */
+let CRAFTSHAN_CATEGORIES = ['Round Door Signs','3D Layered','Keychains','Ornaments','Home Decor','Others'];
+/* Single source of truth for categories: Supabase. Called during init and
+   again by renderAdminCategories(), then re-renders the shop sidebar so the
+   filter list can never be left showing a stale/phantom category. */
+async function loadCraftshanCategories(){
+  if (typeof craftshanSupabase === 'undefined') return false;
+  try{
+    const { data, error } = await craftshanSupabase
+      .from('categories')
+      .select('name, sort_order')
+      .order('sort_order', { ascending: true })
+      .order('name', { ascending: true });
+    if (error) { console.warn('Category load failed:', error); return false; }
+    applyCraftshanCategories((data || []).map(c => c.name));
+    return true;
+  }catch(e){ console.warn('Unexpected category load error:', e); return false; }
+}
+function applyCraftshanCategories(names){
+  const list = (Array.isArray(names) ? names : []).filter(Boolean);
+  CRAFTSHAN_CATEGORIES.length = 0;
+  list.forEach(n => CRAFTSHAN_CATEGORIES.push(n));
+  // Drop any active filter pointing at a category that no longer exists.
+  if (typeof shopFilters !== 'undefined' && Array.isArray(shopFilters.categories)) {
+    shopFilters.categories = shopFilters.categories.filter(c => CRAFTSHAN_CATEGORIES.includes(c));
+  }
+  try{
+    if (typeof renderShopCategoryFilters === 'function') renderShopCategoryFilters();
+    if (typeof syncShopFilterUI === 'function') syncShopFilterUI();
+    if (typeof renderProducts === 'function' && document.getElementById('shop-product-grid')) renderProducts('shop-product-grid');
+  }catch(e){ console.warn('Category UI refresh skipped:', e); }
+}
 let selectedProductIds = new Set();
 let selectedCategoryIndexes = new Set();
 let productSelectMode = false; // legacy state retained for compatibility; selection UI is intentionally disabled
@@ -6647,12 +6735,9 @@ async function renderAdminCategories(attempt) {
       return;
     }
 
-    // Keep the existing frontend code working for now
-    CRAFTSHAN_CATEGORIES.length = 0;
-
-    (data || []).forEach(category => {
-      CRAFTSHAN_CATEGORIES.push(category.name);
-    });
+    // Keep the existing frontend code working, and keep the public shop
+    // sidebar in sync with whatever the owner just saw.
+    applyCraftshanCategories((data || []).map(category => category.name));
 
     el.innerHTML = CRAFTSHAN_CATEGORIES.map((c, i) => `
       <div class="cms-item">
@@ -7145,9 +7230,10 @@ async function syncCraftshanProductsFromSupabase() {
 
         name: p.name,
 
+        // Category comes from Supabase only. Falling back to the previous
+        // local value used to resurrect deleted categories on screen.
         cat:
           p.categories?.name ||
-          oldProduct?.cat ||
           'Uncategorized',
 
         category_id: p.category_id,
@@ -7304,6 +7390,7 @@ function initCraftshanApp(){
   step('setupShopControls', setupShopControls);
   step('setupHomeFilters', setupHomeFilters);
   step('syncOwnerEntry', syncOwnerEntry);
+  step('loadCraftshanCategories', loadCraftshanCategories);
   step('syncCraftshanProductsFromSupabase', syncCraftshanProductsFromSupabase);
   step('handlePostCheckoutRedirect', handlePostCheckoutRedirect);
 }
