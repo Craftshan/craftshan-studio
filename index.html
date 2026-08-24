@@ -30,6 +30,20 @@
             if (c && typeof c.enabled === 'boolean') state = c.enabled ? 'on' : 'off';
         }catch(e){}
         document.documentElement.setAttribute('data-craftshan-maintenance', state);
+
+        /* Storefront visibility first paint (v45). Same idea: apply the last
+           known values immediately so a hidden section never flashes, then let
+           the server overwrite them a moment later. Anything not cached stays
+           visible — visibility fails OPEN so a bad cache can never hide the
+           shop (the opposite of maintenance, which fails closed). */
+        try{
+            var v = JSON.parse(localStorage.getItem('craftshan_storefront_cache') || 'null');
+            if (v && typeof v === 'object'){
+                Object.keys(v).forEach(function(k){
+                    if (v[k] === false) document.documentElement.setAttribute('data-sf-' + k, 'off');
+                });
+            }
+        }catch(e){}
     })();
 </script>
 
@@ -2252,6 +2266,45 @@ html[data-craftshan-maintenance="checking"] body{background:var(--paper);}
 #craftshan-owner-maintenance-banner strong{color:var(--gold);font-weight:700;}
 html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{display:block;}
 @media(max-width:600px){#craftshan-owner-maintenance-banner{font-size:.72rem;padding:9px 12px;}}
+
+/* ═══ STOREFRONT VISIBILITY (v45) ═══
+   Driven by data-sf-* attributes on <html>, set from Supabase
+   store_settings['storefront']. Hiding a section removes it from layout
+   entirely (display:none) so no empty gap is left behind. Nothing here
+   deletes or alters any product, category, review or tool. */
+html[data-sf-announcement="off"] #home-announcement-bar,
+html[data-sf-hero="off"]         #home-section-hero,
+html[data-sf-featured="off"]     #home-section-featured,
+html[data-sf-tools="off"]        #home-section-tools,
+html[data-sf-cta="off"]          #home-section-cta,
+html[data-sf-seasonal="off"]     #home-sale-banner,
+html[data-sf-categories="off"]   #home-filters,
+html[data-sf-categories="off"]   #shop-category-filters,
+html[data-sf-reviews="off"]      #product-reviews-section,
+html[data-sf-freeFiles="off"]    #home-hero-free,
+html[data-sf-tools="off"]        #nl-tools,
+html[data-sf-tools="off"]        [data-sf-link="tools"],
+html[data-sf-freeFiles="off"]    [data-sf-link="freeFiles"],
+html[data-sf-bundles="off"]      [data-sf-link="bundles"]{display:none !important;}
+
+/* Hide the whole sidebar group so its "Categories" title goes too. */
+html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
+
+/* ═══ TOOL CARDS (v46) ═══
+   Icons are now a single character from the database rather than a fixed
+   inline SVG, so the wrapper needs to centre text. A Disabled tool must never
+   look usable: it is dimmed and non-interactive. */
+.tool-icon-wrap{font-size:1.35rem;line-height:1;display:flex;align-items:center;justify-content:center;}
+.tools-page-icon{font-size:1.5rem;line-height:1;display:flex;align-items:center;justify-content:center;}
+.tool-card[role="button"]{cursor:pointer;}
+.tool-card.is-disabled,
+.tools-page-card.is-disabled{opacity:.5;cursor:not-allowed;}
+.tool-card.is-disabled .tool-pill,
+.tools-page-card.is-disabled .tools-page-status{text-decoration:line-through;}
+.tool-pill.disabled{opacity:.75;}
+
+/* v49: Featured Designs collapses when no product is marked Featured. */
+#home-section-featured.craftshan-featured-empty{display:none;}
 </style>
 
 <div id="craftshan-maintenance" role="alert" aria-live="polite">
@@ -2396,17 +2449,6 @@ html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{dis
         <a class="link-gold" onclick="showPage('shop')" style="cursor:pointer;">Browse all designs →</a>
       </div>
       <div class="filters" id="home-filters">
-        <button class="pill on" data-home-filter="all">All files</button>
-        <button class="pill" data-home-filter="Round Door Signs">Round Door Signs</button>
-        <button class="pill" data-home-filter="3D Layered">3D Layered</button>
-        <button class="pill" data-home-filter="Paper Cuts">Paper Cuts</button>
-        <button class="pill" data-home-filter="Keychains">Keychains</button>
-        <button class="pill" data-home-filter="Earrings">Earrings</button>
-        <button class="pill" data-home-filter="Ornaments">Ornaments</button>
-        <button class="pill" data-home-filter="Home Decor">Home Decor</button>
-        <button class="pill" data-home-filter="Others">Others</button>
-        <button class="pill" data-home-filter="free">Free files</button>
-        <button class="pill" data-home-filter="bundle">Bundles</button>
       </div>
       <div class="p-grid" id="home-product-grid"></div>
     </div>
@@ -2420,10 +2462,6 @@ html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{dis
         <div><div class="kicker" id="home-tools-kicker">↳ on the roadmap</div><h2 class="sec-title-light" id="home-tools-heading">Studio tools we're building</h2><p style="color:rgba(255,255,255,.45);font-size:.82rem;margin-top:8px;max-width:520px;font-weight:300;">These creator tools are in development and not available yet. They'll be announced here as they launch.</p></div>
       </div>
       <div class="tools-grid" id="home-tools-grid">
-        <div class="tool-card"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div class="tool-name">AI Design Generator</div><p class="tool-desc">Planned: describe a concept and generate a production-ready SVG.</p><span class="tool-pill">Coming soon</span></div>
-        <div class="tool-card"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg></div><div class="tool-name">Image to Vector</div><p class="tool-desc">Planned: upload a PNG or JPG and get a clean, scalable SVG.</p><span class="tool-pill">Coming soon</span></div>
-        <div class="tool-card"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 9l6 6M15 9l-6 6"/></svg></div><div class="tool-name">Background Remover</div><p class="tool-desc">Planned: remove backgrounds cleanly for sublimation and HTV.</p><span class="tool-pill">Coming soon</span></div>
-        <div class="tool-card"><div class="tool-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v3M12 15v3M3 12h3M15 12h3"/><circle cx="12" cy="12" r="4"/></svg></div><div class="tool-name">Parametric Templates</div><p class="tool-desc">Planned: adjust size, colour, and text to create variations.</p><span class="tool-pill">Coming soon</span></div>
       </div>
     </div>
   </div>
@@ -2454,7 +2492,7 @@ html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{dis
   </div>
   <div class="shop-layout">
     <aside class="sidebar">
-      <div class="sidebar-section">
+      <div class="sidebar-section" id="shop-filter-categories">
         <div class="sidebar-title">Categories</div>
         <div id="shop-category-filters"></div>
       </div>
@@ -2696,22 +2734,6 @@ html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{dis
   </div>
   <div class="tools-page-wrap">
     <div class="tools-page-grid" id="tools-page-grid">
-      <article class="tools-page-card">
-        <div class="tools-page-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="8"/></svg></div>
-        <div><h3>SVG Cleaner</h3><p>Prepare vectors with a cleaner structure and more reliable files for everyday cutting workflows.</p><span class="tools-page-status">Coming soon</span><button type="button" class="tools-open-btn" data-tool-open="1" style="display:none;">Open Tool →</button></div>
-      </article>
-      <article class="tools-page-card">
-        <div class="tools-page-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h10M4 18h7"/><path d="m16 15 4 4m0-4-4 4"/></svg></div>
-        <div><h3>Image to Vector</h3><p>Turn a suitable PNG or JPG reference into a cleaner vector workflow for tracing and laser-cut preparation.</p><span class="tools-page-status">Coming soon</span><button type="button" class="tools-open-btn" data-tool-open="2" style="display:none;">Open Tool →</button></div>
-      </article>
-      <article class="tools-page-card">
-        <div class="tools-page-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 5h14v14H5z"/><path d="M9 9h6v6H9z"/><path d="M3 12h2m14 0h2M12 3v2m0 14v2"/></svg></div>
-        <div><h3>Design Preview</h3><p>Preview your design cleanly before publishing or using it in a product listing.</p><span class="tools-page-status">Planned</span><button type="button" class="tools-open-btn" data-tool-open="3" style="display:none;">Open Tool →</button></div>
-      </article>
-      <article class="tools-page-card">
-        <div class="tools-page-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 3h10v4H7z"/><path d="M5 7h14v14H5z"/><path d="M8 11h8M8 15h6"/></svg></div>
-        <div><h3>Laser File Checker</h3><p>Check common file details and help spot issues before a design is sent into your cutting workflow.</p><span class="tools-page-status">Planned</span><button type="button" class="tools-open-btn" data-tool-open="4" style="display:none;">Open Tool →</button></div>
-      </article>
     </div>
     <div class="tools-page-note"><strong style="color:var(--ink);">A note from Craftshan Studio:</strong> these tools are designed to support makers, not replace the design process. When a tool launches, its availability and supported file types will be clearly shown here.</div>
   </div>
@@ -3398,7 +3420,7 @@ html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{dis
           <div class="foot-soc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg></div>
         </div>
       </div>
-      <div class="foot-col"><h5>Explore</h5><ul><li><a onclick="showPage('shop')">All Designs</a></li><li><a onclick="showFreeFiles()">Free Files</a></li><li><a onclick="showBundles()">Bundles</a></li><li><a onclick="showPage('tools')">Tools</a></li><li><a onclick="showPage('how')">How It Works</a></li></ul></div>
+      <div class="foot-col"><h5>Explore</h5><ul><li><a onclick="showPage('shop')">All Designs</a></li><li data-sf-link="freeFiles"><a onclick="showFreeFiles()">Free Files</a></li><li data-sf-link="bundles"><a onclick="showBundles()">Bundles</a></li><li data-sf-link="tools"><a onclick="showPage('tools')">Tools</a></li><li><a onclick="showPage('how')">How It Works</a></li></ul></div>
       <div class="foot-col"><h5>Create</h5><ul id="footer-tools-list"></ul></div>
       <div class="foot-col"><h5>Company</h5><ul><li><a onclick="showPage('about')">About</a></li><li><a onclick="showPage('license')">License</a></li><li><a onclick="showPage('contact')">Contact</a></li><li><a onclick="showPage('privacy')">Privacy Policy</a></li></ul></div>
     </div>
@@ -3614,7 +3636,7 @@ html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{dis
               <div class="form-box"><label><em>*</em> Price</label><div class="publish-price-input"><span>$</span><input id="edit-product-price" type="number" step="0.01" min="0" placeholder="0.00"><span>USD</span></div><small class="publish-field-note">Enter the normal product price. Discounts and timed sales are managed separately.</small></div>
               <div class="form-box"><label>Badge</label><input id="edit-product-badge" type="text" maxlength="24" placeholder="NEW, BESTSELLER, SALE, TRENDING..."><small class="publish-field-note">Optional badge shown on product cards and product pages.</small></div>
               <div class="publish-hidden-field"><input id="edit-product-id" type="hidden"><input id="edit-product-cat" type="hidden"><input id="edit-product-rating" type="hidden" value="4.9"><input id="edit-product-discount" type="hidden" value="0"></div>
-              <div class="publish-category-row"><div><label>Category</label><select id="edit-product-cat-visible"></select></div><div class="toggle-row"><span>Featured on homepage</span><button id="edit-product-featured" class="toggle" type="button" onclick="this.classList.toggle('on')"><i></i></button></div></div><div class="publish-category-row"><div><label>Catalog status</label><select id="edit-product-status"><option value="published">Published</option><option value="draft">Draft</option></select><small class="publish-field-note">Published products appear in the customer shop. Drafts stay in your Owner catalog.</small></div><div class="form-box" style="margin:0"><label>Rating</label><input id="edit-product-rating-visible" type="number" min="3" max="5" step="0.1" value="4.9"><small class="publish-field-note">Owner-controlled rating. Minimum 3.0, maximum 5.0.</small></div></div>
+              <div class="publish-category-row"><div><label>Category</label><select id="edit-product-cat-visible"></select></div><div class="toggle-row"><span>Featured on homepage</span><button id="edit-product-featured" class="toggle" type="button" onclick="this.classList.toggle('on')"><i></i></button></div><div class="toggle-row"><span>Free download<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">ON = customers claim it free. OFF = paid via Lemon Squeezy.</small></span><button id="edit-product-free" class="toggle" type="button" onclick="this.classList.toggle('on');craftshanReflectFreeState();"><i></i></button></div></div><div class="publish-category-row"><div><label>Catalog status</label><select id="edit-product-status"><option value="published">Published</option><option value="draft">Draft</option></select><small class="publish-field-note">Published products appear in the customer shop. Drafts stay in your Owner catalog.</small></div><div class="form-box" style="margin:0"><label>Rating</label><input id="edit-product-rating-visible" type="number" min="3" max="5" step="0.1" value="4.9"><small class="publish-field-note">Owner-controlled rating. Minimum 3.0, maximum 5.0.</small></div></div>
             </div>
           </div>
         </section>
@@ -3629,6 +3651,8 @@ html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{dis
 </div>
 <div class="editor-modal" id="sale-editor-modal" onclick="if(event.target===this)closeEditorModal('sale-editor-modal')"><div class="editor-card" style="max-width:760px"><div class="editor-head"><div><div class="kicker">↳ sale manager</div><h3 id="sale-editor-title">Create Sale</h3></div><button class="editor-close" type="button" onclick="closeEditorModal('sale-editor-modal')">×</button></div><input type="hidden" id="edit-sale-id"><div class="admin-two"><div class="form-box"><label>Sale Name *</label><input id="edit-sale-name" placeholder="Summer Sale"></div><div class="form-box"><label>Discount *</label><select id="edit-sale-discount"><option value="10">10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option><option value="90">90%</option></select></div></div><div class="admin-two"><div class="form-box"><label>Start Date & Time</label><input id="edit-sale-start" type="datetime-local"></div><div class="form-box"><label>End Date & Time *</label><input id="edit-sale-end" type="datetime-local"></div></div><div class="form-box"><label>Select Products</label><div id="sale-product-picker" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-height:260px;overflow:auto;border:1px solid var(--border);border-radius:12px;padding:10px"></div></div><div class="editor-actions"><button class="admin-btn" type="button" onclick="closeEditorModal('sale-editor-modal')">Cancel</button><button class="admin-btn gold" type="button" onclick="saveSaleEditor()">Save Sale</button></div></div></div>
 <div class="editor-modal" id="coupon-editor-modal" onclick="if(event.target===this)closeEditorModal('coupon-editor-modal')"><div class="editor-card" style="max-width:720px"><div class="editor-head"><div><div class="kicker">↳ coupon manager</div><h3 id="coupon-editor-title">Create Coupon</h3></div><button class="editor-close" type="button" onclick="closeEditorModal('coupon-editor-modal')">×</button></div><input type="hidden" id="edit-coupon-id"><div class="admin-two"><div class="form-box"><label>Coupon Code *</label><input id="edit-coupon-code" placeholder="CRAFT10" maxlength="32"></div><div class="form-box"><label>Discount Type *</label><select id="edit-coupon-type"><option value="percent">Percentage</option><option value="fixed">Fixed amount</option></select></div></div><div class="admin-two"><div class="form-box"><label>Discount *</label><input id="edit-coupon-value" type="number" min="1" step="0.01" placeholder="10"></div><div class="form-box"><label>Minimum order (optional)</label><input id="edit-coupon-min" type="number" min="0" step="0.01" placeholder="0"></div></div><div class="admin-two"><div class="form-box"><label>Expiry (optional)</label><input id="edit-coupon-expiry" type="datetime-local"></div><div class="form-box"><label>Usage limit (optional)</label><input id="edit-coupon-limit" type="number" min="1" step="1" placeholder="Unlimited"></div></div><div class="toggle-row"><span>Coupon active</span><button class="toggle on" id="edit-coupon-active" type="button" onclick="toggleCouponEditorState(this)"><i></i></button></div><div class="editor-actions"><button class="admin-btn" type="button" onclick="closeEditorModal('coupon-editor-modal')">Cancel</button><button class="admin-btn gold" type="button" onclick="saveCouponEditor()">Save Coupon</button></div></div></div>
+<div class="editor-modal" id="tool-editor-modal" onclick="if(event.target===this)closeEditorModal('tool-editor-modal')"><div class="editor-card" style="max-width:560px;"><div class="editor-head"><div><div class="kicker">↳ owner editor</div><h3 id="tool-editor-title">Add Tool</h3></div><button class="editor-close" onclick="closeEditorModal('tool-editor-modal')">×</button></div><input type="hidden" id="edit-tool-id"><div class="form-box"><label>Tool Name <span style="color:#b42318">*</span></label><input id="edit-tool-name" type="text" maxlength="60" placeholder="SVG Cleaner"></div><div class="form-box"><label>Description</label><textarea id="edit-tool-description" maxlength="300" placeholder="What this tool does for the customer."></textarea></div><div class="admin-two"><div class="form-box"><label>Icon</label><input id="edit-tool-icon" type="text" maxlength="4" placeholder="✧"><small style="color:var(--ink3);font-size:.7rem;">A single character or emoji.</small></div><div class="form-box"><label>Sort Order</label><input id="edit-tool-sort" type="number" min="0" step="1" value="0"></div></div><div class="form-box"><label>URL / Route</label><input id="edit-tool-url" type="text" placeholder="https://your-tool.example"><small style="color:var(--ink3);font-size:.7rem;">Leave empty for a tool that is not connected yet. A tool only opens when its status is Available and it has a link.</small></div><div class="admin-two"><div class="form-box"><label>Status</label><select id="edit-tool-status"><option value="available">Available</option><option value="coming_soon">Coming Soon</option><option value="planned" selected>Planned</option><option value="disabled">Disabled</option></select></div><div class="form-box"><label>Visibility</label><select id="edit-tool-visible"><option value="true" selected>Visible</option><option value="false">Hidden</option></select></div></div><div id="tool-editor-error" style="display:none;color:#b42318;font-size:.78rem;margin-bottom:10px;"></div><div class="editor-actions"><button class="admin-btn" type="button" onclick="closeEditorModal('tool-editor-modal')">Cancel</button><button class="admin-btn gold" type="button" id="tool-editor-save" onclick="saveToolEditor()">Save Tool</button></div></div></div>
+<div class="editor-modal" id="tool-delete-modal" onclick="if(event.target===this)closeEditorModal('tool-delete-modal')"><div class="editor-card" style="max-width:440px;"><div class="editor-head"><div><div class="kicker">↳ confirm</div><h3>Delete tool</h3></div><button class="editor-close" onclick="closeEditorModal('tool-delete-modal')">×</button></div><input type="hidden" id="delete-tool-id"><p style="font-size:.9rem;margin:0 0 8px;"><strong id="delete-tool-name">This tool</strong></p><p style="font-size:.82rem;color:var(--ink3);line-height:1.6;margin:0 0 4px;">This will permanently remove this tool from the Tool catalog.</p><p id="delete-tool-filenote" style="display:none;font-size:.78rem;color:var(--ink2);line-height:1.6;background:var(--gold-dim);border-radius:8px;padding:9px 11px;margin:10px 0 0;"></p><div class="editor-actions"><button class="admin-btn" type="button" onclick="closeEditorModal('tool-delete-modal')">Cancel</button><button class="admin-btn" type="button" style="background:#b42318;color:#fff;border-color:#b42318;" onclick="confirmDeleteTool()">Delete</button></div></div></div>
 <div class="editor-modal" id="category-editor-modal" onclick="if(event.target===this)closeEditorModal('category-editor-modal')"><div class="editor-card" style="max-width:520px;"><div class="editor-head"><div><div class="kicker">↳ owner editor</div><h3 id="category-editor-title">Add Category</h3></div><button class="editor-close" onclick="closeEditorModal('category-editor-modal')">×</button></div><input type="hidden" id="edit-category-index"><div class="form-box"><label>Category Name</label><input id="edit-category-name" type="text"></div><div class="form-box"><label>Description</label><textarea id="edit-category-description"></textarea></div><div class="editor-actions"><button class="admin-btn" onclick="closeEditorModal('category-editor-modal')">Cancel</button><button class="admin-btn gold" onclick="saveCategoryEditor()">Save Category</button></div></div></div>
 
 <div class="editor-modal" id="product-preview-modal" onclick="if(event.target===this)closeProductPreview()"><div class="editor-card" style="max-width:620px;"><div class="editor-head"><div><div class="kicker">↳ owner preview</div><h3 id="product-preview-title">Product Preview</h3></div><button class="editor-close" type="button" onclick="closeProductPreview()">×</button></div><div id="product-preview-body"></div><div class="editor-actions"><button class="admin-btn" type="button" onclick="closeProductPreview()">Close Preview</button></div></div></div>
@@ -3637,33 +3661,33 @@ html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{dis
   <div class="admin-side-overlay" onclick="closeAdminSidebar()"></div>
   <aside class="admin-side">
     <div class="admin-brand"><div class="admin-brand-mark">CS</div><div><strong>Craftshan Studio</strong><small>Owner Control Center</small></div></div>
-    <div class="admin-nav">
-      <div class="nav-group">Overview</div>
-      <button class="active" data-admin-page="dashboard"><span>⌂</span> Dashboard</button>
-      <div class="nav-group">Website</div>
-      <button data-admin-page="home"><span>⌂</span> Home Settings</button>
-      <button data-admin-page="shop-settings"><span>▦</span> Shop Settings</button>
-      <button data-admin-page="tools-settings"><span>⚒</span> Tools Settings</button>
-      <button data-admin-page="license-settings"><span>◈</span> License Settings</button>
-      <button data-admin-page="about-settings"><span>◎</span> About Settings</button>
-      <button data-admin-page="contact-settings"><span>✉</span> Contact Settings</button>
-      <button data-admin-page="global-settings"><span>⚙</span> Global Settings</button>
-      <button data-admin-page="seo-settings"><span>⌕</span> SEO Settings</button>
-      <div class="nav-group">Store</div>
-      <button data-admin-page="products"><span>◇</span> Products</button>
-      <button data-admin-page="sales"><span>◷</span> Sales</button>
-      <button data-admin-page="categories"><span>◈</span> Categories</button>
-      <button data-admin-page="orders"><span>↗</span> Orders</button>
-      <button data-admin-page="customers"><span>◌</span> Customers</button>
-      <button data-admin-page="reviews"><span>★</span> Reviews</button>
-      <button data-admin-page="coupons"><span>%</span> Coupons</button>
-      <div class="nav-group">System</div>
-      <button data-admin-page="plugins"><span>♧</span> Plugins</button>
-      <button data-admin-page="integrations"><span>⌘</span> Integrations</button>
-      <button data-admin-page="activity"><span>◷</span> Activity Log</button>
-      <button data-admin-page="dashboard-settings"><span>◫</span> Dashboard Settings</button>
-    </div>
-    <div class="admin-bottom"><button class="admin-btn" style="flex:1;" onclick="showAdminPage('plugins')">Plugin Manager</button><button class="admin-btn" onclick="ownerLogout()">Logout</button></div>
+      <div class="admin-nav">
+        <div class="nav-group">Dashboard</div>
+        <button class="active" data-admin-page="dashboard"><span>⌂</span> Overview</button>
+        <div class="nav-group">Store</div>
+        <button data-admin-page="products"><span>◇</span> Products</button>
+        <button data-admin-page="categories"><span>◈</span> Categories</button>
+        <button data-admin-page="orders"><span>↗</span> Orders</button>
+        <button data-admin-page="customers"><span>◌</span> Customers</button>
+        <button data-admin-page="sales"><span>◷</span> Sales</button>
+        <button data-admin-page="coupons"><span>%</span> Coupons</button>
+        <div class="nav-group">Storefront</div>
+        <button data-admin-page="home"><span>⌂</span> Homepage</button>
+        <button data-admin-page="shop-settings"><span>▦</span> Shop Page</button>
+        <button data-admin-page="visibility"><span>◐</span> Visibility</button>
+        <button data-admin-page="tools-settings"><span>⚒</span> Tools</button>
+        <div class="nav-group">Content</div>
+        <button data-admin-page="about-settings"><span>◎</span> About</button>
+        <button data-admin-page="contact-settings"><span>✉</span> Contact</button>
+        <button data-admin-page="reviews"><span>★</span> Reviews</button>
+        <div class="nav-group">Settings</div>
+        <button data-admin-page="global-settings"><span>⚙</span> Store Settings</button>
+        <button data-admin-page="license-settings"><span>◈</span> License</button>
+        <button data-admin-page="seo-settings"><span>⌕</span> SEO</button>
+        <button data-admin-page="maintenance"><span>⚠</span> Maintenance Mode</button>
+        <button data-admin-page="activity"><span>◷</span> Activity Log</button>
+      </div>
+    <div class="admin-bottom"><button class="admin-btn" style="flex:1;" onclick="showAdminPage('activity')">Activity Log</button><button class="admin-btn" onclick="ownerLogout()">Logout</button></div>
   </aside>
   <main class="admin-main">
     <header class="admin-top"><div style="display:flex;align-items:center;gap:10px;"><button class="admin-mobile-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle admin menu" title="Menu">☰</button><div><div class="kicker" style="margin-bottom:1px;">↳ private owner area</div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><h2 id="admin-page-title">Dashboard</h2><span class="status-pill" style="background:rgba(232,160,32,.12);color:var(--gold);border-color:rgba(232,160,32,.22);">OWNER VIEW</span></div></div></div><div class="admin-top-right"><button class="admin-btn" onclick="showCustomerView()">Customer View</button><button class="admin-btn" onclick="showAdminPage('activity')">Activity</button><button class="admin-btn gold" onclick="saveActiveSettings()">Save Changes</button></div></header>
@@ -3700,7 +3724,7 @@ html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{dis
       <div class="dashboard-actions-grid">
         <button class="dashboard-action" onclick="showAdminPage('products')"><span class="action-icon">＋</span><span><strong>Add Product</strong><small>Create and publish a new design</small></span><b>→</b></button>
         <button class="dashboard-action" onclick="showAdminPage('sales')"><span class="action-icon">%</span><span><strong>Sales & Offers</strong><small>Manage current promotions</small></span><b>→</b></button>
-        <button class="dashboard-action" onclick="showAdminPage('plugins')"><span class="action-icon">✦</span><span><strong>Plugins</strong><small>Manage installed extensions</small></span><b>→</b></button>
+        
       </div>
     </div>
 
@@ -3749,14 +3773,14 @@ html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{dis
     <div class="admin-head-actions"><button type="button" class="admin-btn gold" onclick="saveActiveSettings()">Save Home Changes</button><button type="button" class="admin-btn" onclick="resetHomeSettings()">Reset Home</button></div>
   </div>
   <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Homepage controls</h4><p>Each panel below maps to a real part of the customer homepage.</p></div><span class="status-pill">Owner editable</span></div></div>
-  <div class="admin-panel"><h4>Announcement Bar</h4><p>Control the top announcement customers see.</p><div class="toggle-row"><span>Show announcement</span><button class="toggle on" data-setting="announcement.enabled" onclick="toggleCms(this)"><i></i></button></div><div class="admin-two"><div class="form-box"><label>Announcement Text</label><input data-cms="announcement.text" value="Premium digital files for makers • New designs every week"></div><div class="form-box"><label>Destination</label><input data-cms="announcement.link" value="/shop"></div></div></div>
-  <div class="admin-panel"><h4>Hero Section</h4><p>Edit the main message, highlighted line and actions.</p><div class="toggle-row"><span>Show hero</span><button class="toggle on" data-setting="hero.enabled" onclick="toggleCms(this)"><i></i></button></div><div class="form-box"><label>Eyebrow</label><input data-cms="hero.eyebrow" value="Premium files for makers"></div><div class="form-box"><label>Heading</label><textarea data-cms="hero.heading">Designs made for makers.</textarea></div><div class="form-box"><label>Highlighted Text</label><input data-cms="hero.highlight" value="Made to create."></div><div class="form-box"><label>Description</label><textarea data-cms="hero.description">Clean, production-ready SVG and laser-cut designs created for people who love to make.</textarea></div><div class="admin-two"><div class="form-box"><label>Primary Button</label><input data-cms="hero.primary" value="Explore Designs"></div><div class="form-box"><label>Primary URL</label><input data-cms="hero.primaryUrl" value="shop"></div></div><div class="form-box"><label>Free Files Button</label><input data-cms="hero.free" value="View free files"></div></div>
+  <div class="admin-panel"><h4>Announcement Bar</h4><p>Control the top announcement customers see.</p><div class="admin-two"><div class="form-box"><label>Announcement Text</label><input data-cms="announcement.text" value="Premium digital files for makers • New designs every week"></div><div class="form-box"><label>Destination</label><input data-cms="announcement.link" value="/shop"></div></div></div>
+  <div class="admin-panel"><h4>Hero Section</h4><p>Edit the main message, highlighted line and actions.</p><div class="form-box"><label>Eyebrow</label><input data-cms="hero.eyebrow" value="Premium files for makers"></div><div class="form-box"><label>Heading</label><textarea data-cms="hero.heading">Designs made for makers.</textarea></div><div class="form-box"><label>Highlighted Text</label><input data-cms="hero.highlight" value="Made to create."></div><div class="form-box"><label>Description</label><textarea data-cms="hero.description">Clean, production-ready SVG and laser-cut designs created for people who love to make.</textarea></div><div class="admin-two"><div class="form-box"><label>Primary Button</label><input data-cms="hero.primary" value="Explore Designs"></div><div class="form-box"><label>Primary URL</label><input data-cms="hero.primaryUrl" value="shop"></div></div><div class="form-box"><label>Free Files Button</label><input data-cms="hero.free" value="View free files"></div></div>
   <div class="admin-panel"><h4>Homepage Stats</h4><p>Edit the two quick trust points displayed beneath the hero.</p><div class="admin-two"><div class="form-box"><label>Stat 1 value</label><input data-cms="stat1.value" value="Instant"></div><div class="form-box"><label>Stat 1 label</label><input data-cms="stat1.label" value="digital download"></div></div><div class="admin-two"><div class="form-box"><label>Stat 2 value</label><input data-cms="stat2.value" value="Cut-ready"></div><div class="form-box"><label>Stat 2 label</label><input data-cms="stat2.label" value="SVG · PNG · DXF"></div></div></div>
-  <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Featured Designs</h4><p>Control the heading and supporting copy above the product grid.</p></div><button class="toggle on" data-setting="section.featured" onclick="toggleCms(this)"><i></i></button></div><div class="admin-two"><div class="form-box"><label>Kicker</label><input data-cms="featured.kicker" value="Featured designs"></div><div class="form-box"><label>Heading</label><input data-cms="featured.heading" value="Handpicked this week"></div></div><div class="form-box"><label>Description</label><textarea data-cms="featured.description">A curated selection of premium designs ready for your next project.</textarea></div></div>
-  <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Tools Section</h4><p>Control the homepage tools section heading. Tool cards are managed separately in Tools Settings.</p></div><button class="toggle on" data-setting="section.tools" onclick="toggleCms(this)"><i></i></button></div><div class="admin-two"><div class="form-box"><label>Kicker</label><input data-cms="home.tools.kicker" value="On the roadmap"></div><div class="form-box"><label>Heading</label><input data-cms="home.tools.heading" value="Studio tools we're building"></div></div></div>
+  <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Featured Designs</h4><p>Control the heading and supporting copy above the product grid.</p></div><span class="status-pill off" title="Show/hide switches live in Storefront &rsaquo; Visibility">Visibility &rsaquo;</span></div><div class="admin-two"><div class="form-box"><label>Kicker</label><input data-cms="featured.kicker" value="Featured designs"></div><div class="form-box"><label>Heading</label><input data-cms="featured.heading" value="Handpicked this week"></div></div><div class="form-box"><label>Description</label><textarea data-cms="featured.description">A curated selection of premium designs ready for your next project.</textarea></div></div>
+  <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Tools Section</h4><p>Control the homepage tools section heading. Tool cards are managed separately in Tools Settings.</p></div><span class="status-pill off" title="Show/hide switches live in Storefront &rsaquo; Visibility">Visibility &rsaquo;</span></div><div class="admin-two"><div class="form-box"><label>Kicker</label><input data-cms="home.tools.kicker" value="On the roadmap"></div><div class="form-box"><label>Heading</label><input data-cms="home.tools.heading" value="Studio tools we're building"></div></div></div>
   <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Sales Banner</h4><p>The actual sale and countdown are managed in Sales. These fields control fallback homepage copy only.</p></div><span class="status-pill off">Sales controls pricing</span></div><div class="admin-two"><div class="form-box"><label>Fallback Kicker</label><input data-cms="sale.kicker" value="Limited time"></div><div class="form-box"><label>Fallback Title</label><input data-cms="sale.title" value="Studio Sale"></div></div><div class="form-box"><label>Fallback Description</label><textarea data-cms="sale.description">Save on selected designs before the timer ends.</textarea></div></div>
-  <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Final CTA</h4><p>Control the final conversion section at the bottom of Home.</p></div><button class="toggle on" data-setting="section.cta" onclick="toggleCms(this)"><i></i></button></div><div class="form-box"><label>Heading</label><textarea data-cms="home.cta.heading">Your next great design is already here</textarea></div><div class="form-box"><label>Description</label><textarea data-cms="home.cta.description">Browse premium SVG files. Download instantly and create with confidence.</textarea></div><div class="admin-two"><div class="form-box"><label>Primary Button</label><input data-cms="home.cta.primary" value="Start browsing free →"></div><div class="form-box"><label>Primary URL</label><input data-cms="home.cta.primaryUrl" value="shop"></div></div></div>
-  <div class="admin-panel"><h4>Homepage Visibility</h4><p>Use these switches to show or hide major sections. Product data is never deleted by hiding a section.</p><div class="admin-four"><div class="toggle-row"><span>Announcement</span><button class="toggle on" data-setting="announcement.enabled" onclick="toggleCms(this)"><i></i></button></div><div class="toggle-row"><span>Hero</span><button class="toggle on" data-setting="hero.enabled" onclick="toggleCms(this)"><i></i></button></div><div class="toggle-row"><span>Featured</span><button class="toggle on" data-setting="section.featured" onclick="toggleCms(this)"><i></i></button></div><div class="toggle-row"><span>Tools</span><button class="toggle on" data-setting="section.tools" onclick="toggleCms(this)"><i></i></button></div><div class="toggle-row"><span>CTA</span><button class="toggle on" data-setting="section.cta" onclick="toggleCms(this)"><i></i></button></div></div></div>
+  <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Final CTA</h4><p>Control the final conversion section at the bottom of Home.</p></div><span class="status-pill off" title="Show/hide switches live in Storefront &rsaquo; Visibility">Visibility &rsaquo;</span></div><div class="form-box"><label>Heading</label><textarea data-cms="home.cta.heading">Your next great design is already here</textarea></div><div class="form-box"><label>Description</label><textarea data-cms="home.cta.description">Browse premium SVG files. Download instantly and create with confidence.</textarea></div><div class="admin-two"><div class="form-box"><label>Primary Button</label><input data-cms="home.cta.primary" value="Start browsing free →"></div><div class="form-box"><label>Primary URL</label><input data-cms="home.cta.primaryUrl" value="shop"></div></div></div>
+
   <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Save behaviour</h4><p>Changes are stored in this browser and applied to the public homepage after saving.</p></div><button type="button" class="admin-btn gold" onclick="saveActiveSettings()">Save Home Changes</button></div></div>
 </section>
 
@@ -3907,11 +3931,16 @@ html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{dis
         </div>
       </section>
       <section class="admin-page" id="admin-page-about-settings"><div class="admin-page-head"><div><h3>About Settings</h3><p>Manage the founder profile and Craftshan Studio story.</p></div></div><div class="admin-panel"><div class="admin-two"><div class="form-box"><label>Founder Name</label><input value="M Kashian Malik"></div><div class="form-box"><label>Brand Name</label><input value="Craftshan Studio"></div></div><div class="form-box"><label>Founder Role</label><input value="Owner & Founder · Digital Designer of LaserCut Files"></div><div class="form-box"><label>Headline</label><input value="One founder. One creative journey."></div><div class="form-box"><label>Brand Story</label><textarea style="min-height:360px;">Craftshan Studio is the personal creative work of M Kashian Malik, founded around a simple belief: good digital design should look clean, feel thoughtful, and be practical for the person who is going to make something with it. The name “Craftshan” combines “Craft”, reflecting crafting and making, with “Shan”, taken from Kashian’s name. While he was a computer science student, Kashian was also steadily developing his design skills outside his studies. In the early days, he worked on a low-end laptop where even opening Adobe Illustrator could take several minutes. Instead of waiting for better equipment, he chose to work with what he had — learning, practising, testing ideas, and improving one design at a time. With continuous support from his father, his setup eventually improved. His close friend Saqib Ahmed, whom he considers like an elder brother, introduced him to design foundations, helped him through early challenges, and encouraged him to keep developing the skill. That journey shaped Craftshan Studio’s focus on practical laser-cut files such as ornaments, earrings, keychains, signs, layered pieces, and other maker-friendly designs. Kashian believes good design starts with thinking, useful ideas, attention to detail, and understanding how a person will actually use the final file. Craftshan Studio continues to grow step by step, guided by consistency, customer feedback, seasonal trends, and a commitment to making clean, dependable designs for makers and crafters.</textarea></div></div></section>
-      <section class="admin-page" id="admin-page-tools-settings"><div class="admin-page-head"><div><h3>Tools Settings</h3><p>Manage the customer-facing tools and connect each tool to a file or a web link.</p></div></div><div class="admin-panel"><div class="admin-two"><div class="form-box"><label>Tools Eyebrow</label><input data-frontend-key="tools.kicker" value="↳ craftshan studio tools"></div><div class="form-box"><label>Tools Heading</label><input data-frontend-key="tools.heading" value="Tools for a smoother making workflow."></div></div><div class="form-box"><label>Tools Introduction</label><textarea data-frontend-key="tools.description">Useful creative utilities for vector preparation, design cleanup, previews, and everyday laser-cutting workflows.</textarea></div><div class="admin-four"><div class="form-box"><label>Tool 1 Name</label><input data-tool-name="1" value="SVG Cleaner"><label style="margin-top:8px;display:block;">Description</label><textarea data-tool-desc="1">Prepare vectors with a cleaner structure and more reliable files for everyday cutting workflows.</textarea><label style="margin-top:8px;display:block;">Status</label><select data-tool-status="1"><option selected>Coming soon</option><option>Planned</option><option>Available</option></select><div class="tools-link-fields"><label>Tool file (optional)</label><input type="file" accept=".html,.htm,.zip,.pdf,.svg,.js,.css,.txt,.png,.jpg,.jpeg,.webp" data-tool-file="1"><div class="tools-file-meta" id="tool-file-meta-1">No file connected.</div><label style="margin-top:8px;display:block;">Or tool link</label><input type="url" placeholder="https://your-tool.example" data-tool-url="1"></div></div><div class="form-box"><label>Tool 2 Name</label><input data-tool-name="2" value="Image to Vector"><label style="margin-top:8px;display:block;">Description</label><textarea data-tool-desc="2">Turn a suitable PNG or JPG reference into a cleaner vector workflow for tracing and laser-cut preparation.</textarea><label style="margin-top:8px;display:block;">Status</label><select data-tool-status="2"><option selected>Coming soon</option><option>Planned</option><option>Available</option></select><div class="tools-link-fields"><label>Tool file (optional)</label><input type="file" accept=".html,.htm,.zip,.pdf,.svg,.js,.css,.txt,.png,.jpg,.jpeg,.webp" data-tool-file="2"><div class="tools-file-meta" id="tool-file-meta-2">No file connected.</div><label style="margin-top:8px;display:block;">Or tool link</label><input type="url" placeholder="https://your-tool.example" data-tool-url="2"></div></div><div class="form-box"><label>Tool 3 Name</label><input data-tool-name="3" value="Design Preview"><label style="margin-top:8px;display:block;">Description</label><textarea data-tool-desc="3">Preview your design cleanly before publishing or using it in a product listing.</textarea><label style="margin-top:8px;display:block;">Status</label><select data-tool-status="3"><option>Coming soon</option><option selected>Planned</option><option>Available</option></select><div class="tools-link-fields"><label>Tool file (optional)</label><input type="file" accept=".html,.htm,.zip,.pdf,.svg,.js,.css,.txt,.png,.jpg,.jpeg,.webp" data-tool-file="3"><div class="tools-file-meta" id="tool-file-meta-3">No file connected.</div><label style="margin-top:8px;display:block;">Or tool link</label><input type="url" placeholder="https://your-tool.example" data-tool-url="3"></div></div><div class="form-box"><label>Tool 4 Name</label><input data-tool-name="4" value="Laser File Checker"><label style="margin-top:8px;display:block;">Description</label><textarea data-tool-desc="4">Check common file details and help spot issues before a design is sent into your cutting workflow.</textarea><label style="margin-top:8px;display:block;">Status</label><select data-tool-status="4"><option>Coming soon</option><option selected>Planned</option><option>Available</option></select><div class="tools-link-fields"><label>Tool file (optional)</label><input type="file" accept=".html,.htm,.zip,.pdf,.svg,.js,.css,.txt,.png,.jpg,.jpeg,.webp" data-tool-file="4"><div class="tools-file-meta" id="tool-file-meta-4">No file connected.</div><label style="margin-top:8px;display:block;">Or tool link</label><input type="url" placeholder="https://your-tool.example" data-tool-url="4"></div></div></div><div class="admin-actions"><button class="btn-gold" type="button" onclick="saveToolLinksAndSettings()">Save Tools Changes</button><button class="btn-outline" type="button" onclick="resetToolLinksAndSettings()">Reset Tools</button></div></div></section>
+      <section class="admin-page" id="admin-page-tools-settings"><div class="admin-page-head"><div><h3>Tools</h3><p>Add, edit, reorder, hide and remove the tools shown on the homepage and the Tools page. Saved in the database and applied to every visitor.</p></div><div class="admin-head-actions"><button type="button" class="admin-btn gold" onclick="openToolEditor(null)">+ Add Tool</button><button type="button" class="admin-btn" onclick="craftshanImportLegacyTools()" title="Copy tool names, descriptions, statuses and links saved in this browser by the old four-slot system into the database">Import from this browser</button></div></div><div class="admin-panel"><h4>Tools page copy</h4><p>Headings shown above the tool list. These are separate from the tools themselves.</p><div class="admin-two"><div class="form-box"><label>Tools Eyebrow</label><input data-frontend-key="tools.kicker" value="↳ craftshan studio tools"></div><div class="form-box"><label>Tools Heading</label><input data-frontend-key="tools.heading" value="Tools for a smoother making workflow."></div></div><div class="form-box"><label>Tools Introduction</label><textarea data-frontend-key="tools.description">Useful creative utilities for vector preparation, design cleanup, previews, and everyday laser-cutting workflows.</textarea></div></div><div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Tool catalog</h4><p>Status describes how finished a tool is. Visibility decides whether customers see it at all. Hiding a tool never deletes it.</p></div><span class="status-pill" id="tools-admin-status">Loading…</span></div><div id="tools-admin-list"></div></div></section>
 
       <section class="admin-page" id="admin-page-contact-settings"><div class="admin-page-head"><div><h3>Contact Settings</h3><p>Manage contact presentation and owner information.</p></div></div><div class="admin-panel"><div class="admin-two"><div class="form-box"><label>Contact Email</label><input value="hello@craftshanstudio.com"></div><div class="form-box"><label>Response Message</label><input value="Thanks — your message has been received. I’ll get back to you by email."></div></div><div class="admin-two"><div class="form-box"><label>Owner / Founder</label><input value="M Kashian Malik"></div><div class="form-box"><label>Studio Role</label><input value="Owner & Founder · Digital Designer of LaserCut Files"></div></div></div></section>
       <section class="admin-page" id="admin-page-footer-settings"><div class="admin-page-head"><div><h3>Footer Settings</h3><p>Control footer columns, links and brand text.</p></div></div><div class="admin-panel"><div class="form-box"><label>Footer Description</label><textarea>Premium digital design files for makers, creators and entrepreneurs.</textarea></div><div class="cms-list"><div class="cms-item"><div class="cms-item-main"><strong>Instagram</strong><small>Social link</small></div><div class="cms-actions"><button>Edit</button></div></div><div class="cms-item"><div class="cms-item-main"><strong>About</strong><small>Footer company link</small></div><div class="cms-actions"><button>Edit</button></div></div></div></div></section>
-      <section class="admin-page" id="admin-page-global-settings"><div class="admin-page-head"><div><h3>Global Settings</h3><p>Control the shared identity and site-wide details used across Craftshan Studio.</p></div></div><div class="admin-panel global-settings-panel"><div class="global-settings-intro"><div class="global-settings-mark">⚙</div><div><strong>Site-wide controls</strong><p>Changes here affect the public storefront where the related information is displayed.</p></div></div><div class="admin-two"><div class="form-box"><label>Website / Brand Name</label><input id="global-brand-name" value="Craftshan Studio"></div><div class="form-box"><label>Customer Support Email</label><input id="global-contact-email" type="email" placeholder="hello@craftshanstudio.com" value="hello@craftshanstudio.com"></div></div><div class="admin-two"><div class="form-box"><label>Instagram</label><input id="global-instagram" placeholder="@craftshanstudio"></div><div class="form-box"><label>TikTok</label><input id="global-tiktok" placeholder="@craftshanstudio"></div></div><div class="admin-four"><div class="form-box"><label>Primary Gold</label><input id="global-gold" type="text" value="#E8A020"></div><div class="form-box"><label>Paper Background</label><input id="global-paper" type="text" value="#FAFAF7"></div><div class="form-box"><label>Ink</label><input id="global-ink" type="text" value="#1C1C1A"></div><div class="form-box"><label>Night Header</label><input id="global-night" type="text" value="#0D0D0D"></div></div><div class="toggle-row"><div><strong style="font-size:.84rem;color:var(--ink);">Maintenance Mode</strong><div style="font-size:.74rem;color:var(--ink3);margin-top:2px;">Hide the public storefront while you work on the site.</div></div><button id="global-maintenance-toggle" class="toggle" onclick="toggleGlobalMaintenance(this)"><i></i></button></div><div class="admin-actions"><button type="button" class="btn-gold" onclick="saveGlobalSettings()">Save Global Settings</button><button type="button" class="btn-outline" onclick="resetGlobalSettings()">Reset</button></div></div></section>
+      <section class="admin-page" id="admin-page-global-settings"><div class="admin-page-head"><div><h3>Global Settings</h3><p>Control the shared identity and site-wide details used across Craftshan Studio.</p></div></div><div class="admin-panel global-settings-panel"><div class="global-settings-intro"><div class="global-settings-mark">⚙</div><div><strong>Site-wide controls</strong><p>Changes here affect the public storefront where the related information is displayed.</p></div></div><div class="admin-two"><div class="form-box"><label>Website / Brand Name</label><input id="global-brand-name" value="Craftshan Studio"></div><div class="form-box"><label>Customer Support Email</label><input id="global-contact-email" type="email" placeholder="hello@craftshanstudio.com" value="hello@craftshanstudio.com"></div></div><div class="admin-two"><div class="form-box"><label>Instagram</label><input id="global-instagram" placeholder="@craftshanstudio"></div><div class="form-box"><label>TikTok</label><input id="global-tiktok" placeholder="@craftshanstudio"></div></div><div class="admin-four"><div class="form-box"><label>Primary Gold</label><input id="global-gold" type="text" value="#E8A020"></div><div class="form-box"><label>Paper Background</label><input id="global-paper" type="text" value="#FAFAF7"></div><div class="form-box"><label>Ink</label><input id="global-ink" type="text" value="#1C1C1A"></div><div class="form-box"><label>Night Header</label><input id="global-night" type="text" value="#0D0D0D"></div></div><div class="admin-actions"><button type="button" class="btn-gold" onclick="saveGlobalSettings()">Save Global Settings</button><button type="button" class="btn-outline" onclick="resetGlobalSettings()">Reset</button></div></div></section>
+      <section class="admin-page" id="admin-page-visibility"><div class="admin-page-head"><div><h3>Storefront Visibility</h3><p>The single place that decides which storefront sections customers can see. Saved in the database and applied to every visitor on every device.</p></div></div>
+  <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Storefront Visibility</h4><p>Show or hide storefront sections. ON = visible to customers, OFF = hidden. These switches save to the database immediately and apply to every visitor on every device. Hiding a section never deletes products, categories, reviews or tools.</p></div><span class="status-pill" id="storefront-visibility-status">Saved in database</span></div><div class="admin-two"><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Announcement bar<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Top strip above the header</small></span><button class="toggle on" data-setting="announcement.enabled" onclick="toggleCms(this)" aria-label="Announcement bar visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Hero section<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Main headline and actions</small></span><button class="toggle on" data-setting="hero.enabled" onclick="toggleCms(this)" aria-label="Hero section visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Featured designs<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Homepage product grid</small></span><button class="toggle on" data-setting="section.featured" onclick="toggleCms(this)" aria-label="Featured designs visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Tools section<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Also hides the Tools nav link and page</small></span><button class="toggle on" data-setting="section.tools" onclick="toggleCms(this)" aria-label="Tools section visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Final CTA<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Closing conversion panel</small></span><button class="toggle on" data-setting="section.cta" onclick="toggleCms(this)" aria-label="Final CTA visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Seasonal / sale banner<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Countdown banner. Sales themselves are unaffected</small></span><button class="toggle on" data-setting="section.seasonal" onclick="toggleCms(this)" aria-label="Seasonal / sale banner visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Free Files<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Hides the hero button and footer link</small></span><button class="toggle on" data-setting="section.freeFiles" onclick="toggleCms(this)" aria-label="Free Files visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Bundles<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Hides the Bundles footer link</small></span><button class="toggle on" data-setting="section.bundles" onclick="toggleCms(this)" aria-label="Bundles visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Category filters<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Homepage pills and the shop sidebar group</small></span><button class="toggle on" data-setting="section.categories" onclick="toggleCms(this)" aria-label="Category filters visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Product reviews<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Reviews panel on product pages</small></span><button class="toggle on" data-setting="section.reviews" onclick="toggleCms(this)" aria-label="Product reviews visibility"><i></i></button></div></div></div>
+      </section>
+      <section class="admin-page" id="admin-page-maintenance"><div class="admin-page-head"><div><h3>Maintenance Mode</h3><p>Take the public storefront offline while you work. Visitors see the Craftshan maintenance page; you keep full access to the Owner Centre while signed in.</p></div></div><div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Public storefront</h4><p>ON hides the shop, cart and checkout from customers. OFF puts the store back online. Saved in the database, so it applies everywhere immediately.</p></div><span class="status-pill">Owner only</span></div><div class="toggle-row"><div><strong style="font-size:.84rem;color:var(--ink);">Maintenance Mode</strong><div style="font-size:.74rem;color:var(--ink3);margin-top:2px;">Hide the public storefront while you work on the site.</div></div><button id="global-maintenance-toggle" class="toggle" onclick="toggleGlobalMaintenance(this)"><i></i></button></div></div>
+      </section>
       <section class="admin-page" id="admin-page-seo-settings">
   <div class="admin-page-head">
     <div><h3>SEO Settings</h3><p>Control the search and social information customers see when Craftshan Studio pages are shared or indexed.</p></div>
@@ -4229,7 +4258,43 @@ function setupShopControls(){
   if(s)s.addEventListener('change',()=>{shopFilters.sort=s.value==='Price: low to high'?'low':s.value==='Price: high to low'?'high':s.value==='Most recent'?'recent':s.value==='Best rated'?'rating':'popular';renderProducts('shop-product-grid');});
 }
 
-function setupHomeFilters(){document.querySelectorAll('#home-filters .pill').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('#home-filters .pill').forEach(x=>x.classList.remove('on'));btn.classList.add('on');homeFilter=btn.dataset.homeFilter||'all';renderProducts('home-product-grid',8);}));}
+/* v50: the Featured filter row is now built from live data, so the click
+   handler is delegated instead of bound to pills that no longer persist. */
+function setupHomeFilters(){
+  const host=document.getElementById('home-filters');
+  if(!host || host.dataset.filtersBound==='1') return;
+  host.dataset.filtersBound='1';
+  host.addEventListener('click',e=>{
+    const btn=e.target.closest('.pill[data-home-filter]');
+    if(!btn) return;
+    homeFilter=btn.dataset.homeFilter||'all';
+    renderProducts('home-product-grid',8);
+  });
+}
+
+/* Builds the Featured filter row from the CURRENT featured product pool.
+   Categories come from CRAFTSHAN_CATEGORIES (loaded from Supabase), so a
+   category deleted in the database can never reappear here. A pill is only
+   offered when it actually matches at least one featured product, which is
+   what stops the row from producing "No designs found". */
+function renderHomeFilters(pool){
+  const host=document.getElementById('home-filters');
+  if(!host) return;
+  const list=Array.isArray(pool)?pool:[];
+  const options=[];
+  CRAFTSHAN_CATEGORIES.forEach(c=>{ if(list.some(p=>p.cat===c)) options.push({key:c,label:c}); });
+  if(list.some(p=>p.free)) options.push({key:'free',label:'Free files'});
+  if(list.some(p=>/bundle|pack|set|collection/i.test(p.name))) options.push({key:'bundle',label:'Bundles'});
+
+  // Drop a selection that no longer exists in the pool.
+  if(homeFilter!=='all' && !options.some(o=>o.key===homeFilter)) homeFilter='all';
+
+  // Fewer than two real choices makes the row meaningless — hide it.
+  if(options.length<2){ host.innerHTML=''; host.style.display='none'; return; }
+  host.style.display='';
+  host.innerHTML=`<button class="pill${homeFilter==='all'?' on':''}" type="button" data-home-filter="all">All files</button>`+
+    options.map(o=>`<button class="pill${homeFilter===o.key?' on':''}" type="button" data-home-filter="${escapeHtml(o.key)}">${escapeHtml(o.label)}</button>`).join('');
+}
 
 function renderProducts(containerId, limit) {
   const container = document.getElementById(containerId);
@@ -4238,10 +4303,25 @@ function renderProducts(containerId, limit) {
   if (containerId === 'shop-product-grid') {
     items = filterProducts(PRODUCTS, shopFilters);
   } else {
+    /* v49: Featured Designs is driven by products.featured — the owner's
+       Featured / Not Featured control now actually decides what appears here.
+       Publication is already enforced by RLS (a draft never reaches PRODUCTS);
+       the status check is belt-and-braces for the local fallback array.
+       Ordering keeps the existing popularity sort, applied AFTER filtering. */
+    const featuredPool = PRODUCTS.filter(p => p.featured === true && p.status !== 'draft');
+    // Rebuild the filter row first so homeFilter is normalised before use.
+    if (containerId === 'home-product-grid') renderHomeFilters(featuredPool);
     const base = homeFilter && homeFilter !== 'all'
-      ? filterProducts(PRODUCTS, homeFilter === 'free' ? {free:true,sort:'popular'} : homeFilter === 'bundle' ? {bundle:true,sort:'popular'} : {category:homeFilter,sort:'popular'})
-      : [...PRODUCTS];
+      ? filterProducts(featuredPool, homeFilter === 'free' ? {free:true,sort:'popular'} : homeFilter === 'bundle' ? {bundle:true,sort:'popular'} : {category:homeFilter,sort:'popular'})
+      : [...featuredPool];
     items = base.slice().sort((a,b)=>productPopularity(b)-productPopularity(a));
+    /* Nothing featured -> collapse the whole section rather than leaving an
+       empty grid. A class, not an inline style, so the Step 4 storefront
+       visibility rule stays the single authority on hiding this section. */
+    if (containerId === 'home-product-grid') {
+      const section = document.getElementById('home-section-featured');
+      if (section) section.classList.toggle('craftshan-featured-empty', featuredPool.length === 0);
+    }
   }
   if (limit) items = items.slice(0, limit);
   renderProductList(containerId, items, null);
@@ -4449,6 +4529,24 @@ function renderCart() {
 ═══════════════════ */
 let checkoutItems = [];
 
+/* v47: `checkoutItems` is deliberately set to null when the Cart page opens.
+   That null is a sentinel meaning "there is no explicit checkout selection —
+   re-derive it from the cart", which is why showPage() used to do
+   `renderCheckout(checkoutItems || cart)`. The sentinel itself is fine; the bug
+   was that startPaidCheckout(), completeFreeCheckout() and removeFromCheckout()
+   all assumed an array, so reaching Checkout without going through
+   openCheckout() threw a TypeError.
+
+   This resolves the sentinel into a real array at the moment it is needed.
+   Note it copies the cart items rather than aliasing the cart array, which is
+   what keeps "remove from checkout" from touching the real cart.
+   Replacing the sentinel with [] would NOT work: [] is truthy, so the old
+   `|| cart` fallback would render an empty checkout instead of the cart. */
+function ensureCheckoutItems(){
+  if (!Array.isArray(checkoutItems)) checkoutItems = cart.map(item => ({ ...item }));
+  return checkoutItems;
+}
+
 function renderCheckout(items = checkoutItems) {
   const list = Array.isArray(items) ? items : [];
   const el = document.getElementById('checkout-items');
@@ -4546,7 +4644,7 @@ function renderCheckout(items = checkoutItems) {
 }
 
 async function startPaidCheckout(){
-  if (!checkoutItems.length) { showToast('Your checkout is empty.'); return; }
+  if (!ensureCheckoutItems().length) { showToast('Your checkout is empty.'); return; }
   if (typeof craftshanSupabase === 'undefined') { showToast('Checkout service is unavailable right now.'); return; }
   const {data:{session}} = await craftshanSupabase.auth.getSession();
   if (!session) {
@@ -4575,7 +4673,7 @@ async function startPaidCheckout(){
 let pendingPaidCheckout = false;
 
 async function completeFreeCheckout(){
-  if (!checkoutItems.length) { showToast('Your checkout is empty.'); return; }
+  if (!ensureCheckoutItems().length) { showToast('Your checkout is empty.'); return; }
   if (typeof craftshanSupabase === 'undefined') { showToast('Account service is unavailable right now.'); return; }
   const {data:{session}} = await craftshanSupabase.auth.getSession();
   if (!session) {
@@ -4612,7 +4710,7 @@ let pendingFreeCheckout = false;
 
 function removeFromCheckout(id) {
 
-  checkoutItems = checkoutItems.filter(
+  checkoutItems = ensureCheckoutItems().filter(
     c => String(c.id) !== String(id)
   );
 
@@ -4930,7 +5028,9 @@ function showPage(name) {
   const nl = document.getElementById('nl-' + name);
   if (nl) nl.classList.add('active');
   if (name === 'cart') { checkoutItems = null; renderCart(); }
-  if (name === 'checkout') renderCheckout(checkoutItems || cart);
+  // v47: resolve the sentinel here so checkoutItems is a real array for every
+  // consumer the moment the Checkout page is on screen.
+  if (name === 'checkout') renderCheckout(ensureCheckoutItems());
   if (name === 'wishlist') renderWishlist();
   if (name === 'account') switchAccountTab('overview',null);
   if (name === 'home' && typeof updateSaleBanner === 'function') updateSaleBanner();
@@ -5327,7 +5427,7 @@ function showAdminPage(name){
   document.querySelectorAll('.admin-page').forEach(p=>p.classList.remove('active'));
   const p=document.getElementById('admin-page-'+name); if(p)p.classList.add('active');
   document.querySelectorAll('.admin-nav button').forEach(b=>b.classList.toggle('active',b.dataset.adminPage===name));
-  const labels={dashboard:'Dashboard',frontend:'Frontend',home:'Home Settings','shop-settings':'Shop Settings','about-settings':'About Settings','tools-settings':'Tools Settings','license-settings':'License Settings','contact-settings':'Contact Settings','footer-settings':'Footer Settings','global-settings':'Global Settings','seo-settings':'SEO Settings',products:'Products',categories:'Categories',orders:'Orders',customers:'Customers',reviews:'Reviews',coupons:'Coupons',plugins:'Plugins',integrations:'Integrations',activity:'Activity Log','dashboard-settings':'Dashboard Settings'};
+  const labels={dashboard:'Dashboard',frontend:'Frontend',products:'Products',categories:'Categories',orders:'Orders',customers:'Customers',sales:'Sales',coupons:'Coupons',home:'Homepage','shop-settings':'Shop Page',visibility:'Storefront Visibility','tools-settings':'Tools','about-settings':'About','contact-settings':'Contact',reviews:'Reviews','global-settings':'Store Settings','license-settings':'License','seo-settings':'SEO',maintenance:'Maintenance Mode',activity:'Activity Log','footer-settings':'Footer Settings',plugins:'Plugins',integrations:'Integrations','dashboard-settings':'Dashboard Settings'};
   document.getElementById('admin-page-title').textContent=labels[name]||name; if(name==='coupons'){try{renderAdminCoupons();}catch(e){console.error(e)}} if(name==='sales'){try{renderAdminSales();}catch(e){console.error(e)}} if(name==='orders'){try{loadOwnerOrders();}catch(e){console.error('Orders load failed:',e)}} if(name==='customers'){try{loadOwnerCustomers();}catch(e){console.error('Customers load failed:',e)}} if(name==='categories'){try{renderAdminCategories();}catch(e){console.error('Categories load failed:',e)}} if(name==='products'){try{renderAdminProducts();}catch(e){console.error('Products render failed:',e)}}
 }
 document.querySelectorAll('.admin-nav button[data-admin-page]').forEach(btn=>btn.addEventListener('click',()=>{const target=btn.dataset.adminPage;showAdminPage(target);closeAdminSidebar();document.getElementById('admin-content')?.scrollTo?.(0,0);const ac=document.querySelector('.admin-content');if(ac)ac.scrollTop=0;}));
@@ -5336,13 +5436,16 @@ const SECTION_TARGETS={'section.featured':'home-section-featured','section.tools
 function safeLocalStorageSet(key,value){ try{ localStorage.setItem(key,value); return true; }catch(e){ console.warn('Storage unavailable, changes kept in memory only for this session.'); return false; } }
 function safeLocalStorageGet(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } }
 function toggleCms(btn){
+  /* v45: section visibility now lives in Supabase store_settings['storefront'].
+     Any toggle that maps to a storefront section is handed to that controller
+     so there is exactly one source of truth instead of two competing ones. */
+  if(typeof craftshanIsVisibilityToggle==='function' && craftshanIsVisibilityToggle(btn)){
+    craftshanToggleVisibility(btn);
+    return;
+  }
   btn.classList.toggle('on');
   try{ syncHomePreview(); }catch(e){}
   const on=btn.classList.contains('on');
-  const setting=btn.dataset.setting;
-  if(setting==='announcement.enabled'){ const bar=document.getElementById('home-announcement-bar'); if(bar) bar.style.display=on?'block':'none'; }
-  else if(setting==='hero.enabled'){ const el=document.getElementById('home-section-hero'); if(el) el.style.display=on?'':'none'; }
-  else if(SECTION_TARGETS[setting]){ const el=document.getElementById(SECTION_TARGETS[setting]); if(el) el.style.display=on?'':'none'; }
   showAdminToast(on?'Enabled':'Disabled');
 }
 function syncHomePublicText(){
@@ -6305,6 +6408,7 @@ function openProductEditor(id=null){
     document.getElementById('edit-product-badge').value=p.badge||p.chip||'';
     const savedRating=productRating(p);document.getElementById('edit-product-rating').value=savedRating;const rv=document.getElementById('edit-product-rating-visible');if(rv)rv.value=savedRating;const st=document.getElementById('edit-product-status');if(st)st.value=p.status==='draft'?'draft':'published';
     document.getElementById('edit-product-featured').classList.toggle('on',!!p.featured);
+    document.getElementById('edit-product-free')?.classList.toggle('on',!!p.free);
     productThumbnailData=p.thumbnailData||''; productPreviewData=p.previewImage||''; productUploadFiles=(p.files||[]).filter(f=>String(f.ext||f.name?.split('.').pop()||'').toLowerCase()==='zip').slice(0,1).map(f=>({...f}));
     renderProductUploadFiles(); renderProductImagePreviews();
   }else{
@@ -6315,9 +6419,11 @@ function openProductEditor(id=null){
     document.getElementById('edit-product-badge').value='';
     document.getElementById('edit-product-rating').value='4.9';
     document.getElementById('edit-product-featured').classList.remove('on');
+    document.getElementById('edit-product-free')?.classList.remove('on');
   }
   updateProductTitleCounter();
   updateProductPricePreview();
+  try{ craftshanReflectFreeState(); }catch(e){}
   modal.classList.add('open');
   return true;
 }
@@ -6364,6 +6470,23 @@ async function uploadCraftshanProductFile(bucket, file, productId, type) {
 
   return path;
 }
+/* v48: reflects the Free/Paid choice in the editor. A free product is stored
+   at price 0, so the price field is zeroed and disabled while Free is ON.
+   This only changes product state — the free checkout flow, claim_free_product,
+   Lemon Squeezy and secure downloads are all untouched. */
+function craftshanReflectFreeState(){
+  const btn=document.getElementById('edit-product-free');
+  const price=document.getElementById('edit-product-price');
+  const discount=document.getElementById('edit-product-discount');
+  if(!btn||!price) return;
+  const isFree=btn.classList.contains('on');
+  if(isFree){ price.dataset.prevValue=price.value; price.value='0'; }
+  else if(price.value==='0'&&price.dataset.prevValue&&price.dataset.prevValue!=='0'){ price.value=price.dataset.prevValue; }
+  price.disabled=isFree;
+  price.style.opacity=isFree?'.55':'';
+  if(discount){ discount.disabled=isFree; discount.style.opacity=isFree?'.55':''; }
+}
+
 async function saveProductEditor(){
   const visibleRating=document.getElementById('edit-product-rating-visible');
   if(visibleRating)document.getElementById('edit-product-rating').value=visibleRating.value;
@@ -6377,10 +6500,12 @@ async function saveProductEditor(){
   const ratingInput=Number(document.getElementById('edit-product-rating').value)||4.9;
   const status=(document.getElementById('edit-product-status')?.value||'published');
   const featured=document.getElementById('edit-product-featured').classList.contains('on');
+  const isFree=document.getElementById('edit-product-free')?.classList.contains('on')||false;
 
   if(!name){showAdminToast('Title is required');return;}
   if(!cat){showAdminToast('Category is required');return;}
   if(!Number.isFinite(price)||price<0){showAdminToast('Enter a valid price');return;}
+  if(!isFree && price===0){showAdminToast('A paid product needs a price above 0, or mark it as a free download.');return;}
 
   const existingProduct=editingProductId
     ? PRODUCTS.find(x=>Number(x.id)===Number(editingProductId))
@@ -6401,9 +6526,11 @@ async function saveProductEditor(){
     return;
   }
 
-  const calculatedSalePrice=discount>0
-    ? Number((price*(1-discount/100)).toFixed(2))
-    : price;
+  // A free product is stored at 0 so every existing price path stays honest.
+  const effPrice=isFree?0:price;
+  const calculatedSalePrice=isFree?0:(discount>0
+    ? Number((effPrice*(1-discount/100)).toFixed(2))
+    : effPrice);
 
   const zipFile=productUploadFiles[0]?.file||null;
   const zipMeta=zipFile
@@ -6411,10 +6538,10 @@ async function saveProductEditor(){
     : {zipFileName:existingProduct?.zipFileName||'',zipFileSize:existingProduct?.zipFileSize||0};
 
   const localData={
-    name,cat,price,salePrice:calculatedSalePrice,discountPercent:discount,badge,
+    name,cat,price:effPrice,salePrice:calculatedSalePrice,discountPercent:discount,badge,
     chip:badge ? (String(badge).toLowerCase().includes('sale')?'hot':'new') : '',
     rating:clampRating(ratingInput),description,thumbnailData:productThumbnailData,
-    previewImage:productPreviewData,status,featured,
+    previewImage:productPreviewData,status,featured,free:isFree,
     createdAtScore:existingProduct?.createdAtScore||Date.now(),
     files:zipFile?[{name:zipFile.name,size:zipFile.size,type:zipFile.type||'application/zip',ext:'zip'}]:(existingProduct?.files||[]),
     ...zipMeta
@@ -6436,7 +6563,7 @@ async function saveProductEditor(){
       name,
       slug:`${name.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}-${Date.now()}`,
       category_id:category.id,
-      price,
+      price:effPrice,
       sale_price:calculatedSalePrice,
       discount_percent:discount,
       badge:badge||'',
@@ -6444,7 +6571,10 @@ async function saveProductEditor(){
       description,
       status:status==='draft'?'draft':'published',
       featured,
-      free:price===0,
+      // v48: `free` is now an explicit owner control, not inferred from the
+      // price. `is_free` is a dead duplicate column and is deliberately left
+      // untouched so no second source of truth is created.
+      free:isFree,
       zip_file_name:zipMeta.zipFileName,
       zip_file_size:zipMeta.zipFileSize,
       updated_at:new Date().toISOString()
@@ -6954,9 +7084,14 @@ function renderAdminProducts(){
      <strong>${escapeHtml(p.name)}</strong>
      <small>${p.free?'Free':'$'+getProductPricing(p).salePrice.toFixed(2)}${getProductPricing(p).isOnSale?` • ${getProductPricing(p).discountPercent}% OFF`:''} • ${escapeHtml(p.cat)} • ZIP ${p.zipFileSize?formatBytes(p.zipFileSize):'not uploaded'}</small>
    </div>
-   <span class="status-pill">${p.status==='draft'?'Draft':'Published'}</span>
+   <span class="status-pill${p.status==='draft'?' off':''}">${p.status==='draft'?'Draft':'Published'}</span>
+   <span class="status-pill${p.free?'':' off'}">${p.free?'Free':'Paid'}</span>
+   <span class="status-pill${p.featured?'':' off'}">${p.featured?'Featured':'Not featured'}</span>
    <div class="cms-actions">
      <button type="button" data-product-action="edit" data-product-id="${p.id}">Edit</button>
+     <button type="button" data-product-action="toggle-published" data-product-id="${p.id}">${p.status==='draft'?'Publish':'Unpublish'}</button>
+     <button type="button" data-product-action="toggle-free" data-product-id="${p.id}">${p.free?'Make paid':'Make free'}</button>
+     <button type="button" data-product-action="toggle-featured" data-product-id="${p.id}">${p.featured?'Unfeature':'Feature'}</button>
      <button type="button" data-product-action="preview" data-product-id="${p.id}">Preview</button>
 
    </div>
@@ -6989,6 +7124,49 @@ async function performProductAction(action, id) {
     if (action === 'preview') {
       previewAdminProduct(productId);
       return true;
+    }
+
+    /* v48: one-click product state changes, writing the real columns.
+       RLS ("Owner can manage products", is_owner()) is what authorises these —
+       the buttons only send the request. Product delete is untouched and still
+       requires its own confirmation. */
+    if (action === 'toggle-published' || action === 'toggle-free' || action === 'toggle-featured') {
+      if (typeof craftshanSupabase === 'undefined' || !product.supabase_id) {
+        showAdminToast('This product is not linked to the database yet.');
+        return false;
+      }
+      let patch, label;
+      if (action === 'toggle-published') {
+        const next = product.status === 'draft' ? 'published' : 'draft';
+        patch = { status: next };
+        label = next === 'published' ? 'published' : 'unpublished';
+      } else if (action === 'toggle-free') {
+        const next = !product.free;
+        // Keep price consistent with the choice, exactly as the editor does.
+        patch = next ? { free: true, price: 0, sale_price: 0 } : { free: false };
+        label = next ? 'now a free download' : 'now a paid product';
+        if (!next && Number(product.price) === 0) {
+          showAdminToast('Set a price above 0 in Edit before making this product paid.');
+          return false;
+        }
+      } else {
+        const next = !product.featured;
+        patch = { featured: next };
+        label = next ? 'featured' : 'no longer featured';
+      }
+      try {
+        const { error } = await craftshanSupabase.from('products').update(patch).eq('id', product.supabase_id);
+        if (error) throw error;
+        await syncCraftshanProductsFromSupabase();
+        renderAdminProducts();
+        showAdminToast(product.name + ' is ' + label + '.');
+        if (typeof addAdminLog === 'function') addAdminLog('Product "' + product.name + '" ' + label);
+        return true;
+      } catch (err) {
+        console.error('Product state change failed:', err);
+        showAdminToast('Could not update: ' + (err?.message || 'permission denied'));
+        return false;
+      }
     }
 
     if (action === 'delete') {
@@ -7575,6 +7753,12 @@ function loadSavedCmsSettings(){
     Object.entries(saved).forEach(([k,v])=>{
       if(k.startsWith('__toggle:')){
         const setting=k.slice('__toggle:'.length);
+        /* v45: never restore a storefront-visibility toggle from localStorage —
+           Supabase owns those. A stale browser copy must not win. Literal list
+           so this holds regardless of script load order. */
+        if(['announcement.enabled','hero.enabled','section.featured','section.tools','section.cta',
+            'section.seasonal','section.freeFiles','section.bundles','section.categories','section.reviews'
+           ].indexOf(setting) !== -1) return;
         const btn=document.querySelector('.toggle[data-setting="'+setting+'"]');
         if(btn){
           btn.classList.toggle('on',!!v);
@@ -7591,12 +7775,11 @@ function loadSavedCmsSettings(){
 }
 /* Apply whatever toggle states are present in the markup (defaults or loaded) to the live page */
 function applySectionToggleStates(){
-  document.querySelectorAll('.toggle[data-setting]').forEach(btn=>{
-    const setting=btn.dataset.setting; const on=btn.classList.contains('on');
-    if(setting==='announcement.enabled'){ const bar=document.getElementById('home-announcement-bar'); if(bar) bar.style.display=on?'block':'none'; }
-    else if(setting==='hero.enabled'){ const el=document.getElementById('home-section-hero'); if(el) el.style.display=on?'':'none'; }
-    else if(SECTION_TARGETS[setting]){ const el=document.getElementById(SECTION_TARGETS[setting]); if(el) el.style.display=on?'':'none'; }
-  });
+  /* v45: no longer applies section visibility from browser state. Supabase is
+     the source of truth and craftshanApplyVisibility() does the applying, so
+     this legacy pass would only fight it. Kept as a safe no-op because it is
+     still called from the CMS load path. */
+  if(typeof craftshanApplyVisibility==='function'){ craftshanApplyVisibility(); }
 }
 
 loadSavedCmsSettings();
@@ -8114,94 +8297,381 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
 @media(max-width:900px){.tools-open-btn{width:100%;justify-content:center;}}
 </style>
 
-<script id="craftshan-tools-link-manager">
+<script id="craftshan-tools-manager">
+/* ═══ TOOL MANAGEMENT (v46) ═══
+   Replaces the fixed four-slot system. Source of truth: Supabase public.tools.
+   One canonical dataset drives the homepage section, the Tools page and the
+   footer list. Owner writes are authorised by RLS (is_owner()), not by this UI.
+
+   The IndexedDB store from the old system is kept and still resolves a tool
+   whose url is "__file__:N", so any file an owner already connected keeps
+   working. No tool file is ever deleted by this code. */
 (function(){
-  const DB_NAME='craftshan-tool-links-v1', STORE='tools';
-  const defaults={
-    1:{name:'SVG Cleaner',desc:'Prepare vectors with a cleaner structure and more reliable files for everyday cutting workflows.',status:'Coming soon'},
-    2:{name:'Image to Vector',desc:'Turn a suitable PNG or JPG reference into a cleaner vector workflow for tracing and laser-cut preparation.',status:'Coming soon'},
-    3:{name:'Design Preview',desc:'Preview your design cleanly before publishing or using it in a product listing.',status:'Planned'},
-    4:{name:'Laser File Checker',desc:'Check common file details and help spot issues before a design is sent into your cutting workflow.',status:'Planned'}
-  };
-  const KEY='craftshan_tools_links_v1';
-  const state=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){return {};}};
-  const saveState=o=>{try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}};
-  let dbPromise=null, objectUrls={};
-  function db(){if(dbPromise)return dbPromise;dbPromise=new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE,{keyPath:'id'});};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});return dbPromise;}
-  async function putFile(id,file){const d=await db();return new Promise((res,rej)=>{const tx=d.transaction(STORE,'readwrite');tx.objectStore(STORE).put({id,name:file.name,size:file.size,type:file.type||'application/octet-stream',blob:file});tx.oncomplete=res;tx.onerror=()=>rej(tx.error);});}
-  async function getFile(id){const d=await db();return new Promise((res,rej)=>{const tx=d.transaction(STORE,'readonly');const q=tx.objectStore(STORE).get(id);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error);});}
-  async function deleteFile(id){const d=await db();return new Promise((res,rej)=>{const tx=d.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(id);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);});}
-  function esc(v){return String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));}
-  function icon(i){
-    const paths=[
-      '<path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="8"/>',
-      '<path d="M4 6h16M4 12h10M4 18h7"/><path d="m16 15 4 4m0-4-4 4"/>',
-      '<path d="M5 5h14v14H5z"/><path d="M9 9h6v6H9z"/><path d="M3 12h2m14 0h2M12 3v2m0 14v2"/>',
-      '<path d="M7 3h10v4H7z"/><path d="M5 7h14v14H5z"/><path d="M8 11h8M8 15h6"/>'
-    ];
-    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">${paths[(i-1)%paths.length]}</svg>`;
+  const DB_NAME = 'craftshan-tool-links-v1', STORE = 'tools';
+  const LEGACY_KEY = 'craftshan_tools_links_v1';
+  const STATUS_LABEL = { available:'Available', coming_soon:'Coming soon', planned:'Planned', disabled:'Disabled' };
+
+  let tools = [];
+  let objectUrls = {};
+  let dbPromise = null;
+
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  /* ── legacy IndexedDB (files only) ── */
+  function db(){
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise((res, rej) => {
+      const r = indexedDB.open(DB_NAME, 1);
+      r.onupgradeneeded = () => { if (!r.result.objectStoreNames.contains(STORE)) r.result.createObjectStore(STORE, { keyPath:'id' }); };
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+    return dbPromise;
   }
-  function statusClass(status){return String(status||'').toLowerCase().replace(/\s+/g,'-');}
-  function runtimeTarget(cfg,i){return (cfg?.target&&String(cfg.target).indexOf('__file__:')===0)?(objectUrls[i]||''):(cfg?.target||'');}
-  async function resolveObjectUrls(s){
-    for(let i=1;i<=4;i++){
-      if(s[i]?.target==='__file__:'+i){
-        try{const rec=await getFile(i);if(rec?.blob){if(objectUrls[i])URL.revokeObjectURL(objectUrls[i]);objectUrls[i]=URL.createObjectURL(rec.blob);}}catch(e){console.warn('Tool file URL error',e);}
-      }
+  async function getFile(id){
+    try{
+      const d = await db();
+      return await new Promise((res, rej) => {
+        const tx = d.transaction(STORE, 'readonly');
+        const q = tx.objectStore(STORE).get(id);
+        q.onsuccess = () => res(q.result || null);
+        q.onerror = () => rej(q.error);
+      });
+    }catch(e){ return null; }
+  }
+  async function resolveFileUrls(){
+    for (const t of tools){
+      const m = /^__file__:(\d+)$/.exec(t.url || '');
+      if (!m) continue;
+      const slot = Number(m[1]);
+      if (objectUrls[slot]) continue;
+      const rec = await getFile(slot);
+      if (rec && rec.blob) objectUrls[slot] = URL.createObjectURL(rec.blob);
     }
   }
-  function currentTools(){const s=state();return [1,2,3,4].map(i=>({i,cfg:s[i]||defaults[i]})).filter(x=>x.cfg.name||defaults[x.i].name);}
-  function openTool(i){
-    const s=state(),cfg=s[i]||defaults[i],target=runtimeTarget(cfg,i);
-    if(target) window.open(target,'_blank','noopener,noreferrer');
-    else if(typeof showAdminToast==='function') showAdminToast('This tool is not connected yet.');
+  function runtimeUrl(t){
+    const m = /^__file__:(\d+)$/.exec(t.url || '');
+    return m ? (objectUrls[Number(m[1])] || '') : (t.url || '');
   }
-  function renderHomeTools(){
-    const grid=document.getElementById('home-tools-grid'); if(!grid)return;
-    grid.innerHTML=currentTools().map(({i,cfg})=>`<div class="tool-card" data-tool-index="${i}" onclick="openCraftshanTool(${i})"><div class="tool-icon-wrap">${icon(i)}</div><div class="tool-name">${esc(cfg.name||defaults[i].name)}</div><p class="tool-desc">${esc(cfg.desc||defaults[i].desc)}</p><span class="tool-pill ${statusClass(cfg.status)}">${esc(cfg.status||defaults[i].status)}</span></div>`).join('');
+
+  /* ── shared state ── */
+  const storefrontToolsOn = () =>
+    typeof craftshanStorefrontSettings !== 'function' || craftshanStorefrontSettings().tools !== false;
+
+  // Visible to the public: visibility flag first, then the storefront Tools
+  // switch. Status never hides a tool — it only changes how it presents.
+  const publicTools = () => (storefrontToolsOn() ? tools.filter(t => t.visible) : []);
+  const isOpenable = t => t.status === 'available' && !!runtimeUrl(t);
+
+  function iconMarkup(t){
+    const ic = String(t.icon || '').trim();
+    return ic ? esc(ic) : '◇';
   }
+
+  /* ── public rendering ── */
+  function renderHome(){
+    const grid = document.getElementById('home-tools-grid');
+    if (!grid) return;
+    const list = publicTools();
+    grid.innerHTML = list.map(t => {
+      const st = STATUS_LABEL[t.status] || t.status;
+      const dis = t.status === 'disabled';
+      return `<div class="tool-card${dis ? ' is-disabled' : ''}"${isOpenable(t) ? ` onclick="openCraftshanTool('${esc(t.id)}')" role="button" tabindex="0"` : ''}>
+        <div class="tool-icon-wrap" aria-hidden="true">${iconMarkup(t)}</div>
+        <div class="tool-name">${esc(t.name)}</div>
+        <p class="tool-desc">${esc(t.description)}</p>
+        <span class="tool-pill ${esc(t.status)}">${esc(st)}</span>
+      </div>`;
+    }).join('');
+    const band = document.getElementById('home-section-tools');
+    if (band) band.dataset.toolCount = String(list.length);
+  }
+
   function renderToolsPage(){
-    const grid=document.getElementById('tools-page-grid'); if(!grid)return;
-    grid.innerHTML=currentTools().map(({i,cfg})=>{
-      const status=cfg.status||defaults[i].status;
-      const isAvailable=String(status).toLowerCase()==='available';
-      const hasTarget=!!runtimeTarget(cfg,i);
-      const statusMarkup=isAvailable
-        ? ''
-        : `<span class="tools-page-status">${esc(status)}</span>`;
-      const openMarkup=isAvailable && hasTarget
-        ? `<button type="button" class="tools-open-btn" data-tool-open="${i}" onclick="openCraftshanTool(${i});event.stopPropagation();">Open Tool <span aria-hidden="true">↗</span></button>`
+    const grid = document.getElementById('tools-page-grid');
+    if (!grid) return;
+    const list = publicTools();
+    if (!list.length){
+      // When the whole Tools section is switched off there should be nothing
+      // here at all — not even an empty-state card. The "no tools yet" message
+      // is only for a genuinely empty catalog.
+      grid.innerHTML = storefrontToolsOn()
+        ? `<article class="tools-page-card"><div><h3>No tools yet</h3><p>Studio tools will appear here as they are released.</p></div></article>`
         : '';
-      return `<article class="tools-page-card"><div class="tools-page-icon">${icon(i)}</div><div><h3>${esc(cfg.name||defaults[i].name)}</h3><p>${esc(cfg.desc||defaults[i].desc)}</p>${statusMarkup}${openMarkup}</div></article>`;
+      return;
+    }
+    grid.innerHTML = list.map(t => {
+      const st = STATUS_LABEL[t.status] || t.status;
+      const open = isOpenable(t);
+      const dis = t.status === 'disabled';
+      return `<article class="tools-page-card${dis ? ' is-disabled' : ''}">
+        <div class="tools-page-icon" aria-hidden="true">${iconMarkup(t)}</div>
+        <div><h3>${esc(t.name)}</h3><p>${esc(t.description)}</p>
+        ${open ? '' : `<span class="tools-page-status">${esc(dis ? 'Unavailable' : st)}</span>`}
+        ${open ? `<button type="button" class="tools-open-btn" onclick="openCraftshanTool('${esc(t.id)}');event.stopPropagation();">Open Tool <span aria-hidden="true">↗</span></button>` : ''}
+        </div></article>`;
     }).join('');
   }
-  function renderFooterTools(){
-    const list=document.getElementById('footer-tools-list'); if(!list)return;
-    list.innerHTML=currentTools().map(({i,cfg})=>`<li><a onclick="openCraftshanTool(${i})">${esc(cfg.name||defaults[i].name)} <em>(${esc(cfg.status||defaults[i].status)})</em></a></li>`).join('');
+
+  function renderFooter(){
+    const list = document.getElementById('footer-tools-list');
+    if (!list) return;
+    list.innerHTML = publicTools().map(t =>
+      `<li><a onclick="openCraftshanTool('${esc(t.id)}')">${esc(t.name)} <em>(${esc(STATUS_LABEL[t.status] || t.status)})</em></a></li>`
+    ).join('');
   }
-  async function apply(){await resolveObjectUrls(state());renderHomeTools();renderToolsPage();renderFooterTools();}
-  async function loadFields(){
-    const s=state();
-    for(let i=1;i<=4;i++){const cfg=s[i]||defaults[i],n=document.querySelector('[data-tool-name="'+i+'"]'),d=document.querySelector('[data-tool-desc="'+i+'"]'),st=document.querySelector('[data-tool-status="'+i+'"]'),u=document.querySelector('[data-tool-url="'+i+'"]'),m=document.getElementById('tool-file-meta-'+i);if(n)n.value=cfg.name||defaults[i].name;if(d)d.value=cfg.desc||defaults[i].desc;if(st)st.value=cfg.status||defaults[i].status;if(u)u.value=cfg.link||'';if(m)m.textContent=cfg.fileName?('Connected file: '+cfg.fileName+' · '+formatBytes(cfg.fileSize||0)):'No file connected.';}
-    await apply();
-  }
-  function formatBytes(n){if(!n)return '0 B';const u=['B','KB','MB','GB'];let i=0,x=n;while(x>=1024&&i<u.length-1){x/=1024;i++;}return (x>=10||i===0?x.toFixed(0):x.toFixed(1))+' '+u[i];}
-  window.openCraftshanTool=function(i){openTool(Number(i));};
-  window.saveToolLinksAndSettings=async function(){
-    const s={};
-    for(let i=1;i<=4;i++){
-      const n=document.querySelector('[data-tool-name="'+i+'"]'),d=document.querySelector('[data-tool-desc="'+i+'"]'),st=document.querySelector('[data-tool-status="'+i+'"]'),u=document.querySelector('[data-tool-url="'+i+'"]'),f=document.querySelector('[data-tool-file="'+i+'"]');
-      const prev=state()[i]||{};
-      s[i]={name:n?.value?.trim()||defaults[i].name,desc:d?.value?.trim()||defaults[i].desc,status:st?.value||defaults[i].status,link:u?.value?.trim()||'',fileName:prev.fileName||'',fileSize:prev.fileSize||0,target:u?.value?.trim()||''};
-      if(f?.files?.[0]){await putFile(i,f.files[0]);s[i].fileName=f.files[0].name;s[i].fileSize=f.files[0].size;s[i].target='__file__:'+i;}
+
+  async function renderPublic(){
+    await resolveFileUrls();
+    renderHome(); renderToolsPage(); renderFooter();
+    /* A visitor already sitting on the Tools page when it gets switched off
+       must not be left there — blocking future navigation is not enough. */
+    if (!storefrontToolsOn()){
+      const page = document.getElementById('page-tools');
+      if (page && page.classList.contains('active')){
+        const home = document.getElementById('page-home');
+        page.classList.remove('active');
+        if (home) home.classList.add('active');
+        if (typeof currentPage !== 'undefined') { try{ currentPage = 'home'; }catch(e){} }
+      }
     }
-    saveState(s);await resolveObjectUrls(s);saveState(s);await apply();
-    if(typeof addAdminLog==='function')addAdminLog('Updated Tools links');if(typeof showAdminToast==='function')showAdminToast('Tools settings saved');
+    if (typeof renderAdminTools === 'function') renderAdminTools();
+  }
+
+  /* A hidden or unavailable tool must not be openable, not merely un-listed. */
+  window.openCraftshanTool = function(id){
+    const t = tools.find(x => String(x.id) === String(id));
+    if (!t || !t.visible || !storefrontToolsOn()){
+      if (typeof showToast === 'function') showToast('That tool is not available right now.');
+      return;
+    }
+    if (t.status !== 'available'){
+      if (typeof showToast === 'function') showToast(`${t.name} — ${STATUS_LABEL[t.status] || t.status}.`);
+      return;
+    }
+    const url = runtimeUrl(t);
+    if (!url){
+      if (typeof showToast === 'function') showToast('This tool is not connected yet.');
+      return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
-  window.resetToolLinksAndSettings=async function(){const current=state();for(let i=1;i<=4;i++){if(current[i]?.fileName)try{await deleteFile(i);}catch(e){}}localStorage.removeItem(KEY);await loadFields();if(typeof showAdminToast==='function')showAdminToast('Tools reset to defaults');};
-  document.addEventListener('change',e=>{const f=e.target.closest('[data-tool-file]');if(f){const i=f.dataset.toolFile,m=document.getElementById('tool-file-meta-'+i);if(m)m.textContent=f.files?.[0]?('Selected: '+f.files[0].name+' · '+formatBytes(f.files[0].size)):'No file selected.';}});
-  document.addEventListener('DOMContentLoaded',()=>loadFields());
-  window.refreshCraftshanTools=apply;
+
+  /* ── load ── */
+  async function load(){
+    if (typeof craftshanSupabase === 'undefined') return false;
+    try{
+      const { data, error } = await craftshanSupabase
+        .from('tools').select('id,name,description,icon,url,status,visible,sort_order')
+        .order('sort_order', { ascending:true }).order('name', { ascending:true });
+      if (error) throw error;
+      tools = Array.isArray(data) ? data : [];
+      await renderPublic();
+      return true;
+    }catch(e){
+      console.warn('Tools load failed:', e);
+      // Fail soft: leave whatever is already rendered rather than blanking the page.
+      if (typeof renderAdminTools === 'function') renderAdminTools(e.message || 'Could not load tools');
+      return false;
+    }
+  }
+  window.craftshanLoadTools = load;
+  window.craftshanTools = () => tools.map(t => Object.assign({}, t));
+  window.craftshanRenderTools = renderPublic;
+
+  /* ── owner: management table ── */
+  window.renderAdminTools = function(errorMessage){
+    const host = document.getElementById('tools-admin-list');
+    const pill = document.getElementById('tools-admin-status');
+    if (!host) return;
+    if (errorMessage){
+      if (pill) pill.textContent = 'Not loaded';
+      host.innerHTML = `<div class="admin-empty-state"><div class="admin-empty-icon">!</div><h4>Could not load tools</h4><p>${esc(errorMessage)}</p><button type="button" class="admin-btn gold" onclick="craftshanLoadTools()">Retry</button></div>`;
+      return;
+    }
+    if (pill) pill.textContent = tools.length + (tools.length === 1 ? ' tool' : ' tools');
+    if (!tools.length){
+      host.innerHTML = `<div class="admin-empty-state"><div class="admin-empty-icon">◇</div><h4>No tools yet</h4><p>Add your first tool to show it on the homepage and Tools page.</p><button type="button" class="admin-btn gold" onclick="openToolEditor(null)">+ Add Tool</button></div>`;
+      return;
+    }
+    const rows = tools.map((t, i) => `<tr>
+      <td><strong>${esc(t.icon || '◇')} ${esc(t.name)}</strong><br><small style="color:var(--ink3);">${esc((t.description || '').slice(0, 70))}${(t.description || '').length > 70 ? '…' : ''}</small>
+        ${t.url ? `<br><small style="color:var(--ink3);font-size:.68rem;">${esc(/^__file__:/.test(t.url) ? 'Connected file (this browser)' : t.url)}</small>` : ''}</td>
+      <td><span class="status-pill${t.status === 'available' ? '' : ' off'}">${esc(STATUS_LABEL[t.status] || t.status)}</span></td>
+      <td><span class="status-pill${t.visible ? '' : ' off'}">${t.visible ? 'Visible' : 'Hidden'}</span></td>
+      <td class="num">${Number(t.sort_order)}
+        <div style="display:flex;gap:4px;margin-top:5px;">
+          <button class="admin-btn" style="padding:2px 8px;font-size:.72rem;" ${i === 0 ? 'disabled' : ''} onclick="moveTool('${esc(t.id)}',-1)" title="Move up">↑</button>
+          <button class="admin-btn" style="padding:2px 8px;font-size:.72rem;" ${i === tools.length - 1 ? 'disabled' : ''} onclick="moveTool('${esc(t.id)}',1)" title="Move down">↓</button>
+        </div></td>
+      <td style="white-space:nowrap;">
+        <button class="admin-btn" style="padding:4px 10px;font-size:.74rem;" onclick="openToolEditor('${esc(t.id)}')">Edit</button>
+        <button class="admin-btn" style="padding:4px 10px;font-size:.74rem;" onclick="toggleToolVisibility('${esc(t.id)}')">${t.visible ? 'Hide' : 'Show'}</button>
+        <button class="admin-btn" style="padding:4px 10px;font-size:.74rem;color:#b42318;" onclick="askDeleteTool('${esc(t.id)}')">Delete</button>
+      </td></tr>`).join('');
+    host.innerHTML = `<div style="overflow:auto"><table class="owner-data-table"><thead><tr>
+      <th>Tool</th><th>Status</th><th>Visibility</th><th>Order</th><th>Actions</th>
+      </tr></thead><tbody>${rows}</tbody></table></div>`;
+  };
+
+  async function persist(fn, okMessage){
+    try{
+      await fn();
+      await load();
+      if (okMessage && typeof showAdminToast === 'function') showAdminToast(okMessage);
+      return true;
+    }catch(e){
+      console.error('Tool write failed:', e);
+      if (typeof showAdminToast === 'function') showAdminToast('Could not save: ' + (e?.message || 'permission denied'));
+      return false;
+    }
+  }
+
+  window.openToolEditor = function(id){
+    const t = id ? tools.find(x => String(x.id) === String(id)) : null;
+    document.getElementById('tool-editor-title').textContent = t ? 'Edit Tool' : 'Add Tool';
+    document.getElementById('edit-tool-id').value = t ? t.id : '';
+    document.getElementById('edit-tool-name').value = t ? t.name : '';
+    document.getElementById('edit-tool-description').value = t ? t.description : '';
+    document.getElementById('edit-tool-icon').value = t ? t.icon : '';
+    document.getElementById('edit-tool-url').value = t ? t.url : '';
+    document.getElementById('edit-tool-status').value = t ? t.status : 'planned';
+    document.getElementById('edit-tool-visible').value = t ? String(!!t.visible) : 'true';
+    document.getElementById('edit-tool-sort').value = t ? Number(t.sort_order) : (tools.length ? Math.max(...tools.map(x => Number(x.sort_order) || 0)) + 1 : 1);
+    const err = document.getElementById('tool-editor-error');
+    if (err){ err.style.display = 'none'; err.textContent = ''; }
+    document.getElementById('tool-editor-modal').classList.add('open');
+  };
+
+  window.saveToolEditor = async function(){
+    const err = document.getElementById('tool-editor-error');
+    const fail = msg => { if (err){ err.textContent = msg; err.style.display = 'block'; } };
+    const id = document.getElementById('edit-tool-id').value || null;
+    const name = document.getElementById('edit-tool-name').value.trim();
+    if (!name) return fail('Tool name is required.');
+    const url = document.getElementById('edit-tool-url').value.trim();
+    if (url && !/^(https?:\/\/|__file__:)/i.test(url)) return fail('Link must start with http:// or https://');
+    const sort = Number(document.getElementById('edit-tool-sort').value);
+    if (!Number.isFinite(sort) || sort < 0) return fail('Sort order must be 0 or higher.');
+
+    const payload = {
+      name,
+      description: document.getElementById('edit-tool-description').value.trim(),
+      icon: document.getElementById('edit-tool-icon').value.trim(),
+      url,
+      status: document.getElementById('edit-tool-status').value,
+      visible: document.getElementById('edit-tool-visible').value === 'true',
+      sort_order: Math.round(sort)
+    };
+    const btn = document.getElementById('tool-editor-save');
+    if (btn){ btn.disabled = true; btn.textContent = 'Saving…'; }
+    const ok = await persist(async () => {
+      if (id){
+        // Edit in place — the row keeps its id, never a duplicate.
+        const { error } = await craftshanSupabase.from('tools').update(payload).eq('id', id);
+        if (error) throw error;
+      } else {
+        const { error } = await craftshanSupabase.from('tools').insert(payload);
+        if (error) throw error;
+      }
+    }, id ? 'Tool updated' : 'Tool added');
+    if (btn){ btn.disabled = false; btn.textContent = 'Save Tool'; }
+    if (ok) closeEditorModal('tool-editor-modal');
+    else fail('The database rejected this change. You must be signed in as the owner.');
+  };
+
+  window.toggleToolVisibility = async function(id){
+    const t = tools.find(x => String(x.id) === String(id));
+    if (!t) return;
+    await persist(async () => {
+      const { error } = await craftshanSupabase.from('tools').update({ visible: !t.visible }).eq('id', id);
+      if (error) throw error;
+    }, t.visible ? `${t.name} is now hidden` : `${t.name} is now visible`);
+  };
+
+  window.moveTool = async function(id, delta){
+    const i = tools.findIndex(x => String(x.id) === String(id));
+    const j = i + delta;
+    if (i < 0 || j < 0 || j >= tools.length) return;
+    const a = tools[i], b = tools[j];
+    // Swap sort_order; if they collide, force a deterministic gap.
+    let av = Number(b.sort_order), bv = Number(a.sort_order);
+    if (av === bv){ av = Number(a.sort_order) + delta; bv = Number(a.sort_order); }
+    await persist(async () => {
+      const r1 = await craftshanSupabase.from('tools').update({ sort_order: av }).eq('id', a.id);
+      if (r1.error) throw r1.error;
+      const r2 = await craftshanSupabase.from('tools').update({ sort_order: bv }).eq('id', b.id);
+      if (r2.error) throw r2.error;
+    }, 'Order updated');
+  };
+
+  window.askDeleteTool = function(id){
+    const t = tools.find(x => String(x.id) === String(id));
+    if (!t) return;
+    document.getElementById('delete-tool-id').value = t.id;
+    document.getElementById('delete-tool-name').textContent = `Delete "${t.name}"?`;
+    const note = document.getElementById('delete-tool-filenote');
+    if (note){
+      if (/^__file__:/.test(t.url || '')){
+        note.textContent = 'This tool points at a file stored in this browser. The tool record will be removed; the file itself is left untouched in browser storage and is not deleted.';
+        note.style.display = 'block';
+      } else { note.style.display = 'none'; note.textContent = ''; }
+    }
+    document.getElementById('tool-delete-modal').classList.add('open');
+  };
+
+  window.confirmDeleteTool = async function(){
+    const id = document.getElementById('delete-tool-id').value;
+    const t = tools.find(x => String(x.id) === String(id));
+    if (!id) return;
+    const ok = await persist(async () => {
+      const { error } = await craftshanSupabase.from('tools').delete().eq('id', id);
+      if (error) throw error;
+    }, t ? `"${t.name}" deleted` : 'Tool deleted');
+    if (ok) closeEditorModal('tool-delete-modal');
+  };
+
+  /* One-time helper: the old four-slot system stored its edits in this
+     browser's localStorage. This copies those values onto the migrated rows.
+     It never deletes the localStorage entry and never touches tool files. */
+  window.craftshanImportLegacyTools = async function(){
+    let legacy = null;
+    try{ legacy = JSON.parse(localStorage.getItem(LEGACY_KEY) || 'null'); }catch(e){}
+    if (!legacy || typeof legacy !== 'object' || !Object.keys(legacy).length){
+      if (typeof showAdminToast === 'function') showAdminToast('Nothing to import — this browser has no saved tool settings.');
+      return;
+    }
+    const NAMES = { 1:'SVG Cleaner', 2:'Image to Vector', 3:'Design Preview', 4:'Laser File Checker' };
+    const STATUS = { 'available':'available', 'coming soon':'coming_soon', 'planned':'planned', 'disabled':'disabled' };
+    let applied = 0;
+    for (let slot = 1; slot <= 4; slot++){
+      const cfg = legacy[slot];
+      if (!cfg) continue;
+      const row = tools.find(t => t.name === (cfg.name || NAMES[slot]) || t.name === NAMES[slot]);
+      if (!row) continue;
+      const patch = {};
+      if (cfg.name && cfg.name !== row.name) patch.name = cfg.name;
+      if (cfg.desc && cfg.desc !== row.description) patch.description = cfg.desc;
+      const st = STATUS[String(cfg.status || '').toLowerCase()];
+      if (st && st !== row.status) patch.status = st;
+      if (cfg.target && cfg.target !== row.url) patch.url = cfg.target;
+      else if (cfg.link && cfg.link !== row.url) patch.url = cfg.link;
+      if (!Object.keys(patch).length) continue;
+      try{
+        const { error } = await craftshanSupabase.from('tools').update(patch).eq('id', row.id);
+        if (error) throw error;
+        applied++;
+      }catch(e){
+        console.error('Legacy tool import failed:', e);
+        if (typeof showAdminToast === 'function') showAdminToast('Import failed: ' + (e?.message || 'permission denied'));
+        return;
+      }
+    }
+    await load();
+    if (typeof showAdminToast === 'function') showAdminToast(applied ? `Imported ${applied} tool${applied === 1 ? '' : 's'} from this browser.` : 'Your browser settings already match the database.');
+  };
+
+  load();
 })();
 </script>
 <script id="craftshan-seo-settings-js">
@@ -8233,6 +8703,168 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
 
 <script>document.addEventListener('DOMContentLoaded',()=>{updateCartBadge();renderCart();});</script>
 
+<!-- ═══ STOREFRONT VISIBILITY CONTROLLER (v45) ═══
+     Source of truth: Supabase store_settings['storefront'].
+     Loaded before the maintenance controller so the single settings read in
+     that controller can hand the storefront row straight to this one. -->
+<script id="craftshan-storefront-visibility">
+(function(){
+  const CACHE_KEY = 'craftshan_storefront_cache';
+  const SETTINGS_KEY = 'storefront';
+
+  /* Owner toggle data-setting  ->  storefront flag. Only sections that really
+     exist on this site are listed. New Arrivals and Newsletter are absent
+     because no such section exists in the markup. */
+  const MAP = {
+    'announcement.enabled': 'announcement',
+    'hero.enabled':         'hero',
+    'section.featured':     'featured',
+    'section.tools':        'tools',
+    'section.cta':          'cta',
+    'section.seasonal':     'seasonal',
+    'section.freeFiles':    'freeFiles',
+    'section.bundles':      'bundles',
+    'section.categories':   'categories',
+    'section.reviews':      'reviews'
+  };
+  window.CRAFTSHAN_VISIBILITY_SETTINGS = MAP;
+
+  const FLAGS = Object.values(MAP);
+  /* Fallback: everything visible. Visibility fails OPEN so a failed request or
+     a corrupt cache can never strip the storefront of its content — the exact
+     opposite of maintenance, which fails closed. */
+  const DEFAULTS = FLAGS.reduce((o,k)=>(o[k]=true,o),{});
+
+  let state = Object.assign({}, DEFAULTS);
+  const root = document.documentElement;
+
+  function normalise(raw){
+    const out = Object.assign({}, DEFAULTS);
+    if (raw && typeof raw === 'object'){
+      FLAGS.forEach(k => { if (raw[k] === false) out[k] = false; });
+    }
+    return out;
+  }
+
+  function apply(){
+    FLAGS.forEach(k => {
+      if (state[k] === false) root.setAttribute('data-sf-' + k, 'off');
+      else root.removeAttribute('data-sf-' + k);
+    });
+    /* The legacy CMS used to write inline display styles on these elements.
+       Clear any leftovers so the attribute rules above are what decides. */
+    ['home-announcement-bar','home-section-hero','home-section-featured',
+     'home-section-tools','home-section-cta','home-sale-banner']
+      .forEach(id => { const el = document.getElementById(id); if (el && el.style.display) el.style.display=''; });
+  }
+
+  function syncToggles(){
+    Object.keys(MAP).forEach(setting => {
+      const on = state[MAP[setting]] !== false;
+      document.querySelectorAll('.toggle[data-setting="'+setting+'"]').forEach(btn => {
+        if (btn.dataset.busy !== '1') btn.classList.toggle('on', on);
+      });
+    });
+  }
+
+  function cacheWrite(){
+    try{ localStorage.setItem(CACHE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  /* Called by the maintenance controller's single settings read. */
+  window.craftshanReceiveStorefrontSettings = function(raw){
+    state = normalise(raw);
+    cacheWrite();
+    apply();
+    syncToggles();
+    /* v46: the Tools switch changes which tools are public, so re-render the
+       tool lists whenever it arrives or changes. */
+    if (typeof craftshanRenderTools === 'function'){
+      try{ craftshanRenderTools(); }catch(e){ console.warn('Tool re-render skipped:', e); }
+    }
+  };
+
+  window.craftshanApplyVisibility = apply;
+  window.craftshanStorefrontSettings = () => Object.assign({}, state);
+  window.craftshanIsVisibilityToggle = btn => !!(btn && MAP[btn.dataset.setting]);
+
+  /* Owner write. RLS ("Owner can manage store settings", is_owner()) is what
+     actually authorises this; the button only sends the request. */
+  window.craftshanToggleVisibility = async function(btn){
+    const setting = btn && btn.dataset.setting;
+    const flag = MAP[setting];
+    if (!flag || btn.dataset.busy === '1') return;
+    const next = !btn.classList.contains('on');
+    const pill = document.getElementById('storefront-visibility-status');
+
+    btn.dataset.busy = '1';
+    btn.style.opacity = '.55';
+    if (pill) pill.textContent = 'Saving…';
+    try{
+      const payload = { key: SETTINGS_KEY, value: Object.assign({}, state, { [flag]: next }) };
+      const { error } = await craftshanSupabase.from('store_settings').upsert(payload, { onConflict:'key' });
+      if (error) throw error;
+      state = normalise(payload.value);
+      cacheWrite();
+      apply();
+      btn.classList.toggle('on', next);
+      if (pill) pill.textContent = 'Saved in database';
+      if (typeof showAdminToast === 'function') showAdminToast((btn.getAttribute('aria-label')||'Section').replace(' visibility','') + (next ? ' is now visible' : ' is now hidden'));
+      if (typeof addAdminLog === 'function') addAdminLog('Storefront visibility: ' + flag + ' -> ' + (next ? 'visible' : 'hidden'));
+    }catch(e){
+      console.error('Storefront visibility save failed:', e);
+      if (pill) pill.textContent = 'Not saved';
+      if (typeof showAdminToast === 'function') showAdminToast('Could not save visibility: ' + (e?.message || 'unknown error'));
+    }finally{
+      btn.dataset.busy = '';
+      btn.style.opacity = '';
+      syncToggles();
+    }
+  };
+
+  /* Disabled sections must not stay reachable through normal navigation. */
+  function gate(name, flag, label){
+    const original = window[name];
+    if (typeof original !== 'function' || original.__sfGated) return;
+    const wrapped = function(){
+      if (state[flag] === false){
+        try{ if (typeof showToast === 'function') showToast(label + ' is not available right now.'); }catch(e){}
+        return;
+      }
+      return original.apply(this, arguments);
+    };
+    wrapped.__sfGated = true;
+    wrapped.__sfOriginal = original;
+    window[name] = wrapped;
+  }
+  gate('showFreeFiles', 'freeFiles', 'Free files');
+  gate('showBundles',   'bundles',   'Bundles');
+
+  // Tools has a dedicated public page; block that route when Tools is hidden.
+  (function(){
+    const original = window.showPage;
+    if (typeof original !== 'function' || original.__sfGated) return;
+    const wrapped = function(name){
+      if (name === 'tools' && state.tools === false){
+        try{ if (typeof showToast === 'function') showToast('Tools are not available right now.'); }catch(e){}
+        return;
+      }
+      return original.apply(this, arguments);
+    };
+    wrapped.__sfGated = true;
+    wrapped.__sfOriginal = original;
+    window.showPage = wrapped;
+  })();
+
+  // Paint from cache immediately; the server read replaces this shortly after.
+  try{
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (cached) { state = normalise(cached); }
+  }catch(e){}
+  apply();
+})();
+</script>
+
 <!-- ═══ MAINTENANCE MODE CONTROLLER (v44) ═══
      Loaded last so every storefront function it gates is already defined.
      Source of truth: Supabase store_settings['maintenance'].
@@ -8255,11 +8887,20 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
     try{ localStorage.setItem(CACHE_KEY, JSON.stringify({enabled:!!cfg.enabled})); }catch(e){}
   }
 
+  /* v45: ONE settings read serves both maintenance and storefront visibility.
+     The storefront row is handed to the visibility controller rather than
+     costing a second round trip. */
   async function fetchState(){
     const { data, error } = await craftshanSupabase
-      .from('store_settings').select('value').eq('key', SETTINGS_KEY).maybeSingle();
+      .from('store_settings').select('key,value').in('key', [SETTINGS_KEY, 'storefront']);
     if (error) throw error;
-    const v = data?.value || {};
+    const rows = Array.isArray(data) ? data : [];
+    const sf = rows.find(r => r.key === 'storefront');
+    if (sf && typeof window.craftshanReceiveStorefrontSettings === 'function'){
+      try{ window.craftshanReceiveStorefrontSettings(sf.value); }
+      catch(e){ console.warn('Storefront settings apply failed:', e); }
+    }
+    const v = rows.find(r => r.key === SETTINGS_KEY)?.value || {};
     return {
       enabled: v.enabled === true,
       title:   v.title   || DEFAULT_TITLE,
@@ -8298,7 +8939,8 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
   }
   ['showPage','openProduct','addToCart','openCheckout','openCheckoutForItems',
    'startPaidCheckout','completeFreeCheckout','showFreeFiles','showBundles',
-   'submitNavDesignSearch','openQuickSearch','toggleWishlist']
+   'submitNavDesignSearch','openQuickSearch','toggleWishlist',
+   'openCraftshanTool']   // v46: maintenance outranks individual tool access
     .forEach(gate);
 
   function apply(){
