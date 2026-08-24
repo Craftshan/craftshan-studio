@@ -7892,6 +7892,12 @@ document.addEventListener('DOMContentLoaded',()=>{
  window.saveFrontendSectionSettings=function(prefix){const panel=document.querySelector('[data-frontend-panel="'+prefix+'"]')||document.getElementById('admin-page-'+prefix);if(!panel)return;const o=read();panel.querySelectorAll('[data-frontend-key]').forEach(e=>o[e.dataset.frontendKey]=e.value);write(o);apply(o);if(typeof addAdminLog==='function')addAdminLog('Updated frontend content: '+prefix);if(typeof showAdminToast==='function')showAdminToast('Frontend content saved');};
  window.resetFrontendSectionSettings=function(prefix){const panel=document.querySelector('[data-frontend-panel="'+prefix+'"]')||document.getElementById('admin-page-'+prefix);if(!panel)return;const o=read();panel.querySelectorAll('[data-frontend-key]').forEach(e=>{e.value=e.defaultValue||'';delete o[e.dataset.frontendKey];});write(o);apply(o);if(typeof showAdminToast==='function')showAdminToast('Section reset to default');};
  document.addEventListener('DOMContentLoaded',loadFields);
+ /* v51: hooks for the Supabase settings bridge. The engine keeps reading and
+    writing its localStorage object exactly as before — the bridge simply keeps
+    that object in sync with store_settings['content'], which is the authority. */
+ window.craftshanContentKey=KEY;
+ window.craftshanReadContent=read;
+ window.craftshanApplyContent=function(){ loadFields(); };
  document.addEventListener('input',e=>{if(e.target.matches('[data-frontend-key]')){const o=read();o[e.target.dataset.frontendKey]=e.target.value;apply(o);}});
  document.addEventListener('change',e=>{if(e.target.matches('[data-frontend-key]')){const o=read();o[e.target.dataset.frontendKey]=e.target.value;apply(o);}});
 })();
@@ -8703,6 +8709,87 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
 
 <script>document.addEventListener('DOMContentLoaded',()=>{updateCartBadge();renderCart();});</script>
 
+<!-- ═══ SITE SETTINGS BRIDGE (v51) ═══
+     Makes Supabase the authority for the owner's customer-facing content while
+     leaving the existing CMS engines untouched. Each engine keeps reading and
+     writing its own localStorage object; this bridge overwrites that object
+     from store_settings on every load, and pushes it back on every save.
+     localStorage therefore becomes a cache, never the source of truth. -->
+<script id="craftshan-site-settings-bridge">
+(function(){
+  /* store_settings key  ->  the localStorage object it mirrors */
+  const MAP = {
+    content:  'craftshan_frontend_settings_v2',
+    homepage: 'craftshan_home_settings'
+  };
+
+  function lsWrite(k, obj){
+    try{ localStorage.setItem(k, JSON.stringify(obj || {})); return true; }catch(e){ return false; }
+  }
+  function lsRead(k){
+    try{ return JSON.parse(localStorage.getItem(k) || '{}') || {}; }catch(e){ return {}; }
+  }
+
+  /* Called by the single settings read. Server values replace the cache. */
+  window.craftshanReceiveSiteSettings = function(rows){
+    const list = Array.isArray(rows) ? rows : [];
+    let applied = 0;
+    Object.keys(MAP).forEach(key => {
+      const row = list.find(r => r.key === key);
+      if (!row || !row.value || typeof row.value !== 'object') return;
+      // An empty server object means "never saved yet" — keep whatever the
+      // browser already has rather than blanking the site.
+      if (!Object.keys(row.value).length) return;
+      lsWrite(MAP[key], row.value);
+      applied++;
+    });
+    if (!applied) return;
+    // Re-run the existing loaders so the public DOM reflects the server values.
+    try{ if (typeof window.craftshanApplyContent === 'function') window.craftshanApplyContent(); }catch(e){ console.warn('Content re-apply skipped:', e); }
+    try{ if (typeof loadSavedCmsSettings === 'function') loadSavedCmsSettings(); }catch(e){ console.warn('Homepage re-apply skipped:', e); }
+    try{ if (typeof syncHomePublicText === 'function') syncHomePublicText(); }catch(e){}
+  };
+
+  /* Owner write. RLS ("Owner can manage store settings", is_owner()) authorises
+     this; a customer or anonymous visitor is rejected by the database. */
+  window.craftshanPushSiteSetting = async function(key){
+    const lsKey = MAP[key];
+    if (!lsKey || typeof craftshanSupabase === 'undefined') return false;
+    try{
+      const { error } = await craftshanSupabase
+        .from('store_settings')
+        .upsert({ key, value: lsRead(lsKey) }, { onConflict: 'key' });
+      if (error) throw error;
+      if (typeof showAdminToast === 'function') showAdminToast('Saved to the database — every visitor sees this.');
+      return true;
+    }catch(e){
+      console.error('Site settings save failed:', e);
+      if (typeof showAdminToast === 'function') showAdminToast('Saved in this browser only — database rejected it: ' + (e?.message || 'permission denied'));
+      return false;
+    }
+  };
+
+  /* Wrap the existing save entry points. The originals still run first and are
+     never rewritten; the push happens afterwards. */
+  function wrap(name, key){
+    const original = window[name];
+    if (typeof original !== 'function' || original.__craftshanPushes) return;
+    const wrapped = function(){
+      const result = original.apply(this, arguments);
+      Promise.resolve().then(() => window.craftshanPushSiteSetting(key));
+      return result;
+    };
+    wrapped.__craftshanPushes = true;
+    wrapped.__craftshanOriginal = original;
+    window[name] = wrapped;
+  }
+  wrap('saveFrontendSectionSettings', 'content');
+  wrap('resetFrontendSectionSettings', 'content');
+  wrap('saveActiveSettings', 'homepage');
+  wrap('resetHomeSettings', 'homepage');
+})();
+</script>
+
 <!-- ═══ STOREFRONT VISIBILITY CONTROLLER (v45) ═══
      Source of truth: Supabase store_settings['storefront'].
      Loaded before the maintenance controller so the single settings read in
@@ -8892,13 +8979,18 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
      costing a second round trip. */
   async function fetchState(){
     const { data, error } = await craftshanSupabase
-      .from('store_settings').select('key,value').in('key', [SETTINGS_KEY, 'storefront']);
+      .from('store_settings').select('key,value').in('key', [SETTINGS_KEY, 'storefront', 'content', 'homepage']);
     if (error) throw error;
     const rows = Array.isArray(data) ? data : [];
     const sf = rows.find(r => r.key === 'storefront');
     if (sf && typeof window.craftshanReceiveStorefrontSettings === 'function'){
       try{ window.craftshanReceiveStorefrontSettings(sf.value); }
       catch(e){ console.warn('Storefront settings apply failed:', e); }
+    }
+    // v51: hand the content rows to the settings bridge from the same read.
+    if (typeof window.craftshanReceiveSiteSettings === 'function'){
+      try{ window.craftshanReceiveSiteSettings(rows); }
+      catch(e){ console.warn('Site settings apply failed:', e); }
     }
     const v = rows.find(r => r.key === SETTINGS_KEY)?.value || {};
     return {
