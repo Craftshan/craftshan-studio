@@ -5137,7 +5137,7 @@ function updateOwnerDashboardStats(){
   const log=document.getElementById('dashboard-activity-list');
   if(log){let acts=[];try{acts=JSON.parse(localStorage.getItem('craftshan_activity')||'[]')}catch(e){acts=[];}
     if(!acts.length){log.innerHTML='<div class="cms-item"><div class="drag">◷</div><div class="cms-item-main"><strong>No recent activity</strong><small>Your owner actions will appear here.</small></div></div>';}
-    else log.innerHTML=acts.slice(-6).reverse().map(a=>`<div class="cms-item"><div class="drag">◷</div><div class="cms-item-main"><strong>${esc(String(a.action||'Owner action'))}</strong><small>${esc(String(a.time||''))}</small></div></div>`).join('');}
+    else log.innerHTML=acts.slice(-6).reverse().map(a=>`<div class="cms-item"><div class="drag">◷</div><div class="cms-item-main"><strong>${escapeHtml(String(a.action||'Owner action'))}</strong><small>${escapeHtml(String(a.time||''))}</small></div></div>`).join('');}
 }
 
 function showAdminPage(name){
@@ -7286,24 +7286,26 @@ function initCraftshanApp(){
     console.warn('A11y keyboard binding skipped:',e);
   }
 
-  renderProducts('home-product-grid', 8);
-  updateOwnerDashboardStats();
-  loadCustomerProfile();
-  renderProducts('shop-product-grid');
-  renderAdminCategories();
-  renderAdminProducts();
-  setupAdminProductActions();
-  updateWishlistBadge();
-  renderWishlist();
-  renderPlugins();
-  renderActivity();
-  renderOwnerReviews();
-  setupPluginDropzone();
-  setupShopControls();
-  setupHomeFilters();
-  syncOwnerEntry();
-  syncCraftshanProductsFromSupabase();
-  handlePostCheckoutRedirect();
+  const step = (label, fn) => { try { fn(); } catch (e) { console.error(`initCraftshanApp: "${label}" failed —`, e); } };
+
+  step('renderProducts:home', () => renderProducts('home-product-grid', 8));
+  step('updateOwnerDashboardStats', updateOwnerDashboardStats);
+  step('loadCustomerProfile', loadCustomerProfile);
+  step('renderProducts:shop', () => renderProducts('shop-product-grid'));
+  step('renderAdminCategories', renderAdminCategories);
+  step('renderAdminProducts', renderAdminProducts);
+  step('setupAdminProductActions', setupAdminProductActions);
+  step('updateWishlistBadge', updateWishlistBadge);
+  step('renderWishlist', renderWishlist);
+  step('renderPlugins', renderPlugins);
+  step('renderActivity', renderActivity);
+  step('renderOwnerReviews', renderOwnerReviews);
+  step('setupPluginDropzone', setupPluginDropzone);
+  step('setupShopControls', setupShopControls);
+  step('setupHomeFilters', setupHomeFilters);
+  step('syncOwnerEntry', syncOwnerEntry);
+  step('syncCraftshanProductsFromSupabase', syncCraftshanProductsFromSupabase);
+  step('handlePostCheckoutRedirect', handlePostCheckoutRedirect);
 }
 initCraftshanApp();
 
