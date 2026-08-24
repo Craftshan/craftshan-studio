@@ -20,6 +20,13 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Craftshan Studio — Premium SVG Design Files</title>
+<!-- Favicon: the existing Craftshan logo, re-encoded as real 32x32 and 16x16 PNGs.
+     Inlined as data URIs so the icon works on any deployment path (custom domain,
+     GitHub Pages project subpath) with no extra repository files and no 404s.
+     Note: the source logo in the page body is JPEG data mislabelled as image/png;
+     these declarations use the correct type. -->
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,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"/>
+<link rel="icon" type="image/png" sizes="16x16" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAABC2lDQ1BJQ0MgUHJvZmlsZQAAeJyVkLFOwlAUhr+LJILBOMjAwNCBgUWCDsaBCYaGzRRJKE5tKV2gbW5rfAHZGFjZiItvIK/ghomJg5OPQEh0NtdqysLAmb785885/zkgXgCydRj7sTT0ptYz+9rhJwKhOmA5UcjuEvD9nnjfzti/8gM3coA1UJE9sw+iCBS9hKuK7YQbiu/jMAZxrVjeGC0QA6DqbbG9xU4olX8KNMajO7XrLzcF1+92gBxQJsJAp6nuTyzBI1x9wcEs1ew5LCdQ+ki1ygJOHuB5lWrpT0JLWr9SFsgMh7B5gmMTTl/h6Pb/ETuyqXlldAICPEa4aLTxcaihcUGdcy5/AKbWPz8bOFjoAAACiUlEQVR42i3OT2hUVxgF8PN99973Jm8yGX2J0GTUIlpE0OhKu9BuuknTulJXLmpFkaykpRAXCoI7cSPiH9y0KHThRrAtLd2UdFFSEAqiIv7BxsSSwJg0mZnM3Hff/b4uxrM5nNXvkMRIzDF0yrXXRAwiAgCA+gFABFC2GTaDCqlqb+nh8ux5+GXjHBsDcJJYY60SO2eJmZkp3cg7zlJ9nCV0Vv66KK031qVETGRG8gGbpOySWp6BLbFll8AvxlfXtVznsjWv/p2r5sRUzdKRkeofT7ufn3sy8e2jmb9blTxLslSVYGrq/9PekgVAbECUpm7hXbx848WdX5f6xz+dmv3y8NYLp3ZuGUlKX4IYCgsiYq6kptmSz6afvm363durMUJBzvF3D+Z+nFl8+P3BRm56RbRQSwQ2JnE2xPi26U9+0bh6bs/Br/5kpt9vHno+tza/2BlMKYQoQgpYgIwxbIxzYKLBzCUbBrZ+kBmmSoX37tu4l+vFUqfnS1WCoi+wMSxQZvzbLEB86cwuVaWUbt99+WyuffZoY3iQfFBV6QusxGlK+ZD74Zf51RNh6sg2QKavPf5pZrFSdacnN+UDJpaqfcFYG4RGN1V+vvrxlbuvZh+v3Lr/D4Bnc53jk41vjjUauV3vFqoEqAWIjTHGiJjxj4ZuTo/f+21hqGqh2lzpHvlkuJbqastDShGGqgUBILAhaK9dtNthYn8+lBmJcXk1WWv7WIhKFFGRUgGmgTFOcy3WRESl3JBxvYoQfAi+nqFeESnLGDV0VygdttUxJpvZnV9rOhrLIFGKUHofJYpG8T4WQUUhUWxtW37ggkkGSSSCWMuuri8oCABUVbXf7yfU1j40LlOR/wGzfEBY5f9Q5gAAAABJRU5ErkJggg=="/>
 <meta name="description" content="Craftshan Studio designs clean, production-ready SVG and laser-cut files for Cricut, Silhouette, laser cutting, and creative projects. Instant digital download with clear licensing."/>
 <meta property="og:title" content="Craftshan Studio — Premium SVG Design Files"/>
 <meta property="og:description" content="Clean, production-ready SVG and laser-cut design files for makers. Instant digital download with clear licensing."/>
@@ -1345,9 +1352,6 @@ input,select,textarea{min-width:0;}
 </style>
 
 
-<style>
-.media-head-actions{display:flex;gap:8px;align-items:center}.media-upload-btn{position:relative;overflow:hidden}.media-upload-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}.media-library-wrap{background:#fff;border:1px solid var(--border);border-radius:22px;padding:20px;box-shadow:var(--shadow)}.media-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 150px auto;gap:10px;align-items:center;margin-bottom:16px}.media-search{display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--paper);border-radius:11px;padding:0 12px;height:42px}.media-search span{color:var(--gold);font-size:1rem}.media-search input{border:0;outline:0;background:transparent;width:100%;font-size:.8rem}.media-storage-note{font-size:.72rem;color:var(--ink3);text-align:right}.media-dropzone{border:1.5px dashed rgba(232,160,32,.45);border-radius:16px;padding:28px 20px;text-align:center;background:linear-gradient(180deg,rgba(232,160,32,.07),rgba(232,160,32,.02));transition:.18s}.media-dropzone.dragover{border-color:var(--gold);background:rgba(232,160,32,.12);transform:translateY(-1px)}.media-drop-icon{width:42px;height:42px;border-radius:12px;background:var(--gold-dim);color:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:1.4rem}.media-dropzone strong{display:block;font-size:.92rem}.media-dropzone span{display:block;color:var(--ink3);font-size:.72rem;margin:6px 0 12px}.media-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:18px}.media-card{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#fff;display:flex;flex-direction:column}.media-thumb{aspect-ratio:1.2;background:var(--surf);display:flex;align-items:center;justify-content:center;overflow:hidden}.media-thumb img{width:100%;height:100%;object-fit:contain}.media-type-badge{font-size:.62rem;font-weight:800;letter-spacing:.06em;color:var(--gold);background:var(--night);padding:4px 8px;border-radius:999px}.media-info{padding:12px}.media-info strong{display:block;font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.media-meta{font-size:.66rem;color:var(--ink3);margin-top:4px}.media-actions{display:flex;gap:7px;margin-top:10px}.media-action{flex:1;border:1px solid var(--border);background:var(--paper);border-radius:8px;padding:7px 8px;font-size:.68rem;font-weight:700;color:var(--ink2);cursor:pointer}.media-action:hover{border-color:var(--gold);color:var(--gold)}.media-action.danger:hover{border-color:#d66;color:#b42318}.media-empty{display:none;text-align:center;padding:45px 20px}.media-empty.show{display:block}.media-empty-icon{width:44px;height:44px;border-radius:12px;background:var(--surf);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;color:var(--gold);font-size:1.3rem}.media-empty h4{font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:4px}.media-empty p{font-size:.78rem;color:var(--ink3);max-width:420px;margin:0 auto}@media(max-width:900px){.media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.media-toolbar{grid-template-columns:1fr 150px}.media-storage-note{grid-column:1/-1;text-align:left}}@media(max-width:600px){.media-grid{grid-template-columns:1fr}.media-toolbar{grid-template-columns:1fr}.media-head-actions{width:100%;justify-content:flex-start;flex-wrap:wrap}.media-library-wrap{padding:14px}.media-dropzone{padding:22px 14px}}
-</style>
 
 <style>
 /* v36 Plugins + Integrations polish */
@@ -2353,19 +2357,12 @@ input,select,textarea{min-width:0;}
         <label class="sidebar-check"><input type="checkbox" data-filter="price:6to10"/> $6 – $10</label>
         <label class="sidebar-check"><input type="checkbox" data-filter="bundle"/> Bundles</label>
       </div>
-      <div class="sidebar-section" id="shop-filter-format">
-        <div class="sidebar-title">File format</div>
-        <label class="sidebar-check"><input type="checkbox" data-filter="format:SVG"/> SVG</label>
-        <label class="sidebar-check"><input type="checkbox" data-filter="format:PNG"/> PNG</label>
-        <label class="sidebar-check"><input type="checkbox" data-filter="format:DXF"/> DXF</label>
-        <label class="sidebar-check"><input type="checkbox" data-filter="format:EPS"/> EPS</label>
-      </div>
-      <div class="sidebar-section" id="shop-filter-license">
-        <div class="sidebar-title">License</div>
-        <label class="sidebar-check"><input type="checkbox" data-filter="license:personal"/> Personal use</label>
-        <label class="sidebar-check"><input type="checkbox" data-filter="license:commercial"/> Commercial use</label>
-        <label class="sidebar-check"><input type="checkbox" data-filter="license:extended"/> Extended license</label>
-      </div>
+      <!-- v43: "File format" and "License" filter groups removed.
+           Both were driven by productFormatMatch()/productLicenseMatch(),
+           which decided a product's formats and licence tier from arithmetic
+           on its ID. No real per-product format or licence data exists yet,
+           so filtering on it would be filtering on invented values.
+           Restore these groups once a genuine data source is populated. -->
     </aside>
     <div>
       <div class="shop-filter-actions">
@@ -3551,7 +3548,6 @@ input,select,textarea{min-width:0;}
       <button data-admin-page="customers"><span>◌</span> Customers</button>
       <button data-admin-page="reviews"><span>★</span> Reviews</button>
       <button data-admin-page="coupons"><span>%</span> Coupons</button>
-      <button data-admin-page="media"><span>▧</span> Media</button>
       <div class="nav-group">System</div>
       <button data-admin-page="plugins"><span>♧</span> Plugins</button>
       <button data-admin-page="integrations"><span>⌘</span> Integrations</button>
@@ -3594,7 +3590,6 @@ input,select,textarea{min-width:0;}
       <div class="panel-head-row"><div><span class="panel-kicker">Workspace</span><h4>Quick Actions</h4><p>Jump straight into the tasks you use most.</p></div></div>
       <div class="dashboard-actions-grid">
         <button class="dashboard-action" onclick="showAdminPage('products')"><span class="action-icon">＋</span><span><strong>Add Product</strong><small>Create and publish a new design</small></span><b>→</b></button>
-        <button class="dashboard-action" onclick="showAdminPage('media')"><span class="action-icon">◫</span><span><strong>Media Library</strong><small>Manage covers and preview images</small></span><b>→</b></button>
         <button class="dashboard-action" onclick="showAdminPage('sales')"><span class="action-icon">%</span><span><strong>Sales & Offers</strong><small>Manage current promotions</small></span><b>→</b></button>
         <button class="dashboard-action" onclick="showAdminPage('plugins')"><span class="action-icon">✦</span><span><strong>Plugins</strong><small>Manage installed extensions</small></span><b>→</b></button>
       </div>
@@ -3674,34 +3669,6 @@ input,select,textarea{min-width:0;}
   </div>
 </section>
       <section class="admin-page" id="admin-page-sales"><div class="admin-page-head"><div><h3>Sales</h3><p>Create scheduled sales with automatic discounts and a live homepage countdown.</p></div><button class="admin-btn gold" type="button" onclick="openSaleEditor()">+ Create Sale</button></div><div class="admin-panel"><div id="admin-sales-list" class="cms-list"></div></div></section>
-      <section class="admin-page" id="admin-page-media">
-  <div class="admin-page-head">
-    <div><h3>Media Library</h3><p>Manage product covers, previews and downloadable ZIP packages in one place.</p></div>
-    <div class="media-head-actions">
-      <label class="admin-btn gold media-upload-btn">＋ Upload Media<input id="media-library-input" type="file" hidden multiple accept="image/png,image/jpeg,image/webp,application/zip" /></label>
-      <button class="admin-btn" type="button" id="media-refresh-btn">Refresh</button>
-    </div>
-  </div>
-  <div class="media-library-wrap">
-    <div class="media-toolbar">
-      <div class="media-search"><span>⌕</span><input id="media-search-input" type="search" placeholder="Search media by file name..." /></div>
-      <select id="media-type-filter" class="form-select"><option value="all">All files</option><option value="image">Images</option><option value="zip">ZIP packages</option></select>
-      <span class="media-storage-note" id="media-count-note">0 files</span>
-    </div>
-    <div class="media-dropzone" id="media-dropzone">
-      <div class="media-drop-icon">＋</div>
-      <strong>Drop files here</strong>
-      <span>PNG, JPG, WEBP preview images or a ZIP product package</span>
-      <button type="button" class="admin-btn" id="media-browse-btn">Browse files</button>
-    </div>
-    <div class="media-grid" id="media-grid"></div>
-    <div class="media-empty" id="media-empty">
-      <div class="media-empty-icon">▧</div>
-      <h4>No media uploaded yet</h4>
-      <p>Upload your product covers, previews and ZIP packages. This library is owner-only.</p>
-    </div>
-  </div>
-</section>
       <section class="admin-page" id="admin-page-plugins">
   <div class="admin-page-head"><div><h3>Plugin Manager</h3><p>Manage controlled extensions without changing the core storefront.</p></div><button class="admin-btn gold" type="button" onclick="openPluginInstaller()">+ Install Plugin</button></div>
   <div class="plugin-overview">
@@ -4010,8 +3977,45 @@ let homeFilter='all';
 function effectivePrice(p){return getProductPricing(p).salePrice;}
 function productPopularity(p){return Number(p.popularity ?? p.faves ?? (p.id*17));}
 function productDateScore(p){return Number(p.createdAtScore ?? p.id);}
-function productFormatMatch(p,fmt){const sets={SVG:true,PNG:true,DXF:p.id%3!==0,EPS:p.id%4!==0};return !!sets[fmt];}
-function productLicenseMatch(p,lic){const sets={personal:true,commercial:true,extended:p.id%2===0};return !!sets[lic];}
+/* ── Verified product formats (v43) ──
+   The previous productFormatMatch()/productLicenseMatch() derived a product's
+   file formats and licence tier from arithmetic on its numeric ID
+   (p.id%3, p.id%4, p.id%2). That invented customer-facing claims about the
+   contents of a paid ZIP, so both are gone along with the shop filters that
+   depended on them.
+
+   This returns ONLY formats that can be verified from real product data.
+   Nothing is inferred. Today no source is populated, so it returns [] for
+   every product and the product page falls back to a truthful generic line.
+   When a real source appears (a `formats` column, or rows in product_files)
+   this starts working with no further change. */
+const CRAFTSHAN_KNOWN_FORMATS = ['AI','SVG','EPS','DXF','PNG'];
+function productVerifiedFormats(p){
+  if(!p) return [];
+  const found = new Set();
+
+  // 1. An explicit formats field on the product, if one is ever added.
+  const declared = p.formats ?? p.file_formats;
+  if(declared){
+    const list = Array.isArray(declared) ? declared : String(declared).split(/[,;|•/]+/);
+    list.forEach(v=>{
+      const f = String(v||'').trim().toUpperCase();
+      if(CRAFTSHAN_KNOWN_FORMATS.includes(f)) found.add(f);
+    });
+  }
+
+  // 2. Real per-file records (product_files), if they are ever populated.
+  const files = Array.isArray(p.files) ? p.files : null;
+  if(files){
+    files.forEach(f=>{
+      const name = String(f?.file_name || f?.name || '');
+      const ext = (name.split('.').pop() || '').trim().toUpperCase();
+      if(CRAFTSHAN_KNOWN_FORMATS.includes(ext)) found.add(ext);
+    });
+  }
+
+  return CRAFTSHAN_KNOWN_FORMATS.filter(f=>found.has(f));
+}
 function filterProducts(items, filters={}){
   let out=[...items];
   const q=String(filters.query||'').trim().toLowerCase();
@@ -4024,8 +4028,11 @@ function filterProducts(items, filters={}){
   if(filters.price?.length) out=out.filter(p=>filters.price.some(r=>{const x=effectivePrice(p); return r==='under3'?x<3:r==='3to6'?x>=3&&x<=6:r==='6to10'?x>6&&x<=10:false;}));
   if(filters.bundle) out=out.filter(p=>/bundle|pack|set|collection/i.test(p.name));
   if(filters.categories?.length) out=out.filter(p=>filters.categories.includes(p.cat));
-  if(filters.formats?.length) out=out.filter(p=>filters.formats.some(f=>productFormatMatch(p,f)));
-  if(filters.licenses?.length) out=out.filter(p=>filters.licenses.some(f=>productLicenseMatch(p,f)));
+  // Format filtering runs only against verified format data. With no source
+  // populated this never narrows the grid, instead of narrowing it by ID maths.
+  if(filters.formats?.length) out=out.filter(p=>{const have=productVerifiedFormats(p);return have.length ? filters.formats.some(f=>have.includes(String(f).toUpperCase())) : false;});
+  // Licence filtering removed with productLicenseMatch(): no per-product
+  // licence data exists, so no product-specific claim can be made.
   if(filters.sale) out=out.filter(p=>!!getSaleForProduct(p));
   const sort=filters.sort||'popular';
   if(sort==='low') out.sort((a,b)=>effectivePrice(a)-effectivePrice(b));
@@ -4218,7 +4225,20 @@ function openProduct(id) {
   const fileList=Array.isArray(p.files)?p.files.filter(f=>String(f.ext||f.name?.split('.').pop()||'').toLowerCase()==='zip').slice(0,1):[];
   const zipSize=Number(p.zipFileSize||fileList[0]?.size||0);
   const sizeEl=document.getElementById('prod-file-size'); if(sizeEl) sizeEl.textContent=zipSize?formatBytes(zipSize):'ZIP size shown after upload';
-  const fmtEl=document.getElementById('prod-formats'); if(fmtEl) fmtEl.textContent='AI • SVG • EPS • DXF • PNG';
+  // v43: never claim a format we cannot verify. Previously this line printed
+  // 'AI • SVG • EPS • DXF • PNG' on every product regardless of contents.
+  const fmtEl=document.getElementById('prod-formats');
+  if(fmtEl){
+    const formats=productVerifiedFormats(p);
+    const fmtLabel=fmtEl.closest('.prod-meta-item')?.querySelector('.prod-meta-label');
+    if(formats.length){
+      if(fmtLabel) fmtLabel.textContent='Included formats';
+      fmtEl.textContent=formats.join(' • ');
+    }else{
+      if(fmtLabel) fmtLabel.textContent='What you get';
+      fmtEl.textContent='Digital files included with your purchase.';
+    }
+  }
   const countEl=document.getElementById('prod-file-count'); if(countEl) countEl.textContent='Available after purchase';
 
   const relatedEl=document.getElementById('related-products-grid');
@@ -5198,7 +5218,7 @@ function showAdminPage(name){
   document.querySelectorAll('.admin-page').forEach(p=>p.classList.remove('active'));
   const p=document.getElementById('admin-page-'+name); if(p)p.classList.add('active');
   document.querySelectorAll('.admin-nav button').forEach(b=>b.classList.toggle('active',b.dataset.adminPage===name));
-  const labels={dashboard:'Dashboard',frontend:'Frontend',home:'Home Settings','shop-settings':'Shop Settings','about-settings':'About Settings','tools-settings':'Tools Settings','license-settings':'License Settings','contact-settings':'Contact Settings','footer-settings':'Footer Settings','global-settings':'Global Settings','seo-settings':'SEO Settings',products:'Products',categories:'Categories',orders:'Orders',customers:'Customers',reviews:'Reviews',coupons:'Coupons',media:'Media',plugins:'Plugins',integrations:'Integrations',activity:'Activity Log','dashboard-settings':'Dashboard Settings'};
+  const labels={dashboard:'Dashboard',frontend:'Frontend',home:'Home Settings','shop-settings':'Shop Settings','about-settings':'About Settings','tools-settings':'Tools Settings','license-settings':'License Settings','contact-settings':'Contact Settings','footer-settings':'Footer Settings','global-settings':'Global Settings','seo-settings':'SEO Settings',products:'Products',categories:'Categories',orders:'Orders',customers:'Customers',reviews:'Reviews',coupons:'Coupons',plugins:'Plugins',integrations:'Integrations',activity:'Activity Log','dashboard-settings':'Dashboard Settings'};
   document.getElementById('admin-page-title').textContent=labels[name]||name; if(name==='coupons'){try{renderAdminCoupons();}catch(e){console.error(e)}} if(name==='sales'){try{renderAdminSales();}catch(e){console.error(e)}} if(name==='orders'){try{loadOwnerOrders();}catch(e){console.error('Orders load failed:',e)}} if(name==='customers'){try{loadOwnerCustomers();}catch(e){console.error('Customers load failed:',e)}} if(name==='categories'){try{renderAdminCategories();}catch(e){console.error('Categories load failed:',e)}} if(name==='products'){try{renderAdminProducts();}catch(e){console.error('Products render failed:',e)}}
 }
 document.querySelectorAll('.admin-nav button[data-admin-page]').forEach(btn=>btn.addEventListener('click',()=>{const target=btn.dataset.adminPage;showAdminPage(target);closeAdminSidebar();document.getElementById('admin-content')?.scrollTo?.(0,0);const ac=document.querySelector('.admin-content');if(ac)ac.scrollTop=0;}));
@@ -7588,20 +7608,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 <script>
-(function(){
-  const DB_NAME='craftshan-media-v1', STORE='files';
-  let db=null, mediaItems=[];
-  function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE,{keyPath:'id',autoIncrement:true});};r.onsuccess=()=>{db=r.result;resolve(db)};r.onerror=()=>reject(r.error);});}
-  async function load(){try{await openDB();mediaItems=await new Promise((res,rej)=>{const tx=db.transaction(STORE,'readonly');const req=tx.objectStore(STORE).getAll();req.onsuccess=()=>res(req.result||[]);req.onerror=()=>rej(req.error)});}catch(e){mediaItems=[]}render();}
-  function kind(file){return file.type==='application/zip'||/\.zip$/i.test(file.name)?'zip':'image'}
-  async function saveFiles(files){if(!files.length)return;await openDB();for(const file of files){if(!/^image\/(png|jpe?g|webp)$/.test(file.type)&&!/^.+\.zip$/i.test(file.name)){if(window.showAdminToast)showAdminToast(file.name+' is not supported. Use PNG, JPG, WEBP or ZIP.');continue;}const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put({name:file.name,size:file.size,type:file.type,kind:kind(file),blob:file,createdAt:Date.now()});await new Promise(r=>{tx.oncomplete=r;tx.onerror=r});}await load();if(window.showAdminToast)showAdminToast('Media added to your library.');}
-  function render(){const grid=document.getElementById('media-grid'),empty=document.getElementById('media-empty'),count=document.getElementById('media-count-note');if(!grid)return;const q=(document.getElementById('media-search-input')?.value||'').toLowerCase().trim(), f=document.getElementById('media-type-filter')?.value||'all';const list=mediaItems.filter(m=>(!q||m.name.toLowerCase().includes(q))&&(f==='all'||m.kind===f));grid.innerHTML='';if(count)count.textContent=list.length+' file'+(list.length===1?'':'s');if(empty)empty.classList.toggle('show',!list.length);for(const m of list){const card=document.createElement('article');card.className='media-card';const th=document.createElement('div');th.className='media-thumb';if(m.kind==='image'){const img=document.createElement('img');img.src=URL.createObjectURL(m.blob);img.onload=()=>URL.revokeObjectURL(img.src);th.appendChild(img)}else{const b=document.createElement('span');b.className='media-type-badge';b.textContent='ZIP';th.appendChild(b)}const info=document.createElement('div');info.className='media-info';const s=document.createElement('strong');s.textContent=m.name;const meta=document.createElement('div');meta.className='media-meta';meta.textContent=((m.size||0)/1024/1024).toFixed(2)+' MB · '+m.kind.toUpperCase();const acts=document.createElement('div');acts.className='media-actions';const open=document.createElement('button');open.className='media-action';open.textContent=m.kind==='image'?'Preview':'Download';open.dataset.mediaAction='open';open.dataset.mediaId=m.id;const del=document.createElement('button');del.className='media-action danger';del.textContent='Delete';del.dataset.mediaAction='delete';del.dataset.mediaId=m.id;acts.append(open,del);info.append(s,meta,acts);card.append(th,info);grid.appendChild(card)}}
-  document.addEventListener('click',async e=>{const a=e.target.closest('[data-media-action]');if(!a)return;const id=Number(a.dataset.mediaId);const m=mediaItems.find(x=>x.id===id);if(!m)return;if(a.dataset.mediaAction==='delete'){if(!confirm('Delete '+m.name+' from Media Library?'))return;await openDB();const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(id);await new Promise(r=>{tx.oncomplete=r;tx.onerror=r});await load();}else if(a.dataset.mediaAction==='open'){const url=URL.createObjectURL(m.blob);if(m.kind==='image')window.open(url,'_blank');else{const link=document.createElement('a');link.href=url;link.download=m.name;link.click()}setTimeout(()=>URL.revokeObjectURL(url),3000)}});
-  document.addEventListener('input',e=>{if(e.target.id==='media-search-input')render()});document.addEventListener('change',e=>{if(e.target.id==='media-type-filter')render();if(e.target.id==='media-library-input')saveFiles([...e.target.files])});
-  document.addEventListener('click',e=>{if(e.target.id==='media-browse-btn')document.getElementById('media-library-input')?.click();if(e.target.id==='media-refresh-btn')load()});
-  const dz=document.getElementById('media-dropzone'); if(dz){['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('dragover')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('dragover')}));dz.addEventListener('drop',e=>saveFiles([...e.dataTransfer.files]));}
-  load();
-})();
 
 function ownerAdminEscape(value){
   return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
