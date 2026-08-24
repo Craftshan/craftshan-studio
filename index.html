@@ -3651,7 +3651,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
 </div>
 <div class="editor-modal" id="sale-editor-modal" onclick="if(event.target===this)closeEditorModal('sale-editor-modal')"><div class="editor-card" style="max-width:760px"><div class="editor-head"><div><div class="kicker">↳ sale manager</div><h3 id="sale-editor-title">Create Sale</h3></div><button class="editor-close" type="button" onclick="closeEditorModal('sale-editor-modal')">×</button></div><input type="hidden" id="edit-sale-id"><div class="admin-two"><div class="form-box"><label>Sale Name *</label><input id="edit-sale-name" placeholder="Summer Sale"></div><div class="form-box"><label>Discount *</label><select id="edit-sale-discount"><option value="10">10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option><option value="90">90%</option></select></div></div><div class="admin-two"><div class="form-box"><label>Start Date & Time</label><input id="edit-sale-start" type="datetime-local"></div><div class="form-box"><label>End Date & Time *</label><input id="edit-sale-end" type="datetime-local"></div></div><div class="form-box"><label>Select Products</label><div id="sale-product-picker" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-height:260px;overflow:auto;border:1px solid var(--border);border-radius:12px;padding:10px"></div></div><div class="editor-actions"><button class="admin-btn" type="button" onclick="closeEditorModal('sale-editor-modal')">Cancel</button><button class="admin-btn gold" type="button" onclick="saveSaleEditor()">Save Sale</button></div></div></div>
 <div class="editor-modal" id="coupon-editor-modal" onclick="if(event.target===this)closeEditorModal('coupon-editor-modal')"><div class="editor-card" style="max-width:720px"><div class="editor-head"><div><div class="kicker">↳ coupon manager</div><h3 id="coupon-editor-title">Create Coupon</h3></div><button class="editor-close" type="button" onclick="closeEditorModal('coupon-editor-modal')">×</button></div><input type="hidden" id="edit-coupon-id"><div class="admin-two"><div class="form-box"><label>Coupon Code *</label><input id="edit-coupon-code" placeholder="CRAFT10" maxlength="32"></div><div class="form-box"><label>Discount Type *</label><select id="edit-coupon-type"><option value="percent">Percentage</option><option value="fixed">Fixed amount</option></select></div></div><div class="admin-two"><div class="form-box"><label>Discount *</label><input id="edit-coupon-value" type="number" min="1" step="0.01" placeholder="10"></div><div class="form-box"><label>Minimum order (optional)</label><input id="edit-coupon-min" type="number" min="0" step="0.01" placeholder="0"></div></div><div class="admin-two"><div class="form-box"><label>Expiry (optional)</label><input id="edit-coupon-expiry" type="datetime-local"></div><div class="form-box"><label>Usage limit (optional)</label><input id="edit-coupon-limit" type="number" min="1" step="1" placeholder="Unlimited"></div></div><div class="toggle-row"><span>Coupon active</span><button class="toggle on" id="edit-coupon-active" type="button" onclick="toggleCouponEditorState(this)"><i></i></button></div><div class="editor-actions"><button class="admin-btn" type="button" onclick="closeEditorModal('coupon-editor-modal')">Cancel</button><button class="admin-btn gold" type="button" onclick="saveCouponEditor()">Save Coupon</button></div></div></div>
-<div class="editor-modal" id="tool-editor-modal" onclick="if(event.target===this)closeEditorModal('tool-editor-modal')"><div class="editor-card" style="max-width:560px;"><div class="editor-head"><div><div class="kicker">↳ owner editor</div><h3 id="tool-editor-title">Add Tool</h3></div><button class="editor-close" onclick="closeEditorModal('tool-editor-modal')">×</button></div><input type="hidden" id="edit-tool-id"><div class="form-box"><label>Tool Name <span style="color:#b42318">*</span></label><input id="edit-tool-name" type="text" maxlength="60" placeholder="SVG Cleaner"></div><div class="form-box"><label>Description</label><textarea id="edit-tool-description" maxlength="300" placeholder="What this tool does for the customer."></textarea></div><div class="admin-two"><div class="form-box"><label>Icon</label><input id="edit-tool-icon" type="text" maxlength="4" placeholder="✧"><small style="color:var(--ink3);font-size:.7rem;">A single character or emoji.</small></div><div class="form-box"><label>Sort Order</label><input id="edit-tool-sort" type="number" min="0" step="1" value="0"></div></div><div class="form-box"><label>URL / Route</label><input id="edit-tool-url" type="text" placeholder="https://your-tool.example"><small style="color:var(--ink3);font-size:.7rem;">Leave empty for a tool that is not connected yet. A tool only opens when its status is Available and it has a link.</small></div><div class="admin-two"><div class="form-box"><label>Status</label><select id="edit-tool-status"><option value="available">Available</option><option value="coming_soon">Coming Soon</option><option value="planned" selected>Planned</option><option value="disabled">Disabled</option></select></div><div class="form-box"><label>Visibility</label><select id="edit-tool-visible"><option value="true" selected>Visible</option><option value="false">Hidden</option></select></div></div><div id="tool-editor-error" style="display:none;color:#b42318;font-size:.78rem;margin-bottom:10px;"></div><div class="editor-actions"><button class="admin-btn" type="button" onclick="closeEditorModal('tool-editor-modal')">Cancel</button><button class="admin-btn gold" type="button" id="tool-editor-save" onclick="saveToolEditor()">Save Tool</button></div></div></div>
+<div class="editor-modal" id="tool-editor-modal" onclick="if(event.target===this)closeEditorModal('tool-editor-modal')"><div class="editor-card" style="max-width:560px;"><div class="editor-head"><div><div class="kicker">↳ owner editor</div><h3 id="tool-editor-title">Add Tool</h3></div><button class="editor-close" onclick="closeEditorModal('tool-editor-modal')">×</button></div><input type="hidden" id="edit-tool-id"><div class="form-box"><label>Tool Name <span style="color:#b42318">*</span></label><input id="edit-tool-name" type="text" maxlength="60" placeholder="SVG Cleaner"></div><div class="form-box"><label>Description</label><textarea id="edit-tool-description" maxlength="300" placeholder="What this tool does for the customer."></textarea></div><div class="admin-two"><div class="form-box"><label>Icon</label><input id="edit-tool-icon" type="text" maxlength="4" placeholder="✧"><small style="color:var(--ink3);font-size:.7rem;">A single character or emoji.</small></div><div class="form-box"><label>Sort Order</label><input id="edit-tool-sort" type="number" min="0" step="1" value="0"></div></div><div class="form-box"><label>External URL</label><input id="edit-tool-url" type="text" placeholder="https://your-tool.example"><small style="color:var(--ink3);font-size:.7rem;">Link to a tool hosted elsewhere. Leave empty if you are uploading a file below.</small></div><div class="form-box"><label>Or upload a tool file</label><input id="edit-tool-file" type="file" accept=".html,.htm,.zip,.pdf,.svg,.js,.css,.txt,.png,.jpg,.jpeg,.webp" style="font-size:.78rem;color:var(--ink2);width:100%;"><div id="edit-tool-file-meta" class="tools-file-meta" style="font-size:.72rem;color:var(--ink3);margin-top:6px;line-height:1.5;">No file uploaded.</div><small style="color:var(--ink3);font-size:.7rem;">Stored in Supabase, so the tool opens on every device. Max 25 MB. An uploaded file takes priority over an external URL. A tool only opens when its status is Available.</small></div><div class="admin-two"><div class="form-box"><label>Status</label><select id="edit-tool-status"><option value="available">Available</option><option value="coming_soon">Coming Soon</option><option value="planned" selected>Planned</option><option value="disabled">Disabled</option></select></div><div class="form-box"><label>Visibility</label><select id="edit-tool-visible"><option value="true" selected>Visible</option><option value="false">Hidden</option></select></div></div><div id="tool-editor-error" style="display:none;color:#b42318;font-size:.78rem;margin-bottom:10px;"></div><div class="editor-actions"><button class="admin-btn" type="button" onclick="closeEditorModal('tool-editor-modal')">Cancel</button><button class="admin-btn gold" type="button" id="tool-editor-save" onclick="saveToolEditor()">Save Tool</button></div></div></div>
 <div class="editor-modal" id="tool-delete-modal" onclick="if(event.target===this)closeEditorModal('tool-delete-modal')"><div class="editor-card" style="max-width:440px;"><div class="editor-head"><div><div class="kicker">↳ confirm</div><h3>Delete tool</h3></div><button class="editor-close" onclick="closeEditorModal('tool-delete-modal')">×</button></div><input type="hidden" id="delete-tool-id"><p style="font-size:.9rem;margin:0 0 8px;"><strong id="delete-tool-name">This tool</strong></p><p style="font-size:.82rem;color:var(--ink3);line-height:1.6;margin:0 0 4px;">This will permanently remove this tool from the Tool catalog.</p><p id="delete-tool-filenote" style="display:none;font-size:.78rem;color:var(--ink2);line-height:1.6;background:var(--gold-dim);border-radius:8px;padding:9px 11px;margin:10px 0 0;"></p><div class="editor-actions"><button class="admin-btn" type="button" onclick="closeEditorModal('tool-delete-modal')">Cancel</button><button class="admin-btn" type="button" style="background:#b42318;color:#fff;border-color:#b42318;" onclick="confirmDeleteTool()">Delete</button></div></div></div>
 <div class="editor-modal" id="category-editor-modal" onclick="if(event.target===this)closeEditorModal('category-editor-modal')"><div class="editor-card" style="max-width:520px;"><div class="editor-head"><div><div class="kicker">↳ owner editor</div><h3 id="category-editor-title">Add Category</h3></div><button class="editor-close" onclick="closeEditorModal('category-editor-modal')">×</button></div><input type="hidden" id="edit-category-index"><div class="form-box"><label>Category Name</label><input id="edit-category-name" type="text"></div><div class="form-box"><label>Description</label><textarea id="edit-category-description"></textarea></div><div class="editor-actions"><button class="admin-btn" onclick="closeEditorModal('category-editor-modal')">Cancel</button><button class="admin-btn gold" onclick="saveCategoryEditor()">Save Category</button></div></div></div>
 
@@ -8356,8 +8356,29 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
     }
   }
   function runtimeUrl(t){
+    // Legacy browser-local file, kept working until it is imported.
     const m = /^__file__:(\d+)$/.exec(t.url || '');
-    return m ? (objectUrls[Number(m[1])] || '') : (t.url || '');
+    if (m) return objectUrls[Number(m[1])] || '';
+    return t.url || '';
+  }
+  // A tool is openable if it has an uploaded file OR an external URL.
+  function hasTarget(t){ return !!(t.file_path || runtimeUrl(t)); }
+
+  /* Uploaded files live in the private `tools` bucket. A signed URL is minted
+     on demand; Storage RLS only permits that for a VISIBLE tool's file, so a
+     hidden tool's file cannot be reached even with its path. */
+  const SIGNED_TTL = 300;
+  async function signedFileUrl(t){
+    if (!t.file_path) return '';
+    try{
+      const { data, error } = await craftshanSupabase.storage
+        .from('tools').createSignedUrl(t.file_path, SIGNED_TTL);
+      if (error) throw error;
+      return data?.signedUrl || '';
+    }catch(e){
+      console.warn('Tool file link failed:', e);
+      return '';
+    }
   }
 
   /* ── shared state ── */
@@ -8367,7 +8388,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
   // Visible to the public: visibility flag first, then the storefront Tools
   // switch. Status never hides a tool — it only changes how it presents.
   const publicTools = () => (storefrontToolsOn() ? tools.filter(t => t.visible) : []);
-  const isOpenable = t => t.status === 'available' && !!runtimeUrl(t);
+  const isOpenable = t => t.status === 'available' && hasTarget(t);
 
   function iconMarkup(t){
     const ic = String(t.icon || '').trim();
@@ -8445,7 +8466,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
   }
 
   /* A hidden or unavailable tool must not be openable, not merely un-listed. */
-  window.openCraftshanTool = function(id){
+  window.openCraftshanTool = async function(id){
     const t = tools.find(x => String(x.id) === String(id));
     if (!t || !t.visible || !storefrontToolsOn()){
       if (typeof showToast === 'function') showToast('That tool is not available right now.');
@@ -8455,7 +8476,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
       if (typeof showToast === 'function') showToast(`${t.name} — ${STATUS_LABEL[t.status] || t.status}.`);
       return;
     }
-    const url = runtimeUrl(t);
+    const url = t.file_path ? await signedFileUrl(t) : runtimeUrl(t);
     if (!url){
       if (typeof showToast === 'function') showToast('This tool is not connected yet.');
       return;
@@ -8468,7 +8489,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
     if (typeof craftshanSupabase === 'undefined') return false;
     try{
       const { data, error } = await craftshanSupabase
-        .from('tools').select('id,name,description,icon,url,status,visible,sort_order')
+        .from('tools').select('id,name,description,icon,url,status,visible,sort_order,file_path,file_name,file_size')
         .order('sort_order', { ascending:true }).order('name', { ascending:true });
       if (error) throw error;
       tools = Array.isArray(data) ? data : [];
@@ -8502,7 +8523,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
     }
     const rows = tools.map((t, i) => `<tr>
       <td><strong>${esc(t.icon || '◇')} ${esc(t.name)}</strong><br><small style="color:var(--ink3);">${esc((t.description || '').slice(0, 70))}${(t.description || '').length > 70 ? '…' : ''}</small>
-        ${t.url ? `<br><small style="color:var(--ink3);font-size:.68rem;">${esc(/^__file__:/.test(t.url) ? 'Connected file (this browser)' : t.url)}</small>` : ''}</td>
+        ${t.file_path ? `<br><small style="color:var(--ink3);font-size:.68rem;">Uploaded file · ${esc(t.file_name || t.file_path)}</small>` : t.url ? `<br><small style="color:var(--ink3);font-size:.68rem;">${esc(/^__file__:/.test(t.url) ? 'Legacy file (this browser only)' : t.url)}</small>` : ''}</td>
       <td><span class="status-pill${t.status === 'available' ? '' : ' off'}">${esc(STATUS_LABEL[t.status] || t.status)}</span></td>
       <td><span class="status-pill${t.visible ? '' : ' off'}">${t.visible ? 'Visible' : 'Hidden'}</span></td>
       <td class="num">${Number(t.sort_order)}
@@ -8544,10 +8565,57 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
     document.getElementById('edit-tool-status').value = t ? t.status : 'planned';
     document.getElementById('edit-tool-visible').value = t ? String(!!t.visible) : 'true';
     document.getElementById('edit-tool-sort').value = t ? Number(t.sort_order) : (tools.length ? Math.max(...tools.map(x => Number(x.sort_order) || 0)) + 1 : 1);
+    const fileInput = document.getElementById('edit-tool-file');
+    if (fileInput) fileInput.value = '';
+    const meta = document.getElementById('edit-tool-file-meta');
+    if (meta){
+      if (t && t.file_path) meta.textContent = 'Uploaded: ' + (t.file_name || t.file_path) + (t.file_size ? ' · ' + Math.round(Number(t.file_size)/1024) + ' KB' : '') + ' — choosing a new file replaces it.';
+      else if (t && /^__file__:/.test(t.url || '')) meta.textContent = 'Legacy file in this browser only — use "Import from this browser" on the Tools page to upload it.';
+      else meta.textContent = 'No file uploaded.';
+    }
     const err = document.getElementById('tool-editor-error');
     if (err){ err.style.display = 'none'; err.textContent = ''; }
     document.getElementById('tool-editor-modal').classList.add('open');
   };
+
+  const ALLOWED_EXT = ['html','htm','zip','pdf','svg','js','css','txt','png','jpg','jpeg','webp'];
+  const MAX_BYTES = 25 * 1024 * 1024;
+
+  /* Deterministic, sanitised path: <tool-id>/<safe-name>. The tool id comes
+     from the database, never from user input, so a filename can never escape
+     its own folder. */
+  function safeName(name){
+    const base = String(name || 'tool').split(/[\/]/).pop();
+    const cleaned = base.replace(/[^a-zA-Z0-9._-]/g, '-').replace(/^[.-]+/, '').slice(-80);
+    return cleaned || 'tool-file';
+  }
+  function validateToolFile(file){
+    if (!file) return null;
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    if (!ALLOWED_EXT.includes(ext)) return 'That file type is not allowed. Use: ' + ALLOWED_EXT.join(', ') + '.';
+    if (file.size > MAX_BYTES) return 'That file is larger than 25 MB.';
+    return null;
+  }
+  async function uploadToolFile(toolId, file){
+    const path = toolId + '/' + Date.now() + '-' + safeName(file.name);
+    const { error } = await craftshanSupabase.storage.from('tools')
+      .upload(path, file, { contentType: file.type || 'application/octet-stream', upsert: false });
+    if (error) throw error;
+    return { file_path: path, file_name: safeName(file.name), file_size: file.size };
+  }
+  /* Only ever removes a path that the given tool owns and no other tool uses. */
+  async function removeToolFile(path, keepForToolId){
+    if (!path) return;
+    if (tools.some(t => t.file_path === path && String(t.id) !== String(keepForToolId))) {
+      console.warn('Tool file still referenced by another tool, leaving it:', path);
+      return;
+    }
+    try{
+      const { error } = await craftshanSupabase.storage.from('tools').remove([path]);
+      if (error) throw error;
+    }catch(e){ console.warn('Old tool file not removed (left for manual cleanup):', path, e); }
+  }
+  window.craftshanUploadToolFile = uploadToolFile;
 
   window.saveToolEditor = async function(){
     const err = document.getElementById('tool-editor-error');
@@ -8569,18 +8637,43 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
       visible: document.getElementById('edit-tool-visible').value === 'true',
       sort_order: Math.round(sort)
     };
+    const file = document.getElementById('edit-tool-file')?.files?.[0] || null;
+    const fileError = validateToolFile(file);
+    if (fileError) return fail(fileError);
+
     const btn = document.getElementById('tool-editor-save');
-    if (btn){ btn.disabled = true; btn.textContent = 'Saving…'; }
+    const meta = document.getElementById('edit-tool-file-meta');
+    if (btn){ btn.disabled = true; btn.textContent = file ? 'Uploading…' : 'Saving…'; }
+    const existing = id ? tools.find(x => String(x.id) === String(id)) : null;
+
     const ok = await persist(async () => {
       if (id){
-        // Edit in place — the row keeps its id, never a duplicate.
+        let oldPath = null;
+        if (file){
+          // Upload FIRST. The old file stays untouched until the new one is
+          // stored and the record points at it, so a failed replace leaves the
+          // working file in place.
+          const up = await uploadToolFile(id, file);
+          Object.assign(payload, up);
+          oldPath = existing?.file_path || null;
+        }
+        if (btn) btn.textContent = 'Saving…';
         const { error } = await craftshanSupabase.from('tools').update(payload).eq('id', id);
         if (error) throw error;
+        if (oldPath && oldPath !== payload.file_path) await removeToolFile(oldPath, id);
       } else {
-        const { error } = await craftshanSupabase.from('tools').insert(payload);
+        // New tool: insert to obtain the id, then upload into its own folder.
+        const { data, error } = await craftshanSupabase.from('tools').insert(payload).select('id').single();
         if (error) throw error;
+        if (file){
+          if (btn) btn.textContent = 'Uploading…';
+          const up = await uploadToolFile(data.id, file);
+          const { error: e2 } = await craftshanSupabase.from('tools').update(up).eq('id', data.id);
+          if (e2) throw e2;
+        }
       }
     }, id ? 'Tool updated' : 'Tool added');
+    if (meta && ok && file) meta.textContent = 'Uploaded: ' + safeName(file.name);
     if (btn){ btn.disabled = false; btn.textContent = 'Save Tool'; }
     if (ok) closeEditorModal('tool-editor-modal');
     else fail('The database rejected this change. You must be signed in as the owner.');
@@ -8618,7 +8711,10 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
     document.getElementById('delete-tool-name').textContent = `Delete "${t.name}"?`;
     const note = document.getElementById('delete-tool-filenote');
     if (note){
-      if (/^__file__:/.test(t.url || '')){
+      if (t.file_path){
+        note.textContent = 'This tool has an uploaded file (' + (t.file_name || t.file_path) + '). It will be removed from Storage after the tool record is deleted, and only if no other tool uses it.';
+        note.style.display = 'block';
+      } else if (/^__file__:/.test(t.url || '')){
         note.textContent = 'This tool points at a file stored in this browser. The tool record will be removed; the file itself is left untouched in browser storage and is not deleted.';
         note.style.display = 'block';
       } else { note.style.display = 'none'; note.textContent = ''; }
@@ -8630,9 +8726,12 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
     const id = document.getElementById('delete-tool-id').value;
     const t = tools.find(x => String(x.id) === String(id));
     if (!id) return;
+    const filePath = t?.file_path || null;
     const ok = await persist(async () => {
       const { error } = await craftshanSupabase.from('tools').delete().eq('id', id);
       if (error) throw error;
+      // Only after the row is definitely gone, and only if nothing else uses it.
+      if (filePath) await removeToolFile(filePath, id);
     }, t ? `"${t.name}" deleted` : 'Tool deleted');
     if (ok) closeEditorModal('tool-delete-modal');
   };
@@ -8649,7 +8748,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
     }
     const NAMES = { 1:'SVG Cleaner', 2:'Image to Vector', 3:'Design Preview', 4:'Laser File Checker' };
     const STATUS = { 'available':'available', 'coming soon':'coming_soon', 'planned':'planned', 'disabled':'disabled' };
-    let applied = 0;
+    let applied = 0, uploaded = 0;
     for (let slot = 1; slot <= 4; slot++){
       const cfg = legacy[slot];
       if (!cfg) continue;
@@ -8660,7 +8759,25 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
       if (cfg.desc && cfg.desc !== row.description) patch.description = cfg.desc;
       const st = STATUS[String(cfg.status || '').toLowerCase()];
       if (st && st !== row.status) patch.status = st;
-      if (cfg.target && cfg.target !== row.url) patch.url = cfg.target;
+      /* v52: a legacy "__file__:N" target means the real file sits in this
+         browser's IndexedDB. Upload it to Storage so the tool works everywhere.
+         The IndexedDB copy is left untouched — nothing is deleted here. */
+      const legacyFile = /^__file__:(\d+)$/.exec(cfg.target || '');
+      if (legacyFile){
+        try{
+          const rec = await getFile(Number(legacyFile[1]));
+          if (rec && rec.blob){
+            const f = new File([rec.blob], rec.name || ('tool-' + slot), { type: rec.type || 'application/octet-stream' });
+            const bad = validateToolFile(f);
+            if (bad){ console.warn('Legacy tool file rejected:', rec.name, bad); }
+            else {
+              const up = await uploadToolFile(row.id, f);
+              Object.assign(patch, up, { url: '' });
+              uploaded++;
+            }
+          }
+        }catch(e){ console.warn('Legacy tool file upload failed for slot ' + slot + ':', e); }
+      } else if (cfg.target && cfg.target !== row.url) patch.url = cfg.target;
       else if (cfg.link && cfg.link !== row.url) patch.url = cfg.link;
       if (!Object.keys(patch).length) continue;
       try{
@@ -8674,7 +8791,10 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
       }
     }
     await load();
-    if (typeof showAdminToast === 'function') showAdminToast(applied ? `Imported ${applied} tool${applied === 1 ? '' : 's'} from this browser.` : 'Your browser settings already match the database.');
+    if (typeof showAdminToast === 'function') showAdminToast(
+      applied
+        ? `Imported ${applied} tool${applied === 1 ? '' : 's'} from this browser` + (uploaded ? `, uploading ${uploaded} file${uploaded === 1 ? '' : 's'} to Storage.` : '.')
+        : 'Your browser settings already match the database.');
   };
 
   load();
