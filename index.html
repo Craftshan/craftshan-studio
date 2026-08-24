@@ -15,6 +15,22 @@
         CRAFTSHAN_SUPABASE_URL,
         CRAFTSHAN_SUPABASE_KEY
     );
+
+    /* ── Maintenance first paint (v44) ──
+       Supabase is the source of truth, but that answer needs a round trip.
+       This cache decides only what to paint for those few hundred ms:
+         cached ON  -> paint maintenance immediately (no flash of storefront)
+         cached OFF -> paint storefront immediately (no blank screen)
+         no cache   -> hold on a neutral splash until the server answers
+       The server result always overrides this a moment later. */
+    (function(){
+        var state = 'checking';
+        try{
+            var c = JSON.parse(localStorage.getItem('craftshan_maintenance_cache') || 'null');
+            if (c && typeof c.enabled === 'boolean') state = c.enabled ? 'on' : 'off';
+        }catch(e){}
+        document.documentElement.setAttribute('data-craftshan-maintenance', state);
+    })();
 </script>
 
 <meta charset="UTF-8"/>
@@ -2160,6 +2176,99 @@ input,select,textarea{min-width:0;}
 </style>
 </head>
 <body>
+
+<!-- ═══ MAINTENANCE MODE (v44) ═══
+     Global state lives in Supabase store_settings['maintenance'].
+     When active for a public visitor the storefront is switched off, not
+     covered over: nav, pages, footer and mobile nav are all display:none,
+     and the storefront entry points are gated in JavaScript as well. -->
+<style id="craftshan-maintenance-style">
+#craftshan-maintenance{
+  display:none;position:fixed;inset:0;z-index:9000;
+  background:var(--night);color:#fff;
+  padding:32px 24px;overflow-y:auto;
+  flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+#craftshan-maintenance .cm-inner{max-width:520px;width:100%;}
+#craftshan-maintenance .cm-mark{
+  width:74px;height:74px;border-radius:20px;margin:0 auto 26px;
+  background:var(--gold-dim);border:1px solid rgba(232,160,32,.32);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+#craftshan-maintenance .cm-mark img{width:100%;height:100%;object-fit:contain;border-radius:inherit;}
+#craftshan-maintenance .cm-kicker{
+  font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:16px;
+}
+#craftshan-maintenance h1{
+  font-family:'Playfair Display',Georgia,serif;font-weight:700;
+  font-size:clamp(1.7rem,4.6vw,2.5rem);line-height:1.16;margin:0 0 16px;
+  color:#fff;text-wrap:balance;
+}
+#craftshan-maintenance p{
+  font-size:.94rem;line-height:1.75;color:rgba(255,255,255,.66);
+  margin:0 auto;max-width:42ch;
+}
+#craftshan-maintenance .cm-rule{
+  width:52px;height:2px;background:var(--gold);border-radius:2px;margin:26px auto;opacity:.85;
+}
+#craftshan-maintenance .cm-owner{
+  margin-top:30px;background:none;border:1px solid rgba(255,255,255,.18);
+  color:rgba(255,255,255,.5);border-radius:9px;padding:9px 17px;
+  font-family:inherit;font-size:.72rem;font-weight:600;letter-spacing:.04em;cursor:pointer;
+  transition:border-color .18s,color .18s;
+}
+#craftshan-maintenance .cm-owner:hover{border-color:var(--gold);color:var(--gold);}
+#craftshan-maintenance .cm-owner:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+/* Storefront switched off for public visitors */
+html[data-craftshan-maintenance="on"] #craftshan-maintenance{display:flex;}
+html[data-craftshan-maintenance="on"] body > nav.nav,
+html[data-craftshan-maintenance="on"] body > .page,
+html[data-craftshan-maintenance="on"] body > footer.foot,
+html[data-craftshan-maintenance="on"] body > #home-announcement-bar,
+html[data-craftshan-maintenance="on"] body > #mobile-store-nav,
+html[data-craftshan-maintenance="on"] body > .mob-menu,
+html[data-craftshan-maintenance="on"] body > .toast,
+html[data-craftshan-maintenance="on"] body > section{display:none !important;}
+html[data-craftshan-maintenance="on"] body{overflow:hidden;}
+
+/* Neutral splash while the very first visit waits for the server answer */
+html[data-craftshan-maintenance="checking"] body > nav.nav,
+html[data-craftshan-maintenance="checking"] body > .page,
+html[data-craftshan-maintenance="checking"] body > footer.foot,
+html[data-craftshan-maintenance="checking"] body > #home-announcement-bar,
+html[data-craftshan-maintenance="checking"] body > #mobile-store-nav,
+html[data-craftshan-maintenance="checking"] body > section{visibility:hidden;}
+html[data-craftshan-maintenance="checking"] body{background:var(--paper);}
+
+/* Owner working while maintenance is live */
+#craftshan-owner-maintenance-banner{
+  display:none;position:fixed;left:0;right:0;bottom:0;z-index:8000;
+  background:var(--night2);border-top:2px solid var(--gold);
+  color:rgba(255,255,255,.86);padding:11px 18px;
+  font-size:.78rem;text-align:center;
+}
+#craftshan-owner-maintenance-banner strong{color:var(--gold);font-weight:700;}
+html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{display:block;}
+@media(max-width:600px){#craftshan-owner-maintenance-banner{font-size:.72rem;padding:9px 12px;}}
+</style>
+
+<div id="craftshan-maintenance" role="alert" aria-live="polite">
+  <div class="cm-inner">
+    <div class="cm-mark"><img id="craftshan-maintenance-logo" alt="" aria-hidden="true"/></div>
+    <div class="cm-kicker">Craftshan Studio</div>
+    <h1 id="craftshan-maintenance-title">Craftshan Studio is temporarily offline</h1>
+    <div class="cm-rule"></div>
+    <p id="craftshan-maintenance-message">We're making a few improvements. Please check back soon.</p>
+    <button type="button" class="cm-owner" onclick="openOwnerGate()">Studio access</button>
+  </div>
+</div>
+
+<div id="craftshan-owner-maintenance-banner">
+  <strong>Maintenance mode is ON.</strong>
+  Visitors see the maintenance page — you are seeing the storefront because you are signed in as the owner.
+</div>
 
 <!-- ═══ ANNOUNCEMENT BAR ═══ -->
 <div id="home-announcement-bar" style="display:none;background:var(--night2);color:rgba(255,255,255,.85);font-size:.72rem;font-weight:600;letter-spacing:.03em;text-align:center;padding:8px 12px;">
@@ -7953,10 +8062,44 @@ document.addEventListener('DOMContentLoaded',function(){refreshOwnerOrderCustome
 
 
 <script>
-function loadGlobalSettings(){try{const s=JSON.parse(localStorage.getItem('craftshanGlobalSettings')||'{}');const map={brand:'global-brand-name',email:'global-contact-email',instagram:'global-instagram',tiktok:'global-tiktok',gold:'global-gold',paper:'global-paper',ink:'global-ink',night:'global-night'};Object.entries(map).forEach(([k,id])=>{if(s[k]!=null){const el=document.getElementById(id);if(el)el.value=s[k];}});const t=document.getElementById('global-maintenance-toggle');if(t&&s.maintenance){t.classList.add('on');}}catch(e){console.warn('Global settings load failed',e)}}
-function saveGlobalSettings(){const s={brand:document.getElementById('global-brand-name')?.value.trim()||'Craftshan Studio',email:document.getElementById('global-contact-email')?.value.trim()||'',instagram:document.getElementById('global-instagram')?.value.trim()||'',tiktok:document.getElementById('global-tiktok')?.value.trim()||'',gold:document.getElementById('global-gold')?.value.trim()||'#E8A020',paper:document.getElementById('global-paper')?.value.trim()||'#FAFAF7',ink:document.getElementById('global-ink')?.value.trim()||'#1C1C1A',night:document.getElementById('global-night')?.value.trim()||'#0D0D0D',maintenance:document.getElementById('global-maintenance-toggle')?.classList.contains('on')||false};localStorage.setItem('craftshanGlobalSettings',JSON.stringify(s));const root=document.documentElement;root.style.setProperty('--gold',s.gold);root.style.setProperty('--paper',s.paper);root.style.setProperty('--ink',s.ink);root.style.setProperty('--night',s.night);document.querySelectorAll('.brand-name').forEach(el=>{if(el.childNodes.length)el.innerHTML=s.brand.replace(/(Studio)$/i,'<span>$1</span>')});document.querySelectorAll('[data-contact-email]').forEach(el=>el.textContent=s.email);showToast('Global settings saved');}
+function loadGlobalSettings(){try{const s=JSON.parse(localStorage.getItem('craftshanGlobalSettings')||'{}');const map={brand:'global-brand-name',email:'global-contact-email',instagram:'global-instagram',tiktok:'global-tiktok',gold:'global-gold',paper:'global-paper',ink:'global-ink',night:'global-night'};Object.entries(map).forEach(([k,id])=>{if(s[k]!=null){const el=document.getElementById(id);if(el)el.value=s[k];}});
+/* v44: the maintenance toggle is NOT restored from localStorage any more.
+   Supabase is the source of truth; craftshanSyncMaintenanceToggle() sets it. */
+if(typeof craftshanSyncMaintenanceToggle==='function') craftshanSyncMaintenanceToggle();
+}catch(e){console.warn('Global settings load failed',e)}}
+function saveGlobalSettings(){const s={brand:document.getElementById('global-brand-name')?.value.trim()||'Craftshan Studio',email:document.getElementById('global-contact-email')?.value.trim()||'',instagram:document.getElementById('global-instagram')?.value.trim()||'',tiktok:document.getElementById('global-tiktok')?.value.trim()||'',gold:document.getElementById('global-gold')?.value.trim()||'#E8A020',paper:document.getElementById('global-paper')?.value.trim()||'#FAFAF7',ink:document.getElementById('global-ink')?.value.trim()||'#1C1C1A',night:document.getElementById('global-night')?.value.trim()||'#0D0D0D'};
+/* v44: `maintenance` deliberately NOT written here. It lives in Supabase, so
+   a stale localStorage copy can never conflict with the real global state. */
+localStorage.setItem('craftshanGlobalSettings',JSON.stringify(s));const root=document.documentElement;root.style.setProperty('--gold',s.gold);root.style.setProperty('--paper',s.paper);root.style.setProperty('--ink',s.ink);root.style.setProperty('--night',s.night);document.querySelectorAll('.brand-name').forEach(el=>{if(el.childNodes.length)el.innerHTML=s.brand.replace(/(Studio)$/i,'<span>$1</span>')});document.querySelectorAll('[data-contact-email]').forEach(el=>el.textContent=s.email);showToast('Global settings saved');}
 function resetGlobalSettings(){localStorage.removeItem('craftshanGlobalSettings');location.reload()}
-function toggleGlobalMaintenance(btn){btn.classList.toggle('on')}
+/* v44: writes the global maintenance flag to Supabase. RLS ("Owner can manage
+   store settings", ALL, is_owner()) is what actually authorises this — the
+   button is only the trigger. */
+async function toggleGlobalMaintenance(btn){
+  if(!btn || btn.dataset.busy==='1') return;
+  const next = !btn.classList.contains('on');
+  const label = btn.closest('.toggle-row')?.querySelector('strong');
+  const original = label ? label.textContent : '';
+  btn.dataset.busy='1';
+  btn.style.opacity='.55';
+  if(label) label.textContent = next ? 'Maintenance Mode — turning on…' : 'Maintenance Mode — turning off…';
+  try{
+    const ok = await craftshanSetMaintenance(next);
+    if(!ok) throw new Error('Supabase rejected the change.');
+    btn.classList.toggle('on', next);
+    if(typeof showAdminToast==='function') showAdminToast(next ? 'Maintenance mode is ON — the storefront is now offline for visitors.' : 'Maintenance mode is OFF — the storefront is live again.');
+    if(typeof addAdminLog==='function') addAdminLog('Maintenance mode turned '+(next?'ON':'OFF'));
+  }catch(e){
+    console.error('Maintenance toggle failed:', e);
+    btn.classList.toggle('on', !next);
+    if(typeof showAdminToast==='function') showAdminToast('Could not change maintenance mode: '+(e?.message||'unknown error'));
+  }finally{
+    btn.dataset.busy='';
+    btn.style.opacity='';
+    if(label) label.textContent = original || 'Maintenance Mode';
+    craftshanSyncMaintenanceToggle();
+  }
+}
 document.addEventListener('DOMContentLoaded',loadGlobalSettings);
 </script>
 
@@ -8089,5 +8232,172 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
 </script>
 
 <script>document.addEventListener('DOMContentLoaded',()=>{updateCartBadge();renderCart();});</script>
+
+<!-- ═══ MAINTENANCE MODE CONTROLLER (v44) ═══
+     Loaded last so every storefront function it gates is already defined.
+     Source of truth: Supabase store_settings['maintenance'].
+     localStorage is a first-paint cache only and never wins. -->
+<script id="craftshan-maintenance-controller">
+(function(){
+  const CACHE_KEY = 'craftshan_maintenance_cache';
+  const SETTINGS_KEY = 'maintenance';
+  const DEFAULT_TITLE = 'Craftshan Studio is temporarily offline';
+  const DEFAULT_MESSAGE = "We're making a few improvements. Please check back soon.";
+
+  let config   = { enabled:false, title:DEFAULT_TITLE, message:DEFAULT_MESSAGE };
+  let active   = false;   // storefront switched off for THIS visitor
+  let isOwner  = false;
+  let resolved = false;
+
+  const root = document.documentElement;
+
+  function cacheWrite(cfg){
+    try{ localStorage.setItem(CACHE_KEY, JSON.stringify({enabled:!!cfg.enabled})); }catch(e){}
+  }
+
+  async function fetchState(){
+    const { data, error } = await craftshanSupabase
+      .from('store_settings').select('value').eq('key', SETTINGS_KEY).maybeSingle();
+    if (error) throw error;
+    const v = data?.value || {};
+    return {
+      enabled: v.enabled === true,
+      title:   v.title   || DEFAULT_TITLE,
+      message: v.message || DEFAULT_MESSAGE
+    };
+  }
+
+  function paint(){
+    const t = document.getElementById('craftshan-maintenance-title');
+    const m = document.getElementById('craftshan-maintenance-message');
+    if (t) t.textContent = config.title;
+    if (m) m.textContent = config.message;
+    const logo = document.getElementById('craftshan-maintenance-logo');
+    const src = document.querySelector('.brand-mark img')?.src;
+    if (logo && src && !logo.src) logo.src = src;
+
+    root.setAttribute('data-craftshan-maintenance',
+      active ? 'on' : (config.enabled && isOwner ? 'owner' : 'off'));
+  }
+
+  /* Public storefront entry points are gated here. The underlying functions
+     are NOT rewritten — each keeps its original body and is only fronted by
+     this check, so Lemon Squeezy and download logic stay exactly as they are. */
+  function blocked(){
+    if (!active) return false;
+    try{ if (typeof showToast === 'function') showToast('Craftshan Studio is temporarily offline.'); }catch(e){}
+    return true;
+  }
+  function gate(name){
+    const original = window[name];
+    if (typeof original !== 'function' || original.__craftshanGated) return;
+    const wrapped = function(){ if (blocked()) return; return original.apply(this, arguments); };
+    wrapped.__craftshanGated = true;
+    wrapped.__craftshanOriginal = original;
+    window[name] = wrapped;
+  }
+  ['showPage','openProduct','addToCart','openCheckout','openCheckoutForItems',
+   'startPaidCheckout','completeFreeCheckout','showFreeFiles','showBundles',
+   'submitNavDesignSearch','openQuickSearch','toggleWishlist']
+    .forEach(gate);
+
+  function apply(){
+    active = config.enabled && !isOwner;
+    if (active){
+      // Switch the storefront off rather than covering it: drop every page out
+      // of the active state so nothing renders behind the maintenance screen.
+      document.querySelectorAll('.page.active').forEach(p => p.classList.remove('active'));
+      try{ document.getElementById('mob-menu')?.classList.remove('open'); }catch(e){}
+    } else if (resolved && !document.querySelector('.page.active')){
+      document.getElementById('page-home')?.classList.add('active');
+    }
+    paint();
+  }
+
+  async function resolve(){
+    let state = null;
+    try{
+      state = await fetchState();
+    }catch(e1){
+      console.warn('Maintenance state read failed, retrying…', e1);
+      try{ state = await fetchState(); }
+      catch(e2){
+        /* FAIL CLOSED. If the global state cannot be read we must not assume
+           the store is open — an owner may have just taken it offline. Note
+           that if Supabase is unreachable the catalogue cannot load either,
+           so the store is genuinely non-functional at this point. The owner
+           can still authenticate from the maintenance screen. */
+        console.error('Maintenance state unavailable — failing closed.', e2);
+        config = { enabled:true, title:DEFAULT_TITLE,
+                   message:"We're having trouble reaching the studio right now. Please check back shortly." };
+        resolved = true;
+        isOwner = await verifyOwner();
+        apply();
+        return;
+      }
+    }
+    config = state;
+    cacheWrite(config);
+    isOwner = config.enabled ? await verifyOwner() : false;
+    resolved = true;
+    apply();
+  }
+
+  async function verifyOwner(){
+    try{
+      if (typeof craftshanVerifyOwnerSession === 'function') return await craftshanVerifyOwnerSession();
+    }catch(e){ console.warn('Owner check during maintenance failed:', e); }
+    return false;
+  }
+
+  /* Owner writes. RLS is the real authority; this only sends the change. */
+  window.craftshanSetMaintenance = async function(enabled){
+    const payload = { key: SETTINGS_KEY,
+      value: { enabled: !!enabled, title: config.title || DEFAULT_TITLE, message: config.message || DEFAULT_MESSAGE } };
+    const { error } = await craftshanSupabase.from('store_settings').upsert(payload, { onConflict:'key' });
+    if (error) throw error;
+    config = { enabled: !!enabled, title: payload.value.title, message: payload.value.message };
+    cacheWrite(config);
+    isOwner = config.enabled ? await verifyOwner() : false;
+    apply();
+    return true;
+  };
+
+  /* Reflects the true Supabase value onto the Owner Centre toggle. */
+  window.craftshanSyncMaintenanceToggle = function(){
+    const btn = document.getElementById('global-maintenance-toggle');
+    if (btn && btn.dataset.busy !== '1') btn.classList.toggle('on', !!config.enabled);
+  };
+
+  window.craftshanRefreshMaintenance = async function(){
+    await resolve();
+    window.craftshanSyncMaintenanceToggle();
+    return config;
+  };
+
+  // Never leave a visitor stranded on the splash if the network hangs.
+  setTimeout(() => {
+    if (!resolved){
+      console.warn('Maintenance state timed out — failing closed.');
+      config = { enabled:true, title:DEFAULT_TITLE,
+                 message:"We're having trouble reaching the studio right now. Please check back shortly." };
+      resolved = true;
+      apply();
+    }
+  }, 8000);
+
+  // Re-check when the owner signs in from the maintenance screen, so the
+  // storefront unlocks for them without a manual reload.
+  try{
+    craftshanSupabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT'){
+        if (config.enabled) resolve().then(() => window.craftshanSyncMaintenanceToggle());
+      }
+    });
+  }catch(e){ console.warn('Maintenance auth listener skipped:', e); }
+
+  resolve().then(() => window.craftshanSyncMaintenanceToggle());
+})();
+</script>
 </body>
 </html>
