@@ -4376,14 +4376,48 @@ function renderCheckout(items = checkoutItems) {
       payBtn.textContent = 'Get Free Files →';
       payBtn.onclick = completeFreeCheckout;
       if (statusBox) statusBox.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg><div><strong>These files are free.</strong>Log in (or create a free account) and click below to unlock instant download.</div>`;
+    } else if (list.length) {
+      payBtn.disabled = false;
+      payBtn.textContent = 'Pay with Lemon Squeezy →';
+      payBtn.onclick = startPaidCheckout;
+      if (statusBox) statusBox.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg><div><strong>Secure checkout via Lemon Squeezy.</strong>You'll be taken to a secure payment page. Your files unlock automatically in My Account once payment completes.</div>`;
     } else {
       payBtn.disabled = true;
-      payBtn.textContent = 'Payment provider not connected';
+      payBtn.textContent = 'Your cart is empty';
       payBtn.onclick = null;
-      if (statusBox) statusBox.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div><strong>Payments are not connected yet.</strong>This store is ready for a payment provider to be added later. No payment or purchase will be recorded from this prototype checkout.</div>`;
+      if (statusBox) statusBox.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div><strong>Nothing to check out yet.</strong>Add a design from the shop to get started.</div>`;
     }
   }
 }
+
+async function startPaidCheckout(){
+  if (!checkoutItems.length) { showToast('Your checkout is empty.'); return; }
+  if (typeof craftshanSupabase === 'undefined') { showToast('Checkout service is unavailable right now.'); return; }
+  const {data:{session}} = await craftshanSupabase.auth.getSession();
+  if (!session) {
+    pendingPaidCheckout = true;
+    setCustomerGateMode('login');
+    openCustomerGate();
+    showToast('Log in or sign up to check out.');
+    return;
+  }
+  const payBtn = document.getElementById('checkout-pay-btn');
+  if (payBtn) { payBtn.disabled = true; payBtn.textContent = 'Starting checkout…'; }
+  try {
+    const productIds = checkoutItems.map(item => item.supabase_id || (PRODUCTS.find(p => String(p.id) === String(item.id))?.supabase_id)).filter(Boolean);
+    if (!productIds.length) throw new Error('These items are not available for checkout.');
+    const { data, error } = await craftshanSupabase.functions.invoke('create-checkout', { body: { product_ids: productIds } });
+    if (error) throw error;
+    if (data?.error) throw new Error(data.error);
+    if (!data?.url) throw new Error('Could not start checkout.');
+    window.location.href = data.url;
+  } catch (e) {
+    console.error('Paid checkout error:', e);
+    showToast(e?.message || 'Could not start checkout. Please try again.');
+    renderCheckout();
+  }
+}
+let pendingPaidCheckout = false;
 
 async function completeFreeCheckout(){
   if (!checkoutItems.length) { showToast('Your checkout is empty.'); return; }
@@ -4582,6 +4616,9 @@ async function submitCustomerGate(){
     if (pendingFreeCheckout) {
       pendingFreeCheckout = false;
       await completeFreeCheckout();
+    } else if (pendingPaidCheckout) {
+      pendingPaidCheckout = false;
+      await startPaidCheckout();
     } else {
       await refreshAccountData();
       showPage('account');
@@ -7266,8 +7303,29 @@ function initCraftshanApp(){
   setupHomeFilters();
   syncOwnerEntry();
   syncCraftshanProductsFromSupabase();
+  handlePostCheckoutRedirect();
 }
 initCraftshanApp();
+
+function handlePostCheckoutRedirect(){
+  try{
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('checkout') !== 'success') return;
+    // Clean the URL so a refresh doesn't re-trigger this.
+    window.history.replaceState({}, '', window.location.pathname);
+    showToast("Thanks! We're confirming your payment — your files will appear in My Account shortly.");
+    showPage('account');
+    // The webhook usually lands within a couple seconds; poll briefly so
+    // the download shows up without the customer needing to refresh.
+    let attempts = 0;
+    const poll = setInterval(async () => {
+      attempts++;
+      await refreshAccountData();
+      const hasCompleted = customerOrders.some(o => ['paid','completed'].includes(o.status));
+      if (hasCompleted || attempts >= 8) clearInterval(poll);
+    }, 2500);
+  }catch(e){ console.warn('Post-checkout redirect handling failed:', e); }
+}
 
 function resetHomeSettings(){
   const page=document.getElementById('admin-page-home');
