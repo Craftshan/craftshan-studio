@@ -5653,77 +5653,117 @@ function syncProductSelectionModeUI(){
     selectAll.textContent=allSelected?'Deselect All':'Select All';
   }
   document.querySelectorAll('#admin-product-list .product-select').forEach(box=>{
-    box.checked=selectedProductIds.has(Number(box.value));
+    box.checked=selectedProductIds.has(box.value);
   });
 }
 function toggleAllProducts(){
   if(!productSelectMode) return;
   const boxes=Array.from(document.querySelectorAll('#admin-product-list .product-select'));
-  const allSelected=boxes.length>0 && boxes.every(b=>selectedProductIds.has(Number(b.value)));
+  const allSelected=boxes.length>0 && boxes.every(b=>selectedProductIds.has(b.value));
   if(allSelected){
-    boxes.forEach(b=>selectedProductIds.delete(Number(b.value)));
+    boxes.forEach(b=>selectedProductIds.delete(b.value));
   }else{
-    boxes.forEach(b=>selectedProductIds.add(Number(b.value)));
+    boxes.forEach(b=>selectedProductIds.add(b.value));
   }
   syncProductSelectionModeUI();
 }
 function toggleProductSelection(id,checked){
   if(!productSelectMode) return;
-  if(checked) selectedProductIds.add(Number(id));
-  else selectedProductIds.delete(Number(id));
+  if(checked) selectedProductIds.add(String(id));
+  else selectedProductIds.delete(String(id));
   syncProductSelectionModeUI();
 }
 function updateProductSelectionUI(){
   const all=document.getElementById('product-select-all-btn');
   if(all){
     const boxes=document.querySelectorAll('#admin-product-list .product-select');
-    const everySelected=boxes.length>0 && Array.from(boxes).every(b=>selectedProductIds.has(Number(b.value)));
+    const everySelected=boxes.length>0 && Array.from(boxes).every(b=>selectedProductIds.has(b.value));
     all.textContent=everySelected?'Deselect All':'Select All';
   }
   document.querySelectorAll('#admin-product-list .product-select').forEach(box=>{
     box.checked=selectedProductIds.has(Number(box.value));
   });
 }
-function deleteSelectedProducts(){
+/* v54: Bulk product delete now ACTUALLY deletes from Supabase.
+   Root cause of the "delete then it comes back" bug: this function only
+   mutated the local PRODUCTS array + localStorage cache and showed a success
+   toast — it never called the database. On refresh, syncCraftshanProductsFrom
+   Supabase() reloaded the untouched rows and the products reappeared.
+
+   Now: confirm -> delete each row in Supabase by its IMMUTABLE supabase_id
+   (never the mutable local numeric id) -> only on confirmed success re-sync
+   the authoritative dataset from Supabase and re-render. Owner-only writes are
+   enforced by RLS ("Owner can manage products", is_owner()). Order history is
+   preserved because order_items.product_id is ON DELETE SET NULL. */
+async function deleteSelectedProducts(){
   try{
-    if(!productSelectMode){
-      showAdminToast('Click Select first.');
-      return false;
+    if(!productSelectMode){ showAdminToast('Click Select first.'); return false; }
+    const keys=new Set(Array.from(selectedProductIds).map(String));
+    if(keys.size===0){ showAdminToast('Select at least one product first.'); return false; }
+    // Resolve selected STABLE keys (supabase_id) to product objects. Keying on
+    // the immutable id means selecting one product can never match another that
+    // happens to share a local numeric id.
+    const targets=PRODUCTS.filter(p=>keys.has(p.supabase_id||('local:'+p.id)));
+    if(targets.length===0){
+      selectedProductIds.clear(); syncProductSelectionModeUI();
+      showAdminToast('No selected products were found.'); return false;
     }
-    const ids=Array.from(selectedProductIds).map(Number).filter(Number.isFinite);
-    if(ids.length===0){
-      showAdminToast('Select at least one product first.');
-      return false;
-    }
-    const existingIds=new Set(PRODUCTS.map(p=>Number(p.id)));
-    const validIds=ids.filter(id=>existingIds.has(id));
-    if(validIds.length===0){
-      selectedProductIds.clear();
-      syncProductSelectionModeUI();
-      showAdminToast('No selected products were found.');
-      return false;
-    }
-    const names=PRODUCTS.filter(p=>validIds.includes(Number(p.id))).map(p=>p.name);
-    const message='Delete '+validIds.length+' selected product'+(validIds.length===1?'':'s')+'? This cannot be undone in this prototype.';
+    const names=targets.map(p=>p.name);
+    const message='Delete '+targets.length+' selected product'+(targets.length===1?'':'s')+'? This cannot be undone.';
     if(typeof window.confirm==='function' && !window.confirm(message)) return false;
-    const idSet=new Set(validIds);
-    const remaining=PRODUCTS.filter(p=>!idSet.has(Number(p.id)));
-    PRODUCTS.length=0;
-    remaining.forEach(p=>PRODUCTS.push(p));
-    selectedProductIds.clear();
-    productSelectMode=false;
-    persistProductsIfSupported();
-    renderAdminProducts();
-    renderProducts('home-product-grid',8);
-    renderProducts('shop-product-grid');
-    syncProductSelectionModeUI();
-    updateProductSelectionUI();
-    addAdminLog('Deleted selected products: '+names.join(', '));
-    showAdminToast(validIds.length+' product'+(validIds.length===1?'':'s')+' deleted');
-    return true;
+
+    if(typeof craftshanSupabase==='undefined'){ showAdminToast('Database is unavailable — nothing was deleted.'); return false; }
+
+    const deleted=[], failed=[];
+    for(const product of targets){
+      if(!product.supabase_id){ failed.push(product.name+' (not linked to the database)'); continue; }
+      try{
+        // Remove Storage files that belong exclusively to THIS product first.
+        const {data:dbProduct}=await craftshanSupabase.from('products')
+          .select('id,thumbnail_path,preview_image_path,zip_path').eq('id',product.supabase_id).maybeSingle();
+        if(dbProduct){
+          const files=[];
+          if(dbProduct.thumbnail_path)     files.push(['product-images',dbProduct.thumbnail_path]);
+          if(dbProduct.preview_image_path) files.push(['product-previews',dbProduct.preview_image_path]);
+          if(dbProduct.zip_path)           files.push(['product-zips',dbProduct.zip_path]);
+          for(const [bucket,path] of files){
+            const {error:se}=await craftshanSupabase.storage.from(bucket).remove([path]);
+            if(se) console.warn('Could not remove '+bucket+' file for '+product.name+':',se.message);
+          }
+        }
+        // Delete the row by immutable UUID and REQUIRE proof a row was removed.
+        // A .delete() blocked by RLS returns no error but zero rows; .select()
+        // lets us tell real success from a silent no-op.
+        const {data:removed,error}=await craftshanSupabase.from('products')
+          .delete().eq('id',product.supabase_id).select('id');
+        if(error) throw error;
+        if(!removed || removed.length===0){ failed.push(product.name+' (database refused the delete)'); continue; }
+        deleted.push(product.name);
+      }catch(e){
+        console.error('Product delete failed for '+product.name+':',e);
+        failed.push(product.name+' ('+(e?.message||'error')+')');
+      }
+    }
+
+    // Re-sync the authoritative dataset from Supabase so the UI matches the DB
+    // exactly — never guess by mutating the local array.
+    try{ await syncCraftshanProductsFromSupabase(); }catch(e){ console.warn('Re-sync after delete failed:',e); }
+    selectedProductIds.clear(); productSelectMode=false;
+    syncProductSelectionModeUI(); updateProductSelectionUI();
+    renderAdminProducts(); renderProducts('home-product-grid',8); renderProducts('shop-product-grid');
+
+    if(deleted.length){ addAdminLog('Deleted products: '+deleted.join(', ')); }
+    if(deleted.length && !failed.length){
+      showAdminToast(deleted.length+' product'+(deleted.length===1?'':'s')+' deleted');
+    }else if(deleted.length && failed.length){
+      showAdminToast('Deleted '+deleted.length+'. Could not delete: '+failed.join('; '));
+    }else{
+      showAdminToast('Nothing was deleted: '+failed.join('; '));
+    }
+    return deleted.length>0 && failed.length===0;
   }catch(err){
     console.error('Delete selected products failed:',err);
-    showAdminToast('Could not delete the selected products.');
+    showAdminToast('Could not delete the selected products: '+(err?.message||'error'));
     return false;
   }
 }
@@ -7077,8 +7117,8 @@ function renderAdminProducts(){
  const statPublished=document.getElementById('stat-published');
  if(statProducts) statProducts.textContent=PRODUCTS.length;
  if(statPublished) statPublished.textContent=PRODUCTS.filter(p=>p.status!=='draft').length;
- el.innerHTML=PRODUCTS.map(p=>`<div class="cms-item" data-product-row="${p.id}">
-   ${productSelectMode?`<input class="select-box product-select" type="checkbox" value="${p.id}" aria-label="Select ${escapeHtml(p.name)}" onchange="toggleProductSelection(this.value,this.checked)" ${selectedProductIds.has(Number(p.id))?'checked':''}>`:''}
+ el.innerHTML=PRODUCTS.map(p=>{const key=p.supabase_id||('local:'+p.id);return `<div class="cms-item" data-product-row="${key}">
+   ${productSelectMode?`<input class="select-box product-select" type="checkbox" value="${key}" aria-label="Select ${escapeHtml(p.name)}" onchange="toggleProductSelection(this.value,this.checked)" ${selectedProductIds.has(key)?'checked':''}>`:''}
    <div class="drag">◇</div>
    <div class="cms-item-main">
      <strong>${escapeHtml(p.name)}</strong>
@@ -7088,29 +7128,25 @@ function renderAdminProducts(){
    <span class="status-pill${p.free?'':' off'}">${p.free?'Free':'Paid'}</span>
    <span class="status-pill${p.featured?'':' off'}">${p.featured?'Featured':'Not featured'}</span>
    <div class="cms-actions">
-     <button type="button" data-product-action="edit" data-product-id="${p.id}">Edit</button>
-     <button type="button" data-product-action="toggle-published" data-product-id="${p.id}">${p.status==='draft'?'Publish':'Unpublish'}</button>
-     <button type="button" data-product-action="toggle-free" data-product-id="${p.id}">${p.free?'Make paid':'Make free'}</button>
-     <button type="button" data-product-action="toggle-featured" data-product-id="${p.id}">${p.featured?'Unfeature':'Feature'}</button>
-     <button type="button" data-product-action="preview" data-product-id="${p.id}">Preview</button>
+     <button type="button" data-product-action="edit" data-product-id="${key}">Edit</button>
+     <button type="button" data-product-action="toggle-published" data-product-id="${key}">${p.status==='draft'?'Publish':'Unpublish'}</button>
+     <button type="button" data-product-action="toggle-free" data-product-id="${key}">${p.free?'Make paid':'Make free'}</button>
+     <button type="button" data-product-action="toggle-featured" data-product-id="${key}">${p.featured?'Unfeature':'Feature'}</button>
+     <button type="button" data-product-action="preview" data-product-id="${key}">Preview</button>
 
    </div>
- </div>`).join('') || '<div class="cms-item"><div class="cms-item-main"><strong>No products</strong><small>Add your first product.</small></div></div>';
+ </div>`;}).join('') || '<div class="cms-item"><div class="cms-item-main"><strong>No products</strong><small>Add your first product.</small></div></div>';
  setupAdminProductActions();
  syncProductSelectionModeUI();
 }
 async function performProductAction(action, id) {
-  const productId = Number(id);
-
-  if (!Number.isFinite(productId)) {
-    showAdminToast('Invalid product');
-    return false;
-  }
-
+  const key = String(id);
   try {
+    // Resolve by immutable supabase_id (or the 'local:<id>' fallback) first,
+    // then by legacy numeric id for safety.
     const product = PRODUCTS.find(
-      x => Number(x.id) === productId
-    );
+      x => (x.supabase_id || ('local:' + x.id)) === key
+    ) || PRODUCTS.find(x => String(x.id) === key);
 
     if (!product) {
       showAdminToast('Product not found');
@@ -7249,26 +7285,35 @@ if (
       }
     }
 
-    const { error: deleteError } =
+    const { data: removed, error: deleteError } =
       await craftshanSupabase
         .from('products')
         .delete()
-        .eq('id', dbProduct.id);
+        .eq('id', dbProduct.id)
+        .select('id');
 
     if (deleteError) {
-      console.error(
-        'Supabase product delete failed:',
-        deleteError
-      );
-
-      showAdminToast(
-        deleteError.message ||
-        'Could not delete product from Supabase.'
-      );
-
+      console.error('Supabase product delete failed:', deleteError);
+      showAdminToast(deleteError.message || 'Could not delete product from Supabase.');
       return false;
     }
+    // A silent zero-row delete means RLS refused it — do not claim success.
+    if (!removed || removed.length === 0) {
+      showAdminToast('The database refused the delete. The product was kept.');
+      return false;
+    }
+    // v54: only after confirmed DB success, re-sync the authoritative dataset
+    // and re-render, then report success.
+    try { await syncCraftshanProductsFromSupabase(); } catch (e) { console.warn('Re-sync after delete failed:', e); }
+    renderAdminProducts();
+    renderProducts('home-product-grid', 8);
+    renderProducts('shop-product-grid');
+    showAdminToast((product.name || 'Product') + ' deleted');
+    if (typeof addAdminLog === 'function') addAdminLog('Deleted product: ' + (product.name || ''));
+    return true;
   }
+  showAdminToast('That product was not found in the database.');
+  return false;
 }
     }
   } catch (error) {
