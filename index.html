@@ -2246,6 +2246,13 @@ html[data-craftshan-maintenance="on"] body > .mob-menu,
 html[data-craftshan-maintenance="on"] body > .toast,
 html[data-craftshan-maintenance="on"] body > section{display:none !important;}
 html[data-craftshan-maintenance="on"] body{overflow:hidden;}
+/* v59: The maintenance overlay sits at z-index:9000. The Owner "Studio access"
+   login modal (.owner-gate) is z-index:1400, so while maintenance is ON it
+   opened *behind* the overlay and looked like nothing happened. Lift the gate
+   above the overlay only in the maintenance-ON state (normal-mode stacking is
+   unchanged). This is a pure stacking fix — the button, its openOwnerGate()
+   handler, and the Supabase Owner authentication are untouched. */
+html[data-craftshan-maintenance="on"] #owner-gate{z-index:9500;}
 
 /* Neutral splash while the very first visit waits for the server answer */
 html[data-craftshan-maintenance="checking"] body > nav.nav,
@@ -2265,7 +2272,15 @@ html[data-craftshan-maintenance="checking"] body{background:var(--paper);}
 }
 #craftshan-owner-maintenance-banner strong{color:var(--gold);font-weight:700;}
 html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{display:block;}
-@media(max-width:600px){#craftshan-owner-maintenance-banner{font-size:.72rem;padding:9px 12px;}}
+/* v56: the owner banner is position:fixed and reserves no space, so it used to
+   float over the bottom of the Owner Centre content. Reserve clearance equal to
+   its height in the admin scroll area so it can never obscure controls or the
+   bottom of cards. (The storefront keeps its own existing bottom spacing.) */
+html[data-craftshan-maintenance="owner"] .admin-content{padding-bottom:76px;}
+@media(max-width:600px){
+  #craftshan-owner-maintenance-banner{font-size:.72rem;padding:9px 12px;}
+  html[data-craftshan-maintenance="owner"] .admin-content{padding-bottom:88px;}
+}
 
 /* ═══ STOREFRONT VISIBILITY (v45) ═══
    Driven by data-sf-* attributes on <html>, set from Supabase
@@ -3690,7 +3705,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
     <div class="admin-bottom"><button class="admin-btn" style="flex:1;" onclick="showAdminPage('activity')">Activity Log</button><button class="admin-btn" onclick="ownerLogout()">Logout</button></div>
   </aside>
   <main class="admin-main">
-    <header class="admin-top"><div style="display:flex;align-items:center;gap:10px;"><button class="admin-mobile-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle admin menu" title="Menu">☰</button><div><div class="kicker" style="margin-bottom:1px;">↳ private owner area</div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><h2 id="admin-page-title">Dashboard</h2><span class="status-pill" style="background:rgba(232,160,32,.12);color:var(--gold);border-color:rgba(232,160,32,.22);">OWNER VIEW</span></div></div></div><div class="admin-top-right"><button class="admin-btn" onclick="showCustomerView()">Customer View</button><button class="admin-btn" onclick="showAdminPage('activity')">Activity</button><button class="admin-btn gold" onclick="saveActiveSettings()">Save Changes</button></div></header>
+    <header class="admin-top"><div style="display:flex;align-items:center;gap:10px;"><button class="admin-mobile-toggle" type="button" onclick="toggleAdminSidebar()" aria-label="Toggle admin menu" title="Menu">☰</button><div><div class="kicker" style="margin-bottom:1px;">↳ private owner area</div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><h2 id="admin-page-title">Dashboard</h2><span class="status-pill" style="background:rgba(232,160,32,.12);color:var(--gold);border-color:rgba(232,160,32,.22);">OWNER VIEW</span></div></div></div><div class="admin-top-right"><button class="admin-btn" onclick="showCustomerView()">Customer View</button><button class="admin-btn" onclick="showAdminPage('activity')">Activity</button></div></header>
     <div class="admin-content">
       <section class="admin-page active" id="admin-page-dashboard">
   <div class="admin-page-head dashboard-head">
@@ -3769,7 +3784,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
 
 <section class="admin-page" id="admin-page-home">
   <div class="admin-page-head">
-    <div><h3>Home Settings</h3><p>Manage the actual customer-facing homepage. Changes are applied after you save.</p></div>
+    <div><h3>Homepage</h3><p>Manage the actual customer-facing homepage. Changes are applied after you save.</p></div>
     <div class="admin-head-actions"><button type="button" class="admin-btn gold" onclick="saveActiveSettings()">Save Home Changes</button><button type="button" class="admin-btn" onclick="resetHomeSettings()">Reset Home</button></div>
   </div>
   <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Homepage controls</h4><p>Each panel below maps to a real part of the customer homepage.</p></div><span class="status-pill">Owner editable</span></div></div>
@@ -3784,7 +3799,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
   <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Save behaviour</h4><p>Changes are stored in this browser and applied to the public homepage after saving.</p></div><button type="button" class="admin-btn gold" onclick="saveActiveSettings()">Save Home Changes</button></div></div>
 </section>
 
-      <section class="admin-page" id="admin-page-license-settings"><div class="admin-page-head"><div><h3>License Settings</h3><p>Control customer-facing license copy without editing code.</p></div></div><div class="admin-panel"><div class="frontend-cms-grid"><div class="frontend-cms-field"><label>License kicker</label><input data-frontend-key="license.kicker" value="craftshan studio license"></div><div class="frontend-cms-field"><label>License heading</label><input data-frontend-key="license.heading" value="Make something. Sell what you make."></div><div class="frontend-cms-field full"><label>License introduction</label><textarea data-frontend-key="license.intro">Our license is designed for makers and crafters who purchase digital files from Craftshan Studio to create finished physical products.</textarea></div><div class="frontend-cms-field full"><label>Quick Summary</label><textarea data-frontend-key="license.summary">You may use a purchased design to make finished physical products. You may not sell, share, upload, redistribute, or otherwise provide the digital design file itself to other people or businesses.</textarea></div><div class="frontend-cms-field"><label>What You May Do</label><textarea data-frontend-key="license.may">Download and use a design you have legitimately purchased.</textarea></div><div class="frontend-cms-field"><label>What You May Not Do</label><textarea data-frontend-key="license.maynot">Sell or give away the original digital file.</textarea></div><div class="frontend-cms-field full"><label>Physical Product Rights</label><textarea data-frontend-key="license.physical">For products marked as commercially licensed, the intended commercial use is the creation and sale of finished physical goods.</textarea></div><div class="frontend-cms-field full"><label>Ownership &amp; Copyright</label><textarea data-frontend-key="license.ownership">Purchasing a digital file gives you a license to use it under these terms. It does not transfer copyright or ownership of the underlying artwork.</textarea></div></div><div class="frontend-cms-actions"><button type="button" class="admin-btn gold" onclick="saveFrontendSectionSettings('license-settings')">Save Frontend Changes</button><button type="button" class="admin-btn" onclick="resetFrontendSectionSettings('license-settings')">Reset This Section</button></div></div></section>
+      <section class="admin-page" id="admin-page-license-settings"><div class="admin-page-head"><div><h3>License</h3><p>Control customer-facing license copy without editing code.</p></div></div><div class="admin-panel"><div class="frontend-cms-grid"><div class="frontend-cms-field"><label>License kicker</label><input data-frontend-key="license.kicker" value="craftshan studio license"></div><div class="frontend-cms-field"><label>License heading</label><input data-frontend-key="license.heading" value="Make something. Sell what you make."></div><div class="frontend-cms-field full"><label>License introduction</label><textarea data-frontend-key="license.intro">Our license is designed for makers and crafters who purchase digital files from Craftshan Studio to create finished physical products.</textarea></div><div class="frontend-cms-field full"><label>Quick Summary</label><textarea data-frontend-key="license.summary">You may use a purchased design to make finished physical products. You may not sell, share, upload, redistribute, or otherwise provide the digital design file itself to other people or businesses.</textarea></div><div class="frontend-cms-field"><label>What You May Do</label><textarea data-frontend-key="license.may">Download and use a design you have legitimately purchased.</textarea></div><div class="frontend-cms-field"><label>What You May Not Do</label><textarea data-frontend-key="license.maynot">Sell or give away the original digital file.</textarea></div><div class="frontend-cms-field full"><label>Physical Product Rights</label><textarea data-frontend-key="license.physical">For products marked as commercially licensed, the intended commercial use is the creation and sale of finished physical goods.</textarea></div><div class="frontend-cms-field full"><label>Ownership &amp; Copyright</label><textarea data-frontend-key="license.ownership">Purchasing a digital file gives you a license to use it under these terms. It does not transfer copyright or ownership of the underlying artwork.</textarea></div></div><div class="frontend-cms-actions"><button type="button" class="admin-btn gold" onclick="saveFrontendSectionSettings('license-settings')">Save Frontend Changes</button><button type="button" class="admin-btn" onclick="resetFrontendSectionSettings('license-settings')">Reset This Section</button></div></div></section>
       <section class="admin-page" id="admin-page-products">
   <div class="admin-page-head">
     <div><h3>Products</h3><p>Only Craftshan Studio can create and sell products.</p></div>
@@ -3893,7 +3908,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       <section class="admin-page" id="admin-page-activity"><div class="admin-page-head"><div><h3>Activity Log</h3><p>Owner actions and system events.</p></div></div><div class="admin-panel"><div class="cms-list" id="activity-list"></div></div></section>
       <section class="admin-page" id="admin-page-dashboard-settings"><div class="admin-page-head"><div><h3>Dashboard Settings</h3><p>Customize your private owner control center.</p></div></div><div class="admin-two"><div class="admin-panel"><h4>General</h4><div class="form-box"><label>Dashboard Title</label><input value="Craftshan Studio Owner Control Center" data-admin-setting="title"></div><div class="form-box"><label>Welcome Message</label><textarea data-admin-setting="welcome">Welcome back, M Kashian Malik.</textarea></div><div class="form-box"><label>Owner Display Name</label><input value="M Kashian Malik" data-admin-setting="owner"></div></div><div class="admin-panel"><h4>Appearance</h4><div class="toggle-row"><span>Dark Admin Shell</span><button class="toggle on" onclick="toggleCms(this)"><i></i></button></div><div class="toggle-row"><span>Compact Tables</span><button class="toggle" onclick="toggleCms(this)"><i></i></button></div><div class="toggle-row"><span>Quick Actions</span><button class="toggle on" onclick="toggleCms(this)"><i></i></button></div></div></div></section>
       <section class="admin-page" id="admin-page-shop-settings" data-frontend-panel="shop-settings">
-        <div class="admin-page-head"><div><h3>Shop Settings</h3><p>Control the customer-facing Shop page without changing products themselves.</p></div></div>
+        <div class="admin-page-head"><div><h3>Shop Page</h3><p>Control the customer-facing Shop page without changing products themselves.</p></div></div>
         <div class="admin-two">
           <div class="admin-panel">
             <h4>Shop Page Content</h4><p>Edit the wording customers see at the top of the Shop and in its filters.</p>
@@ -3935,7 +3950,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
 
       <section class="admin-page" id="admin-page-contact-settings" data-frontend-panel="contact-settings"><div class="admin-page-head"><div><h3>Contact</h3><p>Edit the public Contact page details. Saved to the database and shown to every visitor.</p></div><div class="admin-head-actions"><button type="button" class="admin-btn gold" onclick="saveFrontendSectionSettings('contact-settings')">Save Contact</button><button type="button" class="admin-btn" onclick="resetFrontendSectionSettings('contact-settings')">Reset</button></div></div><div class="admin-panel"><div class="admin-two"><div class="form-box"><label>Eyebrow</label><input data-frontend-key="contact.kicker" value="↳ get in touch"></div><div class="form-box"><label>Heading</label><input data-frontend-key="contact.heading" value="Let’s talk about your project"></div></div><div class="form-box"><label>Intro line</label><textarea data-frontend-key="contact.description" style="min-height:70px;">Questions about a design, a custom request, or licensing? Send a message and Craftshan Studio will get back to you by email.</textarea></div><div class="admin-two"><div class="form-box"><label>Business name</label><input data-frontend-key="contact.business" value="Craftshan Studio"></div><div class="form-box"><label>Owner / Founder</label><input data-frontend-key="contact.owner" value="M Kashian Malik"></div></div><div class="admin-two"><div class="form-box"><label>Contact email</label><input type="email" data-frontend-key="contact.email" value="hello@craftshanstudio.com"></div><div class="form-box"><label>Social</label><input data-frontend-key="contact.social" value="@craftshanstudio on social platforms"></div></div></div></section>
       <section class="admin-page" id="admin-page-footer-settings"><div class="admin-page-head"><div><h3>Footer Settings</h3><p>Control footer columns, links and brand text.</p></div></div><div class="admin-panel"><div class="form-box"><label>Footer Description</label><textarea>Premium digital design files for makers, creators and entrepreneurs.</textarea></div><div class="cms-list"><div class="cms-item"><div class="cms-item-main"><strong>Instagram</strong><small>Social link</small></div><div class="cms-actions"><button>Edit</button></div></div><div class="cms-item"><div class="cms-item-main"><strong>About</strong><small>Footer company link</small></div><div class="cms-actions"><button>Edit</button></div></div></div></div></section>
-      <section class="admin-page" id="admin-page-global-settings" data-frontend-panel="global-settings"><div class="admin-page-head"><div><h3>Store Settings</h3><p>Store-wide identity shown to every visitor. Saved to the database.</p></div><div class="admin-head-actions"><button type="button" class="admin-btn gold" onclick="saveFrontendSectionSettings('global-settings')">Save Store Settings</button><button type="button" class="admin-btn" onclick="resetFrontendSectionSettings('global-settings')">Reset</button></div></div><div class="admin-panel"><div class="form-box"><label>Brand name</label><input data-frontend-key="global.brand" value="Craftshan Studio"><small style="color:var(--ink3);font-size:.7rem;">Shown in the header, footer and throughout the site.</small></div></div><p style="font-size:.72rem;color:var(--ink3);margin:14px 0 0;line-height:1.6;">Page title and search description are managed in <strong>SEO</strong>. Maintenance Mode has its own page. Contact details and social links are managed in <strong>Contact</strong>.</p></div></section>
+      <section class="admin-page" id="admin-page-global-settings" data-frontend-panel="global-settings"><div class="admin-page-head"><div><h3>Store Settings</h3><p>Store-wide identity shown to every visitor. Saved to the database.</p></div><div class="admin-head-actions"><button type="button" class="admin-btn gold" onclick="saveFrontendSectionSettings('global-settings')">Save Store Settings</button><button type="button" class="admin-btn" onclick="resetFrontendSectionSettings('global-settings')">Reset</button></div></div><div class="admin-panel"><div class="form-box"><label>Brand name</label><input data-frontend-key="global.brand" value="Craftshan Studio"><small style="color:var(--ink3);font-size:.7rem;">Shown in the header, footer and throughout the site.</small></div></div><p style="font-size:.72rem;color:var(--ink3);margin:14px 0 0;line-height:1.6;">Page title and search description are managed in <strong>SEO</strong>. Maintenance Mode has its own page. Contact details and social links are managed in <strong>Contact</strong>.</p></section>
       <section class="admin-page" id="admin-page-visibility"><div class="admin-page-head"><div><h3>Storefront Visibility</h3><p>The single place that decides which storefront sections customers can see. Saved in the database and applied to every visitor on every device.</p></div></div>
   <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Storefront Visibility</h4><p>Show or hide storefront sections. ON = visible to customers, OFF = hidden. These switches save to the database immediately and apply to every visitor on every device. Hiding a section never deletes products, categories, reviews or tools.</p></div><span class="status-pill" id="storefront-visibility-status">Saved in database</span></div><div class="admin-two"><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Announcement bar<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Top strip above the header</small></span><button class="toggle on" data-setting="announcement.enabled" onclick="toggleCms(this)" aria-label="Announcement bar visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Hero section<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Main headline and actions</small></span><button class="toggle on" data-setting="hero.enabled" onclick="toggleCms(this)" aria-label="Hero section visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Featured designs<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Homepage product grid</small></span><button class="toggle on" data-setting="section.featured" onclick="toggleCms(this)" aria-label="Featured designs visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Tools section<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Also hides the Tools nav link and page</small></span><button class="toggle on" data-setting="section.tools" onclick="toggleCms(this)" aria-label="Tools section visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Final CTA<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Closing conversion panel</small></span><button class="toggle on" data-setting="section.cta" onclick="toggleCms(this)" aria-label="Final CTA visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Seasonal / sale banner<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Countdown banner. Sales themselves are unaffected</small></span><button class="toggle on" data-setting="section.seasonal" onclick="toggleCms(this)" aria-label="Seasonal / sale banner visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Free Files<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Hides the hero button and footer link</small></span><button class="toggle on" data-setting="section.freeFiles" onclick="toggleCms(this)" aria-label="Free Files visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Bundles<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Hides the Bundles footer link</small></span><button class="toggle on" data-setting="section.bundles" onclick="toggleCms(this)" aria-label="Bundles visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Category filters<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Homepage pills and the shop sidebar group</small></span><button class="toggle on" data-setting="section.categories" onclick="toggleCms(this)" aria-label="Category filters visibility"><i></i></button></div><div class="toggle-row" style="align-items:flex-start;"><span style="display:block;">Product reviews<small style="display:block;color:var(--ink3);font-size:.7rem;margin-top:3px;line-height:1.45;">Reviews panel on product pages</small></span><button class="toggle on" data-setting="section.reviews" onclick="toggleCms(this)" aria-label="Product reviews visibility"><i></i></button></div></div></div>
       </section>
@@ -3943,7 +3958,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       </section>
       <section class="admin-page" id="admin-page-seo-settings">
   <div class="admin-page-head">
-    <div><h3>SEO Settings</h3><p>Control the search and social information customers see when Craftshan Studio pages are shared or indexed.</p></div>
+    <div><h3>SEO</h3><p>Control the search and social information customers see when Craftshan Studio pages are shared or indexed.</p></div>
     <div class="admin-head-actions"><button class="admin-btn gold" type="button" onclick="saveSeoSettings()">Save SEO Changes</button><button class="admin-btn" type="button" onclick="resetSeoSettings()">Reset</button></div>
   </div>
   <div class="admin-two seo-settings-layout">
@@ -4188,7 +4203,7 @@ function renderProductList(containerId, items, limit){
     <div class="p-card" onclick="openProduct(${p.id})">
       <div class="p-thumb" style="background:${p.bg};">
         ${getProductPricing(p).isOnSale ? `<span class="p-chip chip-hot">${getProductPricing(p).discountPercent}% OFF</span>` : (p.badge||p.chip ? `<span class="p-chip chip-${p.chip||'new'}">${escapeHtml(p.badge|| (p.chip==='hot'?'★ Hot':p.chip==='free'?'Free':'New'))}</span>` : '')}
-        <button class="p-like-btn${wishlist.some(w=>w.id===p.id)?' liked':''}" onclick="event.stopPropagation();toggleWishlist(${p.id})" title="Like design"><svg viewBox="0 0 24 24" fill="${wishlist.some(w=>w.id===p.id)?'currentColor':'none'}" stroke="currentColor" stroke-width="1.6"><path d="M20.8 8.7c0 5.5-8.8 10.1-8.8 10.1S3.2 14.2 3.2 8.7A4.7 4.7 0 0 1 12 6.3a4.7 4.7 0 0 1 8.8 2.4Z"/></svg></button>
+        <button class="p-like-btn${isWishlisted(p)?' liked':''}" onclick="event.stopPropagation();toggleWishlist(${p.id})" title="Like design"><svg viewBox="0 0 24 24" fill="${isWishlisted(p)?'currentColor':'none'}" stroke="currentColor" stroke-width="1.6"><path d="M20.8 8.7c0 5.5-8.8 10.1-8.8 10.1S3.2 14.2 3.2 8.7A4.7 4.7 0 0 1 12 6.3a4.7 4.7 0 0 1 8.8 2.4Z"/></svg></button>
         ${(p.thumbnailData||p.coverImage) ? `<img class="product-card-cover" src="${p.thumbnailData||p.coverImage}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="product-card-fallback" style="display:none;">${p.svg||""}</div>` : `<div class="product-card-fallback">${p.svg||""}</div>`}
       </div>
       <div class="p-info"><div class="p-name">${escapeHtml(p.name)}</div><div class="p-row"><span class="p-price${p.free?' free':''}">${p.free?'Free':'$'+effectivePrice(p).toFixed(2)}</span></div><button class="p-add-btn" onclick="event.stopPropagation();openProduct(${p.id})">View Design</button></div>
@@ -4443,9 +4458,10 @@ function openProduct(id) {
   document.getElementById('prod-add-btn').onclick = () => { addToCart(id); };
   const wishBtn=document.getElementById('prod-wishlist-btn');
   if(wishBtn){
-    const reflect=()=>{ const saved=wishlist.some(x=>x.id===id); wishBtn.classList.toggle('is-saved',saved); wishBtn.setAttribute('aria-pressed',saved?'true':'false'); wishBtn.textContent=saved?'♥ Saved':'♥ Save'; };
+    const reflect=()=>{ const saved=wishlist.some(x=>x.id===id||(x.supabase_id&&p&&x.supabase_id===p.supabase_id)); wishBtn.classList.toggle('is-saved',saved); wishBtn.setAttribute('aria-pressed',saved?'true':'false'); wishBtn.textContent=saved?'♥ Saved':'♥ Save'; };
+    wishBtn._reflect=reflect;               // v58: let refreshWishlistUI re-sync this button
     reflect();
-    wishBtn.onclick=()=>{ toggleWishlist(id); reflect(); };
+    wishBtn.onclick=()=>{ toggleWishlist(id); };  // v58: reflect happens inside the optimistic update
   }
   const buyBtn=document.getElementById('prod-buy-btn');
   if(buyBtn) buyBtn.onclick=()=>{ if(!cart.some(c=>c.id===id)) addToCart(id); checkoutItems=cart.map(item=>({...item})); renderCheckout(checkoutItems); showPage('checkout'); showToast(p.free ? '✓ Free design added to checkout!' : '✓ Added to cart and ready for checkout'); };
@@ -4753,14 +4769,83 @@ function openCheckoutForItems(items){
 function updateWishlistBadge(){
   const liked=document.getElementById('account-liked-count'); if(liked) liked.textContent=wishlist.length;
 }
-function toggleWishlist(id){
-  const p=PRODUCTS.find(x=>x.id===id); if(!p) return;
-  const exists=wishlist.some(x=>x.id===id);
-  wishlist=exists ? wishlist.filter(x=>x.id!==id) : [...wishlist,p];
+/* ── v58: Supabase-backed, per-customer wishlist ──────────────────────
+   Persistence lives in public.wishlists (RLS: a customer sees/writes only
+   their own rows, keyed by auth.uid()). The in-memory `wishlist` array holds
+   the matching loaded product objects and is the single source for all UI.  */
+const wishlistBusy = new Set();   // product supabase_ids with an in-flight toggle
+function wishlistIsAuthed(){ return !!(customerSession && customerSession.user && customerSession.user.id); }
+function isWishlisted(p){ return !!(p && wishlist.some(w=> (p.supabase_id && w.supabase_id===p.supabase_id) || w.id===p.id )); }
+
+/* Re-sync every surface that reflects saved-state, without a page reload. */
+function refreshWishlistUI(){
   updateWishlistBadge();
-  renderWishlist();
-  renderProducts('home-product-grid',8); renderProducts('shop-product-grid'); updateSaleBanner();
-  showToast(exists ? '♡ Removed from liked designs' : '♥ Added to liked designs');
+  try{ renderWishlist(); }catch(e){}
+  try{ renderProducts('home-product-grid',8); }catch(e){}
+  try{ renderProducts('shop-product-grid'); }catch(e){}
+  try{ if(typeof updateSaleBanner==='function') updateSaleBanner(); }catch(e){}
+  const wishBtn=document.getElementById('prod-wishlist-btn');
+  if(wishBtn && typeof wishBtn._reflect==='function') wishBtn._reflect();
+}
+
+/* Hydrate the local wishlist from Supabase for the signed-in customer.
+   Products that are no longer available (deleted/unpublished, so absent from
+   PRODUCTS) are silently skipped so the UI never breaks. */
+async function loadWishlistFromSupabase(){
+  if(typeof craftshanSupabase==='undefined'){ wishlist=[]; refreshWishlistUI(); return; }
+  if(!wishlistIsAuthed()){ wishlist=[]; refreshWishlistUI(); return; }
+  try{
+    const {data,error}=await craftshanSupabase.from('wishlists').select('product_id');
+    if(error) throw error;
+    const ids=new Set((data||[]).map(r=>String(r.product_id)));
+    wishlist = PRODUCTS.filter(p=>p.supabase_id && ids.has(String(p.supabase_id)));
+  }catch(e){
+    console.error('Failed to load wishlist:',e);
+    wishlist=[];
+  }
+  refreshWishlistUI();
+}
+
+async function toggleWishlist(id){
+  const p=PRODUCTS.find(x=>x.id===id) || PRODUCTS.find(x=>String(x.supabase_id)===String(id));
+  if(!p) return;
+  if(!wishlistIsAuthed()){
+    showToast('Log in to save designs to your account.');
+    try{ if(typeof setCustomerGateMode==='function') setCustomerGateMode('login'); if(typeof openCustomerGate==='function') openCustomerGate(); }catch(e){}
+    return;
+  }
+  const sid=p.supabase_id;
+  if(!sid){ showToast('This design can’t be saved yet.'); return; }
+  if(wishlistBusy.has(sid)) return;
+  wishlistBusy.add(sid);
+  const uid=customerSession.user.id;
+  const wasSaved=wishlist.some(x=>x.supabase_id===sid);
+  // optimistic UI
+  wishlist = wasSaved ? wishlist.filter(x=>x.supabase_id!==sid) : [...wishlist,p];
+  refreshWishlistUI();
+  try{
+    if(wasSaved){
+      const {error}=await craftshanSupabase.from('wishlists').delete()
+        .eq('user_id',uid).eq('product_id',sid);
+      if(error) throw error;
+      showToast('♡ Removed from liked designs');
+    } else {
+      const {error}=await craftshanSupabase.from('wishlists')
+        .insert({ user_id:uid, product_id:sid });
+      if(error && error.code!=='23505') throw error;   // 23505 = already saved → treat as success
+      showToast('♥ Added to liked designs');
+    }
+  }catch(e){
+    console.error('Wishlist toggle failed:',e);
+    // revert the optimistic change so the UI never lies about saved-state
+    wishlist = wasSaved
+      ? (wishlist.some(x=>x.supabase_id===sid) ? wishlist : [...wishlist,p])
+      : wishlist.filter(x=>x.supabase_id!==sid);
+    refreshWishlistUI();
+    showToast('Could not update liked designs. Please try again.');
+  }finally{
+    wishlistBusy.delete(sid);
+  }
 }
 function renderWishlist(){
   const c=document.getElementById('wishlist-grid'); if(!c) return;
@@ -4886,6 +4971,7 @@ async function customerLogout(){
   if(typeof craftshanSupabase==='undefined') return;
   await craftshanSupabase.auth.signOut();
   customerSession=null; customerOrders=[];
+  wishlist=[]; refreshWishlistUI();   // v58: clear saved designs from the UI on logout
   renderAccountLoggedOut();
   showToast('Logged out.');
 }
@@ -4898,6 +4984,7 @@ async function refreshAccountData(){
   if(typeof craftshanSupabase==='undefined') return;
   const {data:{session}}=await craftshanSupabase.auth.getSession();
   customerSession=session||null;
+  await loadWishlistFromSupabase();   // v58: hydrate/clear saved designs for this session
   const guest=document.getElementById('account-guest'), shell=document.getElementById('account-logged-in');
   if(!customerSession){ renderAccountLoggedOut(); return; }
   if(guest) guest.style.display='none';
@@ -4965,6 +5052,7 @@ function renderAccountLicenses(){
 craftshanSupabase.auth.onAuthStateChange((_event,session)=>{
   customerSession=session||null;
   if(currentPage==='account') refreshAccountData();
+  else loadWishlistFromSupabase();   // v58: keep saved-state in sync on login/logout/token refresh
 });
 function submitNavDesignSearch(){
   const input=document.getElementById('nav-design-search');
@@ -7679,6 +7767,9 @@ async function syncCraftshanProductsFromSupabase() {
     renderAdminProducts();
     if (typeof renderShopCategoryFilters === 'function') renderShopCategoryFilters();
 
+    // v58: products are now loaded, so saved designs can be mapped to products.
+    try { if (typeof loadWishlistFromSupabase === 'function') loadWishlistFromSupabase(); } catch(e){}
+
     return true;
 
   } catch (error) {
@@ -8649,16 +8740,30 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
     return { file_path: path, file_name: safeName(file.name), file_size: file.size };
   }
   /* Only ever removes a path that the given tool owns and no other tool uses. */
-  async function removeToolFile(path, keepForToolId){
-    if (!path) return;
-    if (tools.some(t => t.file_path === path && String(t.id) !== String(keepForToolId))) {
+  /* v55: returns {removed, reason} and NEVER pretends success.
+     Only removes a file that (a) actually belongs to this tool's folder and
+     (b) is not still referenced by another tool. */
+  async function removeToolFile(path, toolId){
+    if (!path) return { removed:false, reason:'no-file' };
+    // Safety: the path MUST live in this tool's own folder (<toolId>/...).
+    // This guarantees we can never touch another tool's file, a product file,
+    // or anything outside the tools bucket.
+    if (String(path).split('/')[0] !== String(toolId)) {
+      console.warn('Refusing to remove a file outside the tool folder:', path);
+      return { removed:false, reason:'path-mismatch' };
+    }
+    if (tools.some(t => t.file_path === path && String(t.id) !== String(toolId))) {
       console.warn('Tool file still referenced by another tool, leaving it:', path);
-      return;
+      return { removed:false, reason:'shared' };
     }
     try{
       const { error } = await craftshanSupabase.storage.from('tools').remove([path]);
       if (error) throw error;
-    }catch(e){ console.warn('Old tool file not removed (left for manual cleanup):', path, e); }
+      return { removed:true };
+    }catch(e){
+      console.warn('Tool file could not be removed (left for manual cleanup):', path, e);
+      return { removed:false, reason:(e && e.message) || 'storage-error' };
+    }
   }
   window.craftshanUploadToolFile = uploadToolFile;
 
@@ -8771,14 +8876,29 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
     const id = document.getElementById('delete-tool-id').value;
     const t = tools.find(x => String(x.id) === String(id));
     if (!id) return;
-    const filePath = t?.file_path || null;
+    // v55: read the file_path from the DATABASE, not the (possibly stale)
+    // in-memory array, so the file is reliably found and cleaned up.
+    let filePath = null;
+    try{
+      const { data: dbTool } = await craftshanSupabase.from('tools').select('file_path').eq('id', id).maybeSingle();
+      filePath = dbTool?.file_path || null;
+    }catch(e){ console.warn('Could not read tool file_path before delete:', e); }
+
+    let fileOutcome = null;
     const ok = await persist(async () => {
       const { error } = await craftshanSupabase.from('tools').delete().eq('id', id);
-      if (error) throw error;
-      // Only after the row is definitely gone, and only if nothing else uses it.
-      if (filePath) await removeToolFile(filePath, id);
+      if (error) throw error;                       // DB delete failed -> file is NOT touched
+      // Row is definitely gone; now remove its file (belongs-to-tool verified inside).
+      if (filePath) fileOutcome = await removeToolFile(filePath, id);
     }, t ? `"${t.name}" deleted` : 'Tool deleted');
-    if (ok) closeEditorModal('tool-delete-modal');
+
+    if (ok) {
+      closeEditorModal('tool-delete-modal');
+      // Do not pretend cleanup succeeded — surface a real storage failure.
+      if (filePath && fileOutcome && !fileOutcome.removed && fileOutcome.reason !== 'shared') {
+        if (typeof showAdminToast === 'function') showAdminToast('Tool deleted, but its file could not be removed — left for manual cleanup.');
+      }
+    }
   };
 
   /* One-time helper: the old four-slot system stored its edits in this
@@ -9222,7 +9342,26 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
     } else if (resolved && !document.querySelector('.page.active')){
       document.getElementById('page-home')?.classList.add('active');
     }
+    applyRobots();
     paint();
+  }
+
+  /* v57: SEO safety. While the maintenance screen is what a visitor/crawler
+     actually sees (active === true), tell search engines not to index it, so
+     the "temporarily offline" page never becomes the indexed homepage. When
+     the real storefront is shown (maintenance off, or the owner), restore the
+     robots value the SEO settings own — never a permanent site-wide noindex,
+     and the canonical URL is never touched here. */
+  function applyRobots(){
+    let meta = document.querySelector('meta[name="robots"]');
+    if (!meta){ meta = document.createElement('meta'); meta.name = 'robots'; document.head.appendChild(meta); }
+    if (active){
+      meta.content = 'noindex, nofollow';
+    } else {
+      let seoRobots = 'index, follow';
+      try{ if (typeof window.craftshanSeoRead === 'function'){ const v = window.craftshanSeoRead(); if (v && v.robots) seoRobots = v.robots; } }catch(e){}
+      meta.content = seoRobots;
+    }
   }
 
   async function resolve(){
