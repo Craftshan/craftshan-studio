@@ -3413,7 +3413,9 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
         <div class="form-group"><label for="contact-name">Your name</label><input id="contact-name" name="name" type="text" class="form-input" placeholder="Your name" required autocomplete="name"/></div>
         <div class="form-group"><label for="contact-order">Order no. <span style="font-weight:400;color:var(--ink3);text-transform:none;letter-spacing:0;">(optional)</span></label><input id="contact-order" name="order" type="text" class="form-input" placeholder="e.g. CS-10024"/></div>
       </div>
-      <div class="form-group"><label for="contact-form-email">Email address</label><input id="contact-form-email" name="email" type="email" class="form-input" placeholder="you@example.com" required autocomplete="email"/></div>
+      <!-- v66: the customer no longer types an email. We use their authenticated Supabase account email as the reply-to. The input is kept hidden only so no other code that references it breaks. -->
+      <div class="form-group" id="contact-email-group" style="display:none;"><label for="contact-form-email">Email address</label><input id="contact-form-email" name="email" type="email" class="form-input" placeholder="you@example.com" autocomplete="email"/></div>
+      <div id="contact-auth-note" class="form-note" style="margin:0 0 6px;"></div>
       <div class="form-group"><label for="contact-subject">Subject</label><select id="contact-subject" name="subject" class="form-input form-select"><option>General enquiry</option><option>Licensing question</option><option>Custom design request</option><option>Technical issue</option><option>Billing</option></select></div>
       <div class="form-group"><label for="contact-message">Message</label><textarea id="contact-message" name="message" class="form-input form-textarea" placeholder="Tell us what's on your mind…" required></textarea></div>
       <div aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;height:0;width:0;overflow:hidden;"><label for="contact-company">Company (leave this empty)</label><input id="contact-company" name="company" type="text" tabindex="-1" autocomplete="off"></div>
@@ -5307,6 +5309,7 @@ function showPage(name, fromHistory) {
   // consumer the moment the Checkout page is on screen.
   if (name === 'checkout') renderCheckout(ensureCheckoutItems());
   if (name === 'wishlist') renderWishlist();
+  if (name === 'contact' && typeof refreshContactAuthNote === 'function') refreshContactAuthNote();
   if (name === 'account') switchAccountTab('overview',null);
   if (name === 'home' && typeof updateSaleBanner === 'function') updateSaleBanner();
   if (name === 'shop') {
@@ -5393,10 +5396,19 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-/* Contact form: validate, then hand off to the visitor's email app (no backend required). */
+/* v66: Contact reply-to email comes from the authenticated Supabase session — the
+   customer never types it, and a browser-supplied email is never trusted. Sends
+   through the existing `contact-message` Edge Function (recipient stays a server
+   secret). Shows the signed-in email, or a sign-in prompt when logged out. */
+async function refreshContactAuthNote(){
+  const note=document.getElementById('contact-auth-note'); if(!note) return;
+  let email='';
+  try{ if(typeof craftshanSupabase!=='undefined'){ const { data:{ session } } = await craftshanSupabase.auth.getSession(); email = session?.user?.email || ''; } }catch(e){}
+  if(email){ note.textContent='Sending as '+email+' (your account email). We\'ll reply here.'; }
+  else{ note.innerHTML='Please <a role="button" tabindex="0" style="color:var(--gold);cursor:pointer;text-decoration:underline;" onclick="setCustomerGateMode(\'login\');openCustomerGate();">sign in</a> to send us a message so we can reply to you.'; }
+}
 function submitContactForm(){
   const nameEl=document.getElementById('contact-name');
-  const emailEl=document.getElementById('contact-form-email');
   const msgEl=document.getElementById('contact-message');
   const subjEl=document.getElementById('contact-subject');
   const orderEl=document.getElementById('contact-order');
@@ -5404,25 +5416,30 @@ function submitContactForm(){
   const showErr=(m,focusEl)=>{ if(errEl){ errEl.textContent=m; errEl.style.display='block'; } if(focusEl) focusEl.focus(); };
   if(errEl){ errEl.style.display='none'; errEl.textContent=''; }
   const name=(nameEl?.value||'').trim();
-  const email=(emailEl?.value||'').trim();
   const message=(msgEl?.value||'').trim();
   if(!name){ showErr('Please enter your name.', nameEl); return; }
-  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showErr('Please enter a valid email address.', emailEl); return; }
   if(message.length<10){ showErr('Please add a little more detail to your message (at least 10 characters).', msgEl); return; }
   const subject=(subjEl?.value||'General enquiry').trim();
   const order=(orderEl?.value||'').trim();
   const company=(document.getElementById('contact-company')?.value||'').trim(); // honeypot
-  // v62: send through the `contact-message` Edge Function. The recipient inbox is a
-  // server-side secret and is NEVER present in this client code. No mailto: is used.
   if(typeof craftshanSupabase==='undefined'){ showErr('The contact service is unavailable right now. Please try again later.'); return; }
   const submitBtn=document.querySelector('#page-contact .form-submit');
   if(submitBtn){ submitBtn.disabled=true; submitBtn.textContent='Sending…'; }
   (async()=>{
     try{
+      // The reply-to email is the authenticated user's — taken from the Supabase
+      // session, never from a browser-typed field.
+      const { data:{ session } } = await craftshanSupabase.auth.getSession();
+      const email = session?.user?.email || '';
+      if(!email){
+        showErr('Please sign in to send us a message so we can reply to you.');
+        try{ if(typeof setCustomerGateMode==='function') setCustomerGateMode('login'); if(typeof openCustomerGate==='function') openCustomerGate(); }catch(e){}
+        return;
+      }
       const {data,error}=await craftshanSupabase.functions.invoke('contact-message',{body:{name,email,message,subject,order,company}});
       if(error || !data || !data.ok){ showErr((data&&data.message)||'We could not send your message right now. Please try again shortly.'); return; }
       showToast("✓ Message sent successfully. We'll get back to you soon.");
-      if(nameEl) nameEl.value=''; if(emailEl) emailEl.value=''; if(msgEl) msgEl.value=''; if(orderEl) orderEl.value='';
+      if(nameEl) nameEl.value=''; if(msgEl) msgEl.value=''; if(orderEl) orderEl.value='';
     }catch(e){
       console.error('Contact submit failed:',e);
       showErr('We could not send your message right now. Please try again shortly.');
