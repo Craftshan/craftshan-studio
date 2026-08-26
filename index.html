@@ -418,7 +418,7 @@ section,[id^=page-]{scroll-margin-top:88px;}
 .checkout-item-thumb img{width:100%;height:100%;object-fit:contain;}
 .checkout-item-thumb svg{width:65%;height:65%;}
 .checkout-item-main{flex:1;min-width:0;}
-.checkout-item-name{font-size:.83rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.checkout-item-name{font-size:.83rem;font-weight:600;white-space:normal;overflow-wrap:anywhere;word-break:break-word;min-width:0;}
 .checkout-item-meta{font-size:.72rem;color:var(--ink3);margin-top:2px;}
 .checkout-item-price{font-family:'Playfair Display',serif;font-weight:700;font-size:.92rem;}
 .checkout-item > .checkout-item-price{margin-left:auto;}
@@ -2590,6 +2590,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
         <button class="btn-buy-now" id="prod-buy-btn">Buy Now</button>
         <button class="btn-add" id="prod-add-btn">Add to cart</button>
         <button class="btn-wishlist" id="prod-wishlist-btn" type="button" aria-pressed="false">♥ Save</button>
+        <button class="btn-wishlist" id="prod-share-btn" type="button" aria-label="Share this design">↗ Share Design</button>
       </div>
       <div class="prod-meta-grid">
         <div class="prod-meta-item"><div class="prod-meta-label">Original file size</div><div class="prod-meta-val" id="prod-file-size">—</div></div>
@@ -3385,8 +3386,8 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
         <div class="contact-method contact-email">
           <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></div>
           <div>
-            <div class="contact-method-title">Email us</div>
-            <div class="contact-method-val">hello@craftshanstudio.com</div>
+            <div class="contact-method-title">Message us</div>
+            <div class="contact-method-val">Use the form and we'll reply by email</div>
           </div>
         </div>
 
@@ -3408,9 +3409,10 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       <div class="form-group"><label for="contact-form-email">Email address</label><input id="contact-form-email" name="email" type="email" class="form-input" placeholder="you@example.com" required autocomplete="email"/></div>
       <div class="form-group"><label for="contact-subject">Subject</label><select id="contact-subject" name="subject" class="form-input form-select"><option>General enquiry</option><option>Licensing question</option><option>Custom design request</option><option>Technical issue</option><option>Billing</option></select></div>
       <div class="form-group"><label for="contact-message">Message</label><textarea id="contact-message" name="message" class="form-input form-textarea" placeholder="Tell us what's on your mind…" required></textarea></div>
+      <div aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;height:0;width:0;overflow:hidden;"><label for="contact-company">Company (leave this empty)</label><input id="contact-company" name="company" type="text" tabindex="-1" autocomplete="off"></div>
       <p id="contact-form-error" class="form-error" role="alert" style="display:none;"></p>
       <button class="form-submit" type="button" onclick="submitContactForm()">Send message →</button>
-      <p class="form-note">This opens a pre-filled email to Craftshan Studio in your email app. Order no. is optional — include it when you already have an order so we can identify your purchase quickly.</p>
+      <p class="form-note">We'll receive your message and reply to you by email. Order no. is optional — include it when you already have an order so we can identify your purchase quickly.</p>
     </div>
   </div>
 </div><!-- /page-contact -->
@@ -3549,6 +3551,24 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
     ></div>
   </div>
 </div>
+</div>
+<!-- v62: 6-digit email OTP verification for new signups (Supabase Auth verifyOtp) -->
+<div class="owner-gate" id="customer-otp-gate" aria-hidden="true">
+  <div class="owner-gate-card">
+    <button class="close" onclick="closeCustomerOtp()">×</button>
+    <div class="kicker">↳ verify your email</div>
+    <h3>Enter your verification code</h3>
+    <p id="customer-otp-sub">We sent a 6-digit code to your email. Enter it below to finish creating your account.</p>
+    <div class="form-box">
+      <label>6-digit code</label>
+      <input id="customer-otp-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" onkeydown="if(event.key==='Enter')verifyCustomerOtp()">
+    </div>
+    <button class="btn-gold" style="width:100%;" id="customer-otp-submit" onclick="verifyCustomerOtp()">Verify →</button>
+    <div style="display:flex;justify-content:center;margin-top:10px;">
+      <button type="button" class="btn-outline" id="customer-otp-resend" style="font-size:.72rem;padding:7px 14px;" onclick="resendCustomerOtp()">Resend code</button>
+    </div>
+    <div id="customer-otp-status" style="font-size:.7rem;color:var(--ink3);margin-top:10px;text-align:center;min-height:14px;"></div>
+  </div>
 </div>
 <div class="admin-toast" id="admin-toast"></div>
 <div class="plugin-modal" id="plugin-install-modal" onclick="if(event.target===this)closePluginModal('plugin-install-modal')">
@@ -3948,7 +3968,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       <section class="admin-page" id="admin-page-about-settings" data-frontend-panel="about-settings"><div class="admin-page-head"><div><h3>About</h3><p>Edit the public About page. Saved to the database and shown to every visitor.</p></div><div class="admin-head-actions"><button type="button" class="admin-btn gold" onclick="saveFrontendSectionSettings('about-settings')">Save About</button><button type="button" class="admin-btn" onclick="resetFrontendSectionSettings('about-settings')">Reset</button></div></div><div class="admin-panel"><div class="admin-two"><div class="form-box"><label>Eyebrow</label><input data-frontend-key="about.hero.kicker" value="↳ the story behind craftshan"></div><div class="form-box"><label>Headline</label><input data-frontend-key="about.hero.heading" value="One founder. One creative journey."></div></div><div class="form-box"><label>Intro line</label><textarea data-frontend-key="about.hero.intro" style="min-height:80px;">Craftshan Studio is the personal creative journey of M Kashian Malik, built around design, practice and useful laser-cut files for makers.</textarea></div><div class="admin-two"><div class="form-box"><label>Founder role</label><input data-frontend-key="about.founder.role" value="Founder of Craftshan Studio"></div><div class="form-box"><label>Focus</label><input data-frontend-key="about.founder.focus" value="LaserCut Files"></div></div><div class="form-box"><label>Brand Story <small style="color:var(--ink3);font-weight:400;">(shown in the &ldquo;who we are&rdquo; section)</small></label><textarea data-frontend-key="about.story" style="min-height:220px;">Craftshan Studio is the personal creative work of M Kashian Malik, founded around a simple belief: good digital design should look clean, feel thoughtful, and be practical for the person who is going to make something with it. What began with curiosity and a willingness to learn gradually became a focused direction in laser-cut and crafting design.</textarea></div></div></section>
       <section class="admin-page" id="admin-page-tools-settings"><div class="admin-page-head"><div><h3>Tools</h3><p>Add, edit, reorder, hide and remove the tools shown on the homepage and the Tools page. Saved in the database and applied to every visitor.</p></div><div class="admin-head-actions"><button type="button" class="admin-btn gold" onclick="openToolEditor(null)">+ Add Tool</button><button type="button" class="admin-btn" onclick="craftshanImportLegacyTools()" title="Copy tool names, descriptions, statuses and links saved in this browser by the old four-slot system into the database">Import from this browser</button></div></div><div class="admin-panel"><h4>Tools page copy</h4><p>Headings shown above the tool list. These are separate from the tools themselves.</p><div class="admin-two"><div class="form-box"><label>Tools Eyebrow</label><input data-frontend-key="tools.kicker" value="↳ craftshan studio tools"></div><div class="form-box"><label>Tools Heading</label><input data-frontend-key="tools.heading" value="Tools for a smoother making workflow."></div></div><div class="form-box"><label>Tools Introduction</label><textarea data-frontend-key="tools.description">Useful creative utilities for vector preparation, design cleanup, previews, and everyday laser-cutting workflows.</textarea></div></div><div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Tool catalog</h4><p>Status describes how finished a tool is. Visibility decides whether customers see it at all. Hiding a tool never deletes it.</p></div><span class="status-pill" id="tools-admin-status">Loading…</span></div><div id="tools-admin-list"></div></div></section>
 
-      <section class="admin-page" id="admin-page-contact-settings" data-frontend-panel="contact-settings"><div class="admin-page-head"><div><h3>Contact</h3><p>Edit the public Contact page details. Saved to the database and shown to every visitor.</p></div><div class="admin-head-actions"><button type="button" class="admin-btn gold" onclick="saveFrontendSectionSettings('contact-settings')">Save Contact</button><button type="button" class="admin-btn" onclick="resetFrontendSectionSettings('contact-settings')">Reset</button></div></div><div class="admin-panel"><div class="admin-two"><div class="form-box"><label>Eyebrow</label><input data-frontend-key="contact.kicker" value="↳ get in touch"></div><div class="form-box"><label>Heading</label><input data-frontend-key="contact.heading" value="Let’s talk about your project"></div></div><div class="form-box"><label>Intro line</label><textarea data-frontend-key="contact.description" style="min-height:70px;">Questions about a design, a custom request, or licensing? Send a message and Craftshan Studio will get back to you by email.</textarea></div><div class="admin-two"><div class="form-box"><label>Business name</label><input data-frontend-key="contact.business" value="Craftshan Studio"></div><div class="form-box"><label>Owner / Founder</label><input data-frontend-key="contact.owner" value="M Kashian Malik"></div></div><div class="admin-two"><div class="form-box"><label>Contact email</label><input type="email" data-frontend-key="contact.email" value="hello@craftshanstudio.com"></div><div class="form-box"><label>Social</label><input data-frontend-key="contact.social" value="@craftshanstudio on social platforms"></div></div></div></section>
+      <section class="admin-page" id="admin-page-contact-settings" data-frontend-panel="contact-settings"><div class="admin-page-head"><div><h3>Contact</h3><p>Edit the public Contact page details. Saved to the database and shown to every visitor.</p></div><div class="admin-head-actions"><button type="button" class="admin-btn gold" onclick="saveFrontendSectionSettings('contact-settings')">Save Contact</button><button type="button" class="admin-btn" onclick="resetFrontendSectionSettings('contact-settings')">Reset</button></div></div><div class="admin-panel"><div class="admin-two"><div class="form-box"><label>Eyebrow</label><input data-frontend-key="contact.kicker" value="↳ get in touch"></div><div class="form-box"><label>Heading</label><input data-frontend-key="contact.heading" value="Let’s talk about your project"></div></div><div class="form-box"><label>Intro line</label><textarea data-frontend-key="contact.description" style="min-height:70px;">Questions about a design, a custom request, or licensing? Send a message and Craftshan Studio will get back to you by email.</textarea></div><div class="admin-two"><div class="form-box"><label>Business name</label><input data-frontend-key="contact.business" value="Craftshan Studio"></div><div class="form-box"><label>Owner / Founder</label><input data-frontend-key="contact.owner" value="M Kashian Malik"></div></div><div class="admin-two"><div class="form-box"><label>Contact email <span style="font-weight:400;color:var(--ink3);text-transform:none;letter-spacing:0;">(private — not shown publicly)</span></label><input type="email" data-frontend-key="contact.email" value="" placeholder="Owner reference only — customers use the form"></div><div class="form-box"><label>Social</label><input data-frontend-key="contact.social" value="@craftshanstudio on social platforms"></div></div></div></section>
       <section class="admin-page" id="admin-page-footer-settings"><div class="admin-page-head"><div><h3>Footer Settings</h3><p>Control footer columns, links and brand text.</p></div></div><div class="admin-panel"><div class="form-box"><label>Footer Description</label><textarea>Premium digital design files for makers, creators and entrepreneurs.</textarea></div><div class="cms-list"><div class="cms-item"><div class="cms-item-main"><strong>Instagram</strong><small>Social link</small></div><div class="cms-actions"><button>Edit</button></div></div><div class="cms-item"><div class="cms-item-main"><strong>About</strong><small>Footer company link</small></div><div class="cms-actions"><button>Edit</button></div></div></div></div></section>
       <section class="admin-page" id="admin-page-global-settings" data-frontend-panel="global-settings"><div class="admin-page-head"><div><h3>Store Settings</h3><p>Store-wide identity shown to every visitor. Saved to the database.</p></div><div class="admin-head-actions"><button type="button" class="admin-btn gold" onclick="saveFrontendSectionSettings('global-settings')">Save Store Settings</button><button type="button" class="admin-btn" onclick="resetFrontendSectionSettings('global-settings')">Reset</button></div></div><div class="admin-panel"><div class="form-box"><label>Brand name</label><input data-frontend-key="global.brand" value="Craftshan Studio"><small style="color:var(--ink3);font-size:.7rem;">Shown in the header, footer and throughout the site.</small></div></div><p style="font-size:.72rem;color:var(--ink3);margin:14px 0 0;line-height:1.6;">Page title and search description are managed in <strong>SEO</strong>. Maintenance Mode has its own page. Contact details and social links are managed in <strong>Contact</strong>.</p></section>
       <section class="admin-page" id="admin-page-visibility"><div class="admin-page-head"><div><h3>Storefront Visibility</h3><p>The single place that decides which storefront sections customers can see. Saved in the database and applied to every visitor on every device.</p></div></div>
@@ -4069,7 +4089,7 @@ let saleEditorId=null;
 let saleCountdownTimer=null;
 let sales=[];
 try{sales=JSON.parse(localStorage.getItem('craftshan_sales')||'[]')}catch(e){sales=[];}
-let coupons=[];let appliedCoupon=null;try{coupons=JSON.parse(localStorage.getItem('craftshan_coupons')||'[]')}catch(e){coupons=[];}try{appliedCoupon=JSON.parse(localStorage.getItem('craftshan_applied_coupon')||'null')}catch(e){appliedCoupon=null;}function persistCoupons(){try{localStorage.setItem('craftshan_coupons',JSON.stringify(coupons))}catch(e){}}function persistAppliedCoupon(){try{if(appliedCoupon)localStorage.setItem('craftshan_applied_coupon',JSON.stringify(appliedCoupon));else localStorage.removeItem('craftshan_applied_coupon')}catch(e){}}function getCouponByCode(code){const n=String(code||'').trim().toUpperCase();return coupons.find(c=>String(c.code||'').toUpperCase()===n)||null}function isCouponValid(c){if(!c||c.active===false)return false;if(c.expiry&&new Date(c.expiry).getTime()<=Date.now())return false;if(Number(c.usageLimit)>0&&Number(c.used||0)>=Number(c.usageLimit))return false;return true}function getCartSubtotal(){return cart.reduce((a,c)=>a+(c.free?0:effectivePrice(c)),0)}function getCouponDiscount(sub){if(!appliedCoupon||!isCouponValid(appliedCoupon))return 0;const min=Number(appliedCoupon.minOrder)||0;if(sub<min)return 0;const v=Math.max(0,Number(appliedCoupon.value)||0);return Math.min(sub,appliedCoupon.type==='percent'?sub*v/100:v)}
+let coupons=[];let appliedCoupon=null;/* v63: owner coupons load from public.coupons via renderAdminCoupons() — never from localStorage. */try{appliedCoupon=JSON.parse(localStorage.getItem('craftshan_applied_coupon')||'null')}catch(e){appliedCoupon=null;}function persistCoupons(){try{localStorage.setItem('craftshan_coupons',JSON.stringify(coupons))}catch(e){}}function persistAppliedCoupon(){try{if(appliedCoupon)localStorage.setItem('craftshan_applied_coupon',JSON.stringify(appliedCoupon));else localStorage.removeItem('craftshan_applied_coupon')}catch(e){}}function getCouponByCode(code){const n=String(code||'').trim().toUpperCase();return coupons.find(c=>String(c.code||'').toUpperCase()===n)||null}function isCouponValid(c){if(!c||c.active===false)return false;if(c.expiry&&new Date(c.expiry).getTime()<=Date.now())return false;if(Number(c.usageLimit)>0&&Number(c.used||0)>=Number(c.usageLimit))return false;return true}function getCartSubtotal(){return cart.reduce((a,c)=>a+(c.free?0:effectivePrice(c)),0)}function getCouponDiscount(sub){if(!appliedCoupon||!isCouponValid(appliedCoupon))return 0;const min=Number(appliedCoupon.minOrder)||0;if(sub<min)return 0;const v=Math.max(0,Number(appliedCoupon.value)||0);return Math.min(sub,appliedCoupon.type==='percent'?sub*v/100:v)}
 function persistSales(){try{localStorage.setItem('craftshan_sales',JSON.stringify(sales));}catch(e){console.warn('Could not persist sales metadata',e);}}
 function readFileAsDataURL(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);});}
 function formatBytes(n){if(!n)return '0 B';const u=['B','KB','MB','GB'];const i=Math.min(Math.floor(Math.log(n)/Math.log(1024)),u.length-1);return (n/Math.pow(1024,i)).toFixed(i?1:0)+' '+u[i];}
@@ -4095,7 +4115,14 @@ function getProductPricing(product){
 }
 
 
-let couponEditorId=null;function toggleCouponEditorState(btn){btn.classList.toggle('on')}function openCouponEditor(id=null){couponEditorId=id;const c=id?coupons.find(x=>x.id===id):null;document.getElementById('edit-coupon-id').value=id||'';document.getElementById('edit-coupon-code').value=c?.code||'';document.getElementById('edit-coupon-type').value=c?.type||'percent';document.getElementById('edit-coupon-value').value=c?.value??'';document.getElementById('edit-coupon-min').value=c?.minOrder??'';document.getElementById('edit-coupon-expiry').value=c?.expiry?new Date(c.expiry).toISOString().slice(0,16):'';document.getElementById('edit-coupon-limit').value=c?.usageLimit??'';document.getElementById('edit-coupon-active').classList.toggle('on',c?c.active!==false:true);document.getElementById('coupon-editor-title').textContent=c?'Edit Coupon':'Create Coupon';document.getElementById('coupon-editor-modal').classList.add('open')}function saveCouponEditor(){const code=document.getElementById('edit-coupon-code').value.trim().toUpperCase().replace(/\s+/g,'');const type=document.getElementById('edit-coupon-type').value;const value=Number(document.getElementById('edit-coupon-value').value);const minOrder=Math.max(0,Number(document.getElementById('edit-coupon-min').value)||0);const expiry=document.getElementById('edit-coupon-expiry').value;const usageRaw=document.getElementById('edit-coupon-limit').value;const usageLimit=usageRaw?Math.max(1,Number(usageRaw)):0;const active=document.getElementById('edit-coupon-active').classList.contains('on');if(!/^[A-Z0-9_-]{3,32}$/.test(code)){showAdminToast('Use 3–32 letters, numbers, - or _');return}if(value<=0||(type==='percent'&&value>100)){showAdminToast(type==='percent'?'Percentage must be between 1% and 100%':'Discount must be greater than 0');return}if(expiry&&new Date(expiry).getTime()<=Date.now()){showAdminToast('Expiry must be in the future');return}if(coupons.some(c=>String(c.code||'').toUpperCase()===code&&c.id!==couponEditorId)){showAdminToast('That coupon code already exists');return}const data={id:couponEditorId||('coupon_'+Date.now()),code,type,value,minOrder,expiry:expiry||'',usageLimit,used:couponEditorId?(coupons.find(c=>c.id===couponEditorId)?.used||0):0,active};if(couponEditorId){const i=coupons.findIndex(x=>x.id===couponEditorId);if(i>=0)coupons[i]={...coupons[i],...data}}else coupons.push(data);persistCoupons();closeEditorModal('coupon-editor-modal');renderAdminCoupons();showAdminToast(couponEditorId?'Coupon updated':'Coupon created');logCraftshanActivity((couponEditorId?'Updated coupon ':'Created coupon ')+code)}function renderAdminCoupons(){const list=document.getElementById('admin-coupon-list');if(!list)return;const now=Date.now();const ids=['coupon-active-count','coupon-total-count','coupon-expiring-count','coupon-limit-count'];const vals=[coupons.filter(isCouponValid).length,coupons.length,coupons.filter(c=>c.expiry&&new Date(c.expiry).getTime()>now&&new Date(c.expiry).getTime()<=now+7*86400000&&isCouponValid(c)).length,coupons.filter(c=>Number(c.usageLimit)>0).length];ids.forEach((id,i)=>{const e=document.getElementById(id);if(e)e.textContent=vals[i]});if(!coupons.length){list.innerHTML='<div class="cms-item"><div class="drag">%</div><div class="cms-item-main"><strong>No coupons created</strong><small>Create a discount code when you are ready to run a promotion.</small></div></div>';return}list.innerHTML=coupons.map(c=>{const valid=isCouponValid(c),discount=c.type==='percent'?`${Number(c.value)}% OFF`:`$${Number(c.value).toFixed(2)} OFF`,expiry=c.expiry?new Date(c.expiry).toLocaleString():'No expiry',usage=Number(c.usageLimit)>0?`${Number(c.used||0)}/${Number(c.usageLimit)} used`:'Unlimited use';return `<div class="cms-item"><div class="drag">%</div><div class="cms-item-main"><strong><span class="coupon-code-chip">${escapeHtml(c.code)}</span><span style="margin-left:8px">${discount}</span></strong><small>${c.minOrder?`Min order $${Number(c.minOrder).toFixed(2)} • `:''}${expiry} • ${usage}</small></div><span class="status-pill ${valid?'':'off'}">${valid?'Active':'Inactive'}</span><div class="cms-actions"><button type="button" onclick="openCouponEditor('${c.id}')">Edit</button><button type="button" onclick="toggleCoupon('${c.id}')">${c.active===false?'Activate':'Deactivate'}</button><button type="button" class="danger-btn" onclick="deleteCoupon('${c.id}')">Delete</button></div></div>`}).join('')}function toggleCoupon(id){const c=coupons.find(x=>x.id===id);if(!c)return;c.active=c.active===false;persistCoupons();if(appliedCoupon&&appliedCoupon.id===id&&!isCouponValid(c)){appliedCoupon=null;persistAppliedCoupon();renderCart();renderCheckout()}renderAdminCoupons();showAdminToast(c.active?'Coupon activated':'Coupon deactivated')}function deleteCoupon(id){const c=coupons.find(x=>x.id===id);if(!c)return;if(!confirm(`Delete coupon ${c.code}?`))return;coupons=coupons.filter(x=>x.id!==id);persistCoupons();if(appliedCoupon&&appliedCoupon.id===id){appliedCoupon=null;persistAppliedCoupon()}renderAdminCoupons();renderCart();renderCheckout();showAdminToast('Coupon deleted');logCraftshanActivity('Deleted coupon '+c.code)}function applyCouponCode(button){const input=button?.parentElement?.querySelector('.promo-input')||document.querySelector('.promo-input');const code=input?.value?.trim().toUpperCase();if(!code){appliedCoupon=null;persistAppliedCoupon();renderCart();renderCheckout();showToast('Enter a coupon code');return}const c=getCouponByCode(code);if(!c||!isCouponValid(c)){showToast('That coupon is not active or has expired.');return}const sub=getCartSubtotal();if(sub<(Number(c.minOrder)||0)){showToast(`Minimum order is $${Number(c.minOrder).toFixed(2)}.`);return}appliedCoupon={...c};persistAppliedCoupon();renderCart();renderCheckout();showToast(`${c.code} applied`)}
+let couponEditorId=null;function toggleCouponEditorState(btn){btn.classList.toggle('on')}function openCouponEditor(id=null){couponEditorId=id;const c=id?coupons.find(x=>x.id===id):null;document.getElementById('edit-coupon-id').value=id||'';document.getElementById('edit-coupon-code').value=c?.code||'';document.getElementById('edit-coupon-type').value=c?.type||'percent';document.getElementById('edit-coupon-value').value=c?.value??'';document.getElementById('edit-coupon-min').value=c?.minOrder??'';document.getElementById('edit-coupon-expiry').value=c?.expiry?new Date(c.expiry).toISOString().slice(0,16):'';document.getElementById('edit-coupon-limit').value=c?.usageLimit??'';document.getElementById('edit-coupon-active').classList.toggle('on',c?c.active!==false:true);document.getElementById('coupon-editor-title').textContent=c?'Edit Coupon':'Create Coupon';document.getElementById('coupon-editor-modal').classList.add('open')}/* v63: owner coupon management is now authoritative in public.coupons (owner-only
+   RLS via is_owner()). Coupon records are never kept in localStorage. */
+function mapCouponRow(r){return {id:r.id,code:r.code,type:r.type,value:Number(r.value)||0,minOrder:Number(r.min_order)||0,expiry:r.expiry||'',usageLimit:Number(r.usage_limit)||0,used:Number(r.used)||0,active:r.active!==false};}
+async function saveCouponEditor(){const code=document.getElementById('edit-coupon-code').value.trim().toUpperCase().replace(/\s+/g,'');const type=document.getElementById('edit-coupon-type').value;const value=Number(document.getElementById('edit-coupon-value').value);const minOrder=Math.max(0,Number(document.getElementById('edit-coupon-min').value)||0);const expiry=document.getElementById('edit-coupon-expiry').value;const usageRaw=document.getElementById('edit-coupon-limit').value;const usageLimit=usageRaw?Math.max(1,Number(usageRaw)):0;const active=document.getElementById('edit-coupon-active').classList.contains('on');if(!/^[A-Z0-9_-]{3,32}$/.test(code)){showAdminToast('Use 3–32 letters, numbers, - or _');return}if(value<=0||(type==='percent'&&value>100)){showAdminToast(type==='percent'?'Percentage must be between 1% and 100%':'Discount must be greater than 0');return}if(expiry&&new Date(expiry).getTime()<=Date.now()){showAdminToast('Expiry must be in the future');return}if(coupons.some(c=>String(c.code||'').toUpperCase()===code&&c.id!==couponEditorId)){showAdminToast('That coupon code already exists');return}if(typeof craftshanSupabase==='undefined'){showAdminToast('Database is unavailable.');return}const payload={code,type,value,min_order:minOrder,expiry:expiry?new Date(expiry).toISOString():null,usage_limit:usageLimit,active};try{let error;if(couponEditorId){({error}=await craftshanSupabase.from('coupons').update(payload).eq('id',couponEditorId));}else{({error}=await craftshanSupabase.from('coupons').insert(payload));}if(error)throw error;closeEditorModal('coupon-editor-modal');await renderAdminCoupons();showAdminToast(couponEditorId?'Coupon updated':'Coupon created');logCraftshanActivity((couponEditorId?'Updated coupon ':'Created coupon ')+code);}catch(e){console.error('Save coupon failed:',e);showAdminToast('Could not save coupon: '+(e?.message||'permission denied'));}}async function renderAdminCoupons(){const list=document.getElementById('admin-coupon-list');if(!list)return;if(typeof craftshanSupabase==='undefined'){list.innerHTML='<div class="cms-item"><div class="cms-item-main"><strong>Coupons unavailable</strong><small>Database connection is not available.</small></div></div>';return}try{const{data,error}=await craftshanSupabase.from('coupons').select('id,code,type,value,min_order,expiry,usage_limit,used,active,created_at').order('created_at',{ascending:false});if(error)throw error;coupons=(data||[]).map(mapCouponRow);}catch(e){console.error('Load coupons failed:',e);list.innerHTML='<div class="cms-item"><div class="cms-item-main"><strong>Could not load coupons</strong><small>'+escapeHtml(e?.message||'permission denied')+'</small></div></div>';return}const now=Date.now();const ids=['coupon-active-count','coupon-total-count','coupon-expiring-count','coupon-limit-count'];const vals=[coupons.filter(isCouponValid).length,coupons.length,coupons.filter(c=>c.expiry&&new Date(c.expiry).getTime()>now&&new Date(c.expiry).getTime()<=now+7*86400000&&isCouponValid(c)).length,coupons.filter(c=>Number(c.usageLimit)>0).length];ids.forEach((id,i)=>{const e=document.getElementById(id);if(e)e.textContent=vals[i]});if(!coupons.length){list.innerHTML='<div class="cms-item"><div class="drag">%</div><div class="cms-item-main"><strong>No coupons created</strong><small>Create a discount code when you are ready to run a promotion.</small></div></div>';return}list.innerHTML=coupons.map(c=>{const valid=isCouponValid(c),discount=c.type==='percent'?`${Number(c.value)}% OFF`:`$${Number(c.value).toFixed(2)} OFF`,expiry=c.expiry?new Date(c.expiry).toLocaleString():'No expiry',usage=Number(c.usageLimit)>0?`${Number(c.used||0)}/${Number(c.usageLimit)} used`:'Unlimited use';return `<div class="cms-item"><div class="drag">%</div><div class="cms-item-main"><strong><span class="coupon-code-chip">${escapeHtml(c.code)}</span><span style="margin-left:8px">${discount}</span></strong><small>${c.minOrder?`Min order $${Number(c.minOrder).toFixed(2)} • `:''}${expiry} • ${usage}</small></div><span class="status-pill ${valid?'':'off'}">${valid?'Active':'Inactive'}</span><div class="cms-actions"><button type="button" onclick="openCouponEditor('${c.id}')">Edit</button><button type="button" onclick="toggleCoupon('${c.id}')">${c.active===false?'Activate':'Deactivate'}</button><button type="button" class="danger-btn" onclick="deleteCoupon('${c.id}')">Delete</button></div></div>`}).join('')}async function toggleCoupon(id){const c=coupons.find(x=>x.id===id);if(!c)return;if(typeof craftshanSupabase==='undefined'){showAdminToast('Database is unavailable.');return}const next=(c.active===false);try{const{error}=await craftshanSupabase.from('coupons').update({active:next}).eq('id',id);if(error)throw error;await renderAdminCoupons();showAdminToast(next?'Coupon activated':'Coupon deactivated');}catch(e){console.error('Toggle coupon failed:',e);showAdminToast('Could not update coupon: '+(e?.message||'permission denied'));}}async function deleteCoupon(id){const c=coupons.find(x=>x.id===id);if(!c)return;if(!confirm(`Delete coupon ${c.code}?`))return;if(typeof craftshanSupabase==='undefined'){showAdminToast('Database is unavailable.');return}try{const{error}=await craftshanSupabase.from('coupons').delete().eq('id',id);if(error)throw error;await renderAdminCoupons();showAdminToast('Coupon deleted');logCraftshanActivity('Deleted coupon '+c.code);}catch(e){console.error('Delete coupon failed:',e);showAdminToast('Could not delete coupon: '+(e?.message||'permission denied'));}}/* v62: coupon validation is now SERVER-SIDE via the `validate-coupon` Edge Function.
+   The browser never reads the coupons table and never sets its own discount — the
+   function computes the discount from authoritative DB values and returns only the
+   minimum the UI needs. localStorage coupon lookup is no longer used for customers. */
+async function applyCouponCode(button){const input=button?.parentElement?.querySelector('.promo-input')||document.querySelector('.promo-input');const code=input?.value?.trim().toUpperCase();if(!code){appliedCoupon=null;persistAppliedCoupon();renderCart();renderCheckout();showToast('Enter a coupon code');return}if(typeof craftshanSupabase==='undefined'){showToast('Coupon service is unavailable right now.');return}const sub=getCartSubtotal();try{const{data,error}=await craftshanSupabase.functions.invoke('validate-coupon',{body:{code,subtotal:sub}});if(error){showToast('Could not validate that coupon right now. Please try again.');return}if(!data||!data.valid){showToast((data&&data.message)||'That coupon is not valid.');return}appliedCoupon={code:data.code,type:data.type,value:Number(data.value)||0,minOrder:Number(data.min_order)||0};persistAppliedCoupon();renderCart();renderCheckout();showToast(data.message||`${data.code} applied`)}catch(e){console.error('Coupon validation failed:',e);showToast('Could not validate that coupon right now. Please try again.')}}
 
 /* ═══════════════════
    RENDER PRODUCTS
@@ -4465,7 +4492,70 @@ function openProduct(id) {
   }
   const buyBtn=document.getElementById('prod-buy-btn');
   if(buyBtn) buyBtn.onclick=()=>{ if(!cart.some(c=>c.id===id)) addToCart(id); checkoutItems=cart.map(item=>({...item})); renderCheckout(checkoutItems); showPage('checkout'); showToast(p.free ? '✓ Free design added to checkout!' : '✓ Added to cart and ready for checkout'); };
+  // v61: Share Design — wire the button to the current product's shareable URL.
+  const shareBtn=document.getElementById('prod-share-btn');
+  if(shareBtn) shareBtn.onclick=()=>{ shareProduct(id); };
+  // v61: reflect the current product in the URL (?product=<supabase_id>) using the
+  // History API so a refresh or a shared link reopens the same product. Falls back
+  // to the local id only when the product isn't linked to the database yet.
+  try{
+    const key=p.supabase_id||p.id;
+    history.replaceState({}, '', location.pathname+'?product='+encodeURIComponent(key));
+  }catch(e){}
   showPage('product');
+}
+
+/* v61: Build the canonical shareable URL for a product and share/copy it.
+   Never shares the homepage — always the current product's ?product=<id> URL. */
+function productShareUrl(p){
+  const key=(p&&(p.supabase_id||p.id));
+  const base=location.origin+location.pathname;
+  return base+'?product='+encodeURIComponent(key);
+}
+async function shareProduct(id){
+  const p=PRODUCTS.find(x=>x.id===id) || PRODUCTS.find(x=>String(x.supabase_id)===String(id));
+  if(!p){ showToast('This design is unavailable.'); return; }
+  const url=productShareUrl(p);
+  const title=p.name?('Craftshan Studio — '+p.name):'Craftshan Studio';
+  // Prefer the native share sheet where the browser supports it.
+  if(navigator.share){
+    try{ await navigator.share({ title, text:title, url }); return; }
+    catch(e){ if(e && e.name==='AbortError') return; /* fall through to copy */ }
+  }
+  // Fallback: copy the product URL to the clipboard.
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(url);
+      showToast('✓ Link copied');
+      return;
+    }
+    throw new Error('clipboard unavailable');
+  }catch(e){
+    // Last-resort fallback for browsers without the async clipboard API.
+    try{
+      const ta=document.createElement('textarea');
+      ta.value=url; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.top='-1000px';
+      document.body.appendChild(ta); ta.select();
+      const ok=document.execCommand&&document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast(ok ? '✓ Link copied' : 'Copy this link: '+url);
+    }catch(err){
+      showToast('Copy this link: '+url);
+    }
+  }
+}
+
+/* v61: On load, open a product deep-link (?product=<supabase_id>). Called after the
+   product data has synced. Unknown/missing ids fall back safely to the storefront. */
+function handleProductDeepLink(){
+  try{
+    const params=new URLSearchParams(location.search);
+    const key=params.get('product');
+    if(!key) return;
+    const p=PRODUCTS.find(x=>String(x.supabase_id)===String(key))
+          || PRODUCTS.find(x=>String(x.id)===String(key));
+    if(p){ openProduct(p.id); }
+  }catch(e){ /* never break the app on a bad URL */ }
 }
 /* ═══════════════════
    CART
@@ -4818,20 +4908,24 @@ async function toggleWishlist(id){
   if(!sid){ showToast('This design can’t be saved yet.'); return; }
   if(wishlistBusy.has(sid)) return;
   wishlistBusy.add(sid);
-  const uid=customerSession.user.id;
   const wasSaved=wishlist.some(x=>x.supabase_id===sid);
   // optimistic UI
   wishlist = wasSaved ? wishlist.filter(x=>x.supabase_id!==sid) : [...wishlist,p];
   refreshWishlistUI();
   try{
     if(wasSaved){
+      // v60: filter by product_id only; RLS (user_id = auth.uid()) restricts the
+      // delete to this authenticated customer's own row. No client-supplied id.
       const {error}=await craftshanSupabase.from('wishlists').delete()
-        .eq('user_id',uid).eq('product_id',sid);
+        .eq('product_id',sid);
       if(error) throw error;
       showToast('♡ Removed from liked designs');
     } else {
+      // v60: do NOT send user_id. The column defaults to auth.uid(), so the
+      // database assigns the authoritative authenticated identity and the
+      // INSERT ... WITH CHECK (user_id = auth.uid()) always matches.
       const {error}=await craftshanSupabase.from('wishlists')
-        .insert({ user_id:uid, product_id:sid });
+        .insert({ product_id:sid });
       if(error && error.code!=='23505') throw error;   // 23505 = already saved → treat as success
       showToast('♥ Added to liked designs');
     }
@@ -4940,8 +5034,12 @@ async function submitCustomerGate(){
       const {data,error}=await craftshanSupabase.auth.signUp({email,password});
       if(error) throw error;
       if(!data?.session){
-        if(status) status.textContent='Account created. Check your email to confirm, then log in.';
-        setCustomerGateMode('login');
+        // v62: email confirmation is required -> collect the 6-digit code instead
+        // of asking the user to click an email link. Supabase Auth verifyOtp does
+        // the verification; no code is ever generated or stored client-side.
+        if(status) status.textContent='';
+        closeCustomerGate();
+        openCustomerOtp(email);
         return;
       }
     } else {
@@ -4965,6 +5063,69 @@ async function submitCustomerGate(){
   }catch(e){
     console.error('Customer auth error:',e);
     if(status) status.textContent=e?.message||'Something went wrong.';
+  }
+}
+/* ═══════════════════
+   v62: SIGNUP EMAIL OTP (Supabase Auth) — 6-digit code verification.
+   No custom OTP: signUp emails the code (template must contain {{ .Token }}),
+   verifyOtp validates it, resend re-sends it. Nothing is stored client-side. */
+let pendingOtpEmail=null; let otpVerifyBusy=false; let otpResendCooldown=0; let otpResendTimer=null;
+function openCustomerOtp(email){
+  pendingOtpEmail=email||null;
+  const gate=document.getElementById('customer-otp-gate'); if(!gate) return;
+  const sub=document.getElementById('customer-otp-sub'); if(sub && email) sub.textContent='We sent a 6-digit code to '+email+'. Enter it below to finish creating your account.';
+  const code=document.getElementById('customer-otp-code'); if(code) code.value='';
+  const st=document.getElementById('customer-otp-status'); if(st) st.textContent='';
+  gate.classList.add('open'); gate.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+  startOtpResendCooldown(30);
+  setTimeout(()=>document.getElementById('customer-otp-code')?.focus(),80);
+}
+function closeCustomerOtp(){
+  const gate=document.getElementById('customer-otp-gate'); if(!gate) return;
+  gate.classList.remove('open'); gate.setAttribute('aria-hidden','true'); document.body.style.overflow='';
+  if(otpResendTimer){ clearInterval(otpResendTimer); otpResendTimer=null; }
+}
+function startOtpResendCooldown(sec){
+  otpResendCooldown=sec; const btn=document.getElementById('customer-otp-resend');
+  if(otpResendTimer){ clearInterval(otpResendTimer); otpResendTimer=null; }
+  const tick=()=>{ if(!btn) return; if(otpResendCooldown>0){ btn.disabled=true; btn.textContent='Resend code ('+otpResendCooldown+'s)'; otpResendCooldown--; } else { btn.disabled=false; btn.textContent='Resend code'; if(otpResendTimer){ clearInterval(otpResendTimer); otpResendTimer=null; } } };
+  tick(); otpResendTimer=setInterval(tick,1000);
+}
+async function verifyCustomerOtp(){
+  const st=document.getElementById('customer-otp-status');
+  const code=(document.getElementById('customer-otp-code')?.value||'').trim();
+  if(!pendingOtpEmail){ if(st) st.textContent='Please sign up again to receive a new code.'; return; }
+  if(!/^\d{6}$/.test(code)){ if(st) st.textContent='Enter the 6-digit code from your email.'; return; }
+  if(otpVerifyBusy) return; otpVerifyBusy=true;
+  const btn=document.getElementById('customer-otp-submit'); if(btn){ btn.disabled=true; btn.textContent='Verifying…'; }
+  if(st) st.textContent='Verifying…';
+  try{
+    const {data,error}=await craftshanSupabase.auth.verifyOtp({ email:pendingOtpEmail, token:code, type:'signup' });
+    if(error) throw error;
+    if(!data?.session){ if(st) st.textContent='That code could not be verified. Please try again.'; return; }
+    closeCustomerOtp(); pendingOtpEmail=null;
+    await refreshAccountData();
+    showPage('account');
+    showToast('Welcome to Craftshan Studio!');
+  }catch(e){
+    console.error('OTP verify error:',e);
+    if(st) st.textContent = e?.message || 'Invalid or expired code. Please try again.';
+  }finally{
+    otpVerifyBusy=false; if(btn){ btn.disabled=false; btn.textContent='Verify →'; }
+  }
+}
+async function resendCustomerOtp(){
+  const st=document.getElementById('customer-otp-status');
+  if(!pendingOtpEmail){ if(st) st.textContent='Please sign up again to receive a new code.'; return; }
+  if(otpResendCooldown>0) return;
+  try{
+    const {error}=await craftshanSupabase.auth.resend({ type:'signup', email:pendingOtpEmail });
+    if(error) throw error;
+    if(st) st.textContent='A new code has been sent to your email.';
+    startOtpResendCooldown(30);
+  }catch(e){
+    console.error('OTP resend error:',e);
+    if(st) st.textContent = e?.message || 'Could not resend the code. Please wait a moment and try again.';
   }
 }
 async function customerLogout(){
@@ -5207,18 +5368,25 @@ function submitContactForm(){
   if(message.length<10){ showErr('Please add a little more detail to your message (at least 10 characters).', msgEl); return; }
   const subject=(subjEl?.value||'General enquiry').trim();
   const order=(orderEl?.value||'').trim();
-  const bodyLines=[
-    'Name: '+name,
-    'Email: '+email,
-    order?('Order no.: '+order):null,
-    '',
-    message
-  ].filter(v=>v!==null);
-  const mailto='mailto:hello@craftshanstudio.com'
-    +'?subject='+encodeURIComponent('['+subject+'] Craftshan Studio enquiry')
-    +'&body='+encodeURIComponent(bodyLines.join('\n'));
-  window.location.href=mailto;
-  showToast('✓ Opening your email app to send this message…');
+  const company=(document.getElementById('contact-company')?.value||'').trim(); // honeypot
+  // v62: send through the `contact-message` Edge Function. The recipient inbox is a
+  // server-side secret and is NEVER present in this client code. No mailto: is used.
+  if(typeof craftshanSupabase==='undefined'){ showErr('The contact service is unavailable right now. Please try again later.'); return; }
+  const submitBtn=document.querySelector('#page-contact .form-submit');
+  if(submitBtn){ submitBtn.disabled=true; submitBtn.textContent='Sending…'; }
+  (async()=>{
+    try{
+      const {data,error}=await craftshanSupabase.functions.invoke('contact-message',{body:{name,email,message,subject,order,company}});
+      if(error || !data || !data.ok){ showErr((data&&data.message)||'We could not send your message right now. Please try again shortly.'); return; }
+      showToast('✓ '+(data.message||'Your message has been sent.'));
+      if(nameEl) nameEl.value=''; if(emailEl) emailEl.value=''; if(msgEl) msgEl.value=''; if(orderEl) orderEl.value='';
+    }catch(e){
+      console.error('Contact submit failed:',e);
+      showErr('We could not send your message right now. Please try again shortly.');
+    }finally{
+      if(submitBtn){ submitBtn.disabled=false; submitBtn.textContent='Send message →'; }
+    }
+  })();
 }
 
 /* ═══════════════════
@@ -7242,11 +7410,11 @@ async function performProductAction(action, id) {
     }
 
     if (action === 'edit') {
-      return openProductEditor(productId);
+      return openProductEditor(product.id);
     }
 
     if (action === 'preview') {
-      previewAdminProduct(productId);
+      previewAdminProduct(product.id);
       return true;
     }
 
@@ -7769,6 +7937,8 @@ async function syncCraftshanProductsFromSupabase() {
 
     // v58: products are now loaded, so saved designs can be mapped to products.
     try { if (typeof loadWishlistFromSupabase === 'function') loadWishlistFromSupabase(); } catch(e){}
+    // v61: products are loaded — resolve any ?product=<id> deep link now.
+    try { if (typeof handleProductDeepLink === 'function') handleProductDeepLink(); } catch(e){}
 
     return true;
 
@@ -8017,7 +8187,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const shopSort=document.getElementById('shop-sort'); const sortMap={popular:'Most popular',recent:'Most recent',low:'Price: low to high',high:'Price: high to low',rating:'Best rated'}; if(shopSort&&v('shop.defaultSort')){shopSort.value=sortMap[v('shop.defaultSort')]||v('shop.defaultSort'); if(typeof shopFilters!=='undefined'){shopFilters.sort=v('shop.defaultSort'); if(typeof renderProducts==='function')renderProducts('shop-product-grid');}}
   txt('#page-how .how-hero .kicker',v('how.kicker'));if(v('how.heading')!=null){const e=document.querySelector('#page-how .how-hero h1');if(e)e.innerHTML=String(v('how.heading')).replace(/\s([^\s]+)$/, ' <em>$1</em>');}txt('#page-how .how-hero p',v('how.description'));const hs=document.querySelectorAll('#page-how .how-step');[['how.step1.title','how.step1.text'],['how.step2.title','how.step2.text'],['how.step3.title','how.step3.text'],['how.step4.title','how.step4.text']].forEach((pair,i)=>{const c=hs[i];if(!c)return;const h=c.querySelector('h3'),p=c.querySelector('p');if(h&&v(pair[0])!=null)h.textContent=v(pair[0]);if(p&&v(pair[1])!=null)p.textContent=v(pair[1]);});
   txt('#page-about .about-hero .kicker',v('about.hero.kicker'));txt('#page-about .about-hero h1',v('about.hero.heading'));txt('#page-about .about-hero p',v('about.hero.intro'));const labs=document.querySelectorAll('#page-about .about-num-label');if(labs[0]&&v('about.founder.role')!=null)labs[0].textContent=v('about.founder.role');if(labs[1]&&v('about.founder.focus')!=null)labs[1].innerHTML='of <strong style="color:var(--gold);font-weight:600;">'+String(v('about.founder.focus'))+'</strong>';if(v('about.story')!=null){const sp=document.querySelector('#page-about .about-story p');if(sp)sp.innerHTML=String(v('about.story')).split(String.fromCharCode(10)).join('<br>');}
-  txt('#page-contact .contact-left .kicker',v('contact.kicker'));txt('#page-contact .contact-left h1',v('contact.heading'));txt('#page-contact .contact-left > p',v('contact.description'));const vals=document.querySelectorAll('#page-contact .contact-method-val');/* v53: order corrected to match the DOM (business, owner, email, social). */['contact.business','contact.owner','contact.email','contact.social'].forEach((k,i)=>{if(vals[i]&&v(k)!=null)vals[i].textContent=v(k);});txt('#page-contact .contact-form .kicker',v('contact.form.kicker'));txt('#page-contact .contact-form h2',v('contact.form.heading'));
+  txt('#page-contact .contact-left .kicker',v('contact.kicker'));txt('#page-contact .contact-left h1',v('contact.heading'));txt('#page-contact .contact-left > p',v('contact.description'));const vals=document.querySelectorAll('#page-contact .contact-method-val');/* v62: the email slot (index 2) is intentionally NOT injected — the support email must never be shown publicly; visitors use the contact form instead. */['contact.business','contact.owner',null,'contact.social'].forEach((k,i)=>{if(k&&vals[i]&&v(k)!=null)vals[i].textContent=v(k);});txt('#page-contact .contact-form .kicker',v('contact.form.kicker'));txt('#page-contact .contact-form h2',v('contact.form.heading'));
   txt('.foot-desc',v('footer.description'));txt('.foot-copy',v('footer.copyright'));const fh=document.querySelectorAll('.foot-col h5');['footer.explore','footer.create','footer.company','footer.legal'].forEach((k,i)=>{if(fh[i]&&v(k)!=null)fh[i].textContent=v(k);});
   txt('#page-license .license-hero .kicker',v('license.kicker'));txt('#page-license .license-hero h1',v('license.heading'));txt('#page-license .license-hero p',v('license.intro'));const cards=document.querySelectorAll('#page-license .license-card');if(cards[0]&&v('license.summary')!=null)cards[0].querySelector('p').textContent=v('license.summary');if(cards[1]&&v('license.may')!=null)cards[1].querySelector('li').textContent=v('license.may');if(cards[2]&&v('license.maynot')!=null)cards[2].querySelector('li').textContent=v('license.maynot');if(cards[3]&&v('license.physical')!=null)cards[3].querySelector('p').textContent=v('license.physical');if(cards[6]&&v('license.ownership')!=null)cards[6].querySelector('p').textContent=v('license.ownership');
   if(v('global.brand')!=null){const b=document.querySelectorAll('.brand-name,.foot-brand-name');b.forEach(e=>e.textContent=v('global.brand'));}/* v53: document.title is owned by the SEO block; content engine no longer writes it. Support email has no standalone public element — it is edited on the Contact page (contact.email). */if(v('global.accent')!=null)document.documentElement.style.setProperty('--gold',v('global.accent'));if(v('global.surface')!=null)document.documentElement.style.setProperty('--paper',v('global.surface'));if(v('global.text')!=null)document.documentElement.style.setProperty('--ink',v('global.text'));
