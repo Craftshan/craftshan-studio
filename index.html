@@ -9218,7 +9218,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
 <script id="craftshan-seo-settings-js">
 (function(){
   const KEY='craftshan_seo_settings_v1';
-  const defaults={title:'Craftshan Studio — Premium SVG Design Files',description:'Clean, production-ready SVG, AI, EPS, DXF and PNG files for laser cutting, Cricut, Silhouette and creative makers.',canonical:'https://craftshanstudio.com/',robots:'index,follow',ogTitle:'Craftshan Studio — Premium SVG Design Files',ogDescription:'Browse clean digital designs for laser cutting, Cricut, Silhouette and creative projects. Buy once and download instantly.',ogImage:''};
+  const defaults={title:'Craftshan Studio — Premium SVG Design Files',description:'Clean, production-ready SVG, AI, EPS, DXF and PNG files for laser cutting, Cricut, Silhouette and creative makers.',canonical:'https://craftshan.studio/',robots:'index,follow',ogTitle:'Craftshan Studio — Premium SVG Design Files',ogDescription:'Browse clean digital designs for laser cutting, Cricut, Silhouette and creative projects. Buy once and download instantly.',ogImage:''};
   function read(){try{return Object.assign({},defaults,JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){return {...defaults};}}
   function write(o){try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
   function fields(){return [...document.querySelectorAll('[data-seo-key]')];}
