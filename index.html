@@ -9478,6 +9478,11 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
     // EXCEPT while a product page is open (its own dynamic SEO must win; this async
     // bridge could otherwise clobber the product canonical on a deep-link/refresh).
     try{ if (typeof window.craftshanApplySeo === 'function' && !document.getElementById('ld-product')) window.craftshanApplySeo(); }catch(e){ console.warn('SEO re-apply skipped:', e); }
+    // v74: the bridge above applies the stored (homepage) canonical, which would
+    // otherwise overwrite a section's own canonical when it runs after the section
+    // SEO on load. Re-assert the active section's canonical so it always wins
+    // (/Home, /Shop, /About, /Contact, …). Products are already handled above.
+    try{ if (typeof applySectionSeo === 'function' && typeof currentPage !== 'undefined' && currentPage !== 'product') applySectionSeo(currentPage); }catch(e){ console.warn('Section canonical re-assert skipped:', e); }
   };
 
   /* Owner write. RLS ("Owner can manage store settings", is_owner()) authorises
