@@ -2383,13 +2383,13 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       <input id="nav-design-search" type="search" placeholder="Search designs..." aria-label="Search designs" autocomplete="off" onkeydown="handleNavDesignSearch(event)">
     </div>
     <!-- v68: Profile icon (same person SVG as the account "Profile & Settings" tab).
-         Sits immediately before Cart and is shown ONLY for an authenticated user. -->
-    <button class="nav-icon-btn nav-account" id="nav-profile-btn" onclick="showPage('account')" title="My account" style="display:none;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.4 3.2-5.2 7-5.2s6.2 1.8 7 5.2"/></svg>
-    </button>
+         Order is [Cart] [Profile]; Profile is shown ONLY for an authenticated user. -->
     <button class="nav-cart" onclick="showPage('cart')" title="Cart">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 4.5h2l1.6 10.1a2 2 0 0 0 2 1.7h7.4a2 2 0 0 0 1.9-1.5L20.5 8H7"/><circle cx="10" cy="20" r="1.2" fill="currentColor" stroke="none"/><circle cx="17" cy="20" r="1.2" fill="currentColor" stroke="none"/></svg>
       <span class="cart-badge" id="cart-badge">0</span>
+    </button>
+    <button class="nav-icon-btn nav-account" id="nav-profile-btn" onclick="showPage('account')" title="My account" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.4 3.2-5.2 7-5.2s6.2 1.8 7 5.2"/></svg>
     </button>
     <button class="hamburger" onclick="toggleMob()" id="ham"><span></span><span></span><span></span></button>
   </div>
@@ -4544,7 +4544,7 @@ function craftshanSeoMeta(selector, attrs, content){
 function applyProductSeo(p){
   if(!p) return;
   const brand='Craftshan Studio';
-  const url='https://craftshan.studio/?product='+encodeURIComponent(p.supabase_id||p.id);
+  const url='https://craftshan.studio/Shop/product='+encodeURIComponent(p.supabase_id||p.id);
   const name=p.name||'Design';
   const title=name+' | '+brand;
   const descRaw=String(p.description||'').trim();
@@ -4596,8 +4596,7 @@ function applySectionSeo(name){
    Never shares the homepage — always the current product's ?product=<id> URL. */
 function productShareUrl(p){
   const key=(p&&(p.supabase_id||p.id));
-  const base=location.origin+location.pathname;
-  return base+'?product='+encodeURIComponent(key);
+  return location.origin+'/Shop/product='+encodeURIComponent(key);   // v71: clean product path
 }
 async function shareProduct(id){
   const p=PRODUCTS.find(x=>x.id===id) || PRODUCTS.find(x=>String(x.supabase_id)===String(id));
@@ -4636,14 +4635,15 @@ async function shareProduct(id){
    product data has synced. Unknown/missing ids fall back safely to the storefront. */
 function handleProductDeepLink(){
   try{
-    const params=new URLSearchParams(location.search);
-    const key=params.get('product');
+    // v71: read the key from /Shop/product=UUID OR legacy ?product=UUID.
+    const key=productKeyFromUrl();
     if(!key) return;
     const p=PRODUCTS.find(x=>String(x.supabase_id)===String(key))
           || PRODUCTS.find(x=>String(x.id)===String(key));
     if(p){
-      // v64: a directly-opened deep link becomes the INITIAL history entry (render
-      // without pushing, then replace state) so Back doesn't hit a fake home page.
+      // a directly-opened deep link becomes the INITIAL history entry (render without
+      // pushing, then replace state) so Back doesn't hit a fake home page — and the
+      // URL is canonicalised to the clean /Shop/product=UUID form.
       window.__currentProductKey = p.supabase_id || p.id;
       openProduct(p.id, true);
       try{ history.replaceState({ page:'product', product:window.__currentProductKey }, '', pageUrl('product')); }catch(e){}
@@ -5363,17 +5363,28 @@ let currentPage = 'home';
      clean path. Internal back buttons defer to history.back() so there is no
      second, competing navigation stack. */
 function pageUrl(name){
-  // v70: products keep the root ?product=<id> URL; every other section gets a clean
-  // capitalised path (/Home, /Shop, /About, /Contact, /Account, ...).
+  // v71: a product lives under Shop as a clean path: /Shop/product=<supabase id>.
+  // Every other section gets a clean capitalised path (/Home, /Shop, /About, ...).
   if(name==='product' && window.__currentProductKey){
-    return '/?product='+encodeURIComponent(window.__currentProductKey);
+    return '/Shop/product='+encodeURIComponent(window.__currentProductKey);
   }
   return '/' + name.charAt(0).toUpperCase() + name.slice(1);
 }
-// v70: map a URL path back to an internal page name ('home' for root/index.html,
-// null for an unknown path). Only names with a real page-<name> element resolve.
+// v71: read the product key from a /Shop/product=UUID path OR a legacy ?product=UUID
+// query (backward compatibility). Returns null when there is no product in the URL.
+function productKeyFromUrl(){
+  try{
+    const m = location.pathname.match(/\/product=([^/?&#]+)/i);
+    if(m && m[1]) return decodeURIComponent(m[1]);
+    const q = new URLSearchParams(location.search).get('product');
+    return q || null;
+  }catch(e){ return null; }
+}
+// v70/v71: map a URL path back to an internal page name using the FIRST path
+// segment ('home' for root/index.html, null for an unknown segment). Product paths
+// are handled separately via productKeyFromUrl().
 function sectionFromPath(pathname){
-  let seg=String(pathname||'/').replace(/^\/+/,'').replace(/\/+$/,'');
+  let seg=String(pathname||'/').replace(/^\/+/,'').split('/')[0];
   if(!seg || /^index\.html$/i.test(seg)) return 'home';
   try{ seg=decodeURIComponent(seg); }catch(e){}
   seg=seg.toLowerCase();
@@ -5445,13 +5456,13 @@ window.addEventListener('popstate', function(e){
 // directly-opened URL does not fabricate a fake previous page.
 function initNavHistory(){
   try{
-    const params = new URLSearchParams(location.search);
-    const productKey = params.get('product');
-    // v69: preserve an existing ?product=<id> deep link so handleProductDeepLink()
-    // (which runs later, after products load) can still read it — never strip it.
+    // v71: a product deep link (new /Shop/product=UUID path OR legacy /?product=UUID)
+    // is canonicalised to /Shop/product=UUID and left for handleProductDeepLink() to
+    // open once products load. NEVER strip the product id.
+    const productKey = productKeyFromUrl();
     if(productKey){
       window.__currentProductKey = productKey;
-      history.replaceState({ page:'product', product:productKey }, '', '/?product='+encodeURIComponent(productKey));
+      history.replaceState({ page:'product', product:productKey }, '', '/Shop/product='+encodeURIComponent(productKey));
       return;
     }
     // v70: preserve ANY other root query (e.g. ?checkout=success) so its handler runs.
@@ -5472,9 +5483,8 @@ function initNavHistory(){
    maintenance. Unknown paths fall back to Home. */
 function handleInitialRoute(){
   try{
-    const params = new URLSearchParams(location.search);
-    if(params.get('product')) return;   // handled by handleProductDeepLink()
-    if(params.get('checkout')) return;  // handled by handlePostCheckoutRedirect()
+    if(productKeyFromUrl()) return;                        // handled by handleProductDeepLink()
+    if(new URLSearchParams(location.search).get('checkout')) return;  // post-checkout handler
     if(document.documentElement.getAttribute('data-craftshan-maintenance')==='on') return;
     const section = sectionFromPath(location.pathname);
     showPage(section && section!=='product' ? section : 'home', 'replace');
