@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Craftshan Studio</title>
+  <script>
+    // SPA fallback for GitHub Pages (custom domain at root -> pathSegmentsToKeep = 0).
+    // Turns a direct hit on /Shop into /?/Shop, which index.html converts back to
+    // /Shop client-side. This lets clean section URLs work on direct load / refresh /
+    // shared links without any server-side rewrite. Product URLs (/?product=UUID)
+    // live at the root path and never reach this file.
+    var pathSegmentsToKeep = 0;
+    var l = window.location;
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+      l.hash
+    );
+  </script>
+</head>
+<body></body>
+</html>

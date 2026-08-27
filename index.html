@@ -1,7 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
+<script>
+/* v70: SPA on GitHub Pages — restore a clean section path from the 404.html
+   redirect. 404.html turns a direct hit on /Shop into /?/Shop; this converts it
+   back to /Shop (via replaceState) BEFORE the app initialises. It deliberately
+   ignores a real product query (?product=UUID does not start with "?/"). */
+(function(l){
+  if(l.search && l.search.charAt(1)==='/'){
+    var decoded=l.search.slice(1).split('&').map(function(s){return s.replace(/~and~/g,'&');}).join('?');
+    window.history.replaceState(null,null,l.pathname.slice(0,-1)+decoded+l.hash);
+  }
+}(window.location));
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -4564,6 +4575,22 @@ function resetProductSeo(){
   craftshanSeoMeta('meta[property="og:type"]',{property:'og:type'},'website');
   try{ if(typeof window.craftshanApplySeo==='function') window.craftshanApplySeo(); }catch(e){}   // restore homepage title/desc/canonical/OG
 }
+/* v70: per-section SEO — clean canonical + og:url per section, and noindex for
+   private/transactional pages (Account/Cart/Checkout). Never overrides the
+   maintenance noindex while Maintenance Mode is ON. */
+function applySectionSeo(name){
+  if(name==='product') return;
+  const cap = name.charAt(0).toUpperCase()+name.slice(1);
+  const canonUrl = 'https://craftshan.studio/'+cap;
+  let canon=document.head.querySelector('link[rel="canonical"]'); if(!canon){ canon=document.createElement('link'); canon.rel='canonical'; document.head.appendChild(canon); } canon.href=canonUrl;
+  craftshanSeoMeta('meta[property="og:url"]',{property:'og:url'},canonUrl);
+  const maintOn = document.documentElement.getAttribute('data-craftshan-maintenance')==='on';
+  if(!maintOn){
+    const noindex = ['account','cart','checkout'].includes(name);
+    let robots=document.head.querySelector('meta[name="robots"]'); if(!robots){ robots=document.createElement('meta'); robots.name='robots'; document.head.appendChild(robots); }
+    robots.content = noindex ? 'noindex, nofollow' : 'index, follow';
+  }
+}
 
 /* v61: Build the canonical shareable URL for a product and share/copy it.
    Never shares the homepage — always the current product's ?product=<id> URL. */
@@ -5336,10 +5363,21 @@ let currentPage = 'home';
      clean path. Internal back buttons defer to history.back() so there is no
      second, competing navigation stack. */
 function pageUrl(name){
+  // v70: products keep the root ?product=<id> URL; every other section gets a clean
+  // capitalised path (/Home, /Shop, /About, /Contact, /Account, ...).
   if(name==='product' && window.__currentProductKey){
-    return location.pathname+'?product='+encodeURIComponent(window.__currentProductKey);
+    return '/?product='+encodeURIComponent(window.__currentProductKey);
   }
-  return location.pathname;
+  return '/' + name.charAt(0).toUpperCase() + name.slice(1);
+}
+// v70: map a URL path back to an internal page name ('home' for root/index.html,
+// null for an unknown path). Only names with a real page-<name> element resolve.
+function sectionFromPath(pathname){
+  let seg=String(pathname||'/').replace(/^\/+/,'').replace(/\/+$/,'');
+  if(!seg || /^index\.html$/i.test(seg)) return 'home';
+  try{ seg=decodeURIComponent(seg); }catch(e){}
+  seg=seg.toLowerCase();
+  return document.getElementById('page-'+seg) ? seg : null;
 }
 function showPage(name, fromHistory) {
   const target = document.getElementById('page-' + name);
@@ -5347,10 +5385,13 @@ function showPage(name, fromHistory) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   target.classList.add('active');
   currentPage = name;
-  if(!fromHistory){
+  if(fromHistory!==true){
     try{
       const state={ page:name, product:(name==='product' ? (window.__currentProductKey||null) : null) };
-      history.pushState(state, '', pageUrl(name));
+      // v70: 'replace' normalises the initial entry (root/deep-link) without adding
+      // a history entry; a normal navigation pushes one.
+      if(fromHistory==='replace') history.replaceState(state, '', pageUrl(name));
+      else history.pushState(state, '', pageUrl(name));
     }catch(e){}
   }
   if (name === 'account') refreshAccountData();
@@ -5365,6 +5406,7 @@ function showPage(name, fromHistory) {
   if (name === 'checkout') renderCheckout(ensureCheckoutItems());
   if (name === 'wishlist') renderWishlist();
   if (name !== 'product' && document.getElementById('ld-product') && typeof resetProductSeo === 'function') resetProductSeo();  // v68: restore homepage SEO when leaving a product
+  if (name !== 'product' && typeof applySectionSeo === 'function') applySectionSeo(name);  // v70: per-section canonical/og:url + noindex for private pages
   if (name === 'contact' && typeof refreshContactAuthNote === 'function') refreshContactAuthNote();
   if (name === 'contact' && typeof populateContactOrders === 'function') populateContactOrders();
   if (name === 'account') switchAccountTab('overview',null);
@@ -5403,16 +5445,39 @@ window.addEventListener('popstate', function(e){
 // directly-opened URL does not fabricate a fake previous page.
 function initNavHistory(){
   try{
-    // v69: preserve an existing ?product=<id> deep link. handleProductDeepLink()
-    // runs later (after products load) and reads location.search — so this MUST NOT
-    // strip the parameter down to the bare Home URL. Keep the product URL + state.
-    const productKey = new URLSearchParams(location.search).get('product');
+    const params = new URLSearchParams(location.search);
+    const productKey = params.get('product');
+    // v69: preserve an existing ?product=<id> deep link so handleProductDeepLink()
+    // (which runs later, after products load) can still read it — never strip it.
     if(productKey){
       window.__currentProductKey = productKey;
-      history.replaceState({ page:'product', product:productKey }, '', location.pathname+'?product='+encodeURIComponent(productKey));
+      history.replaceState({ page:'product', product:productKey }, '', '/?product='+encodeURIComponent(productKey));
       return;
     }
-    history.replaceState({ page: currentPage, product:(window.__currentProductKey||null) }, '', pageUrl(currentPage));
+    // v70: preserve ANY other root query (e.g. ?checkout=success) so its handler runs.
+    if(location.search){
+      const section = sectionFromPath(location.pathname) || 'home';
+      history.replaceState({ page:section, product:null }, '', location.pathname+location.search+location.hash);
+      return;
+    }
+    // v70: no query -> normalise to the clean section URL (root/index.html -> /Home).
+    const section = sectionFromPath(location.pathname) || 'home';
+    currentPage = section;
+    history.replaceState({ page:section, product:null }, '', pageUrl(section));
+  }catch(e){}
+}
+/* v70: after products/maintenance are ready, render the section named by the URL
+   path (direct load / refresh of a clean section URL). Product and checkout deep
+   links are handled by their own handlers; the storefront stays offline in
+   maintenance. Unknown paths fall back to Home. */
+function handleInitialRoute(){
+  try{
+    const params = new URLSearchParams(location.search);
+    if(params.get('product')) return;   // handled by handleProductDeepLink()
+    if(params.get('checkout')) return;  // handled by handlePostCheckoutRedirect()
+    if(document.documentElement.getAttribute('data-craftshan-maintenance')==='on') return;
+    const section = sectionFromPath(location.pathname);
+    showPage(section && section!=='product' ? section : 'home', 'replace');
   }catch(e){}
 }
 
@@ -8123,6 +8188,8 @@ async function syncCraftshanProductsFromSupabase() {
     try { if (typeof loadWishlistFromSupabase === 'function') loadWishlistFromSupabase(); } catch(e){}
     // v61: products are loaded — resolve any ?product=<id> deep link now.
     try { if (typeof handleProductDeepLink === 'function') handleProductDeepLink(); } catch(e){}
+    // v70: render the section named by a clean URL path (direct load / refresh).
+    try { if (typeof handleInitialRoute === 'function') handleInitialRoute(); } catch(e){}
 
     return true;
 
