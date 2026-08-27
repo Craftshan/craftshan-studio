@@ -2388,7 +2388,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 4.5h2l1.6 10.1a2 2 0 0 0 2 1.7h7.4a2 2 0 0 0 1.9-1.5L20.5 8H7"/><circle cx="10" cy="20" r="1.2" fill="currentColor" stroke="none"/><circle cx="17" cy="20" r="1.2" fill="currentColor" stroke="none"/></svg>
       <span class="cart-badge" id="cart-badge">0</span>
     </button>
-    <button class="nav-icon-btn nav-account" id="nav-profile-btn" onclick="showPage('account')" title="My account" style="display:none;">
+    <button class="nav-icon-btn nav-account" id="nav-profile-btn" onclick="showPage('account')" title="My account">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.4 3.2-5.2 7-5.2s6.2 1.8 7 5.2"/></svg>
     </button>
     <button class="hamburger" onclick="toggleMob()" id="ham"><span></span><span></span><span></span></button>
@@ -5516,13 +5516,11 @@ function wireSocialLinks(){
     else { a.removeAttribute('href'); a.style.display='none'; }  // hide until a real URL is provided
   });
 }
-/* v68: show the nav Profile icon only for an authenticated user. Uses the existing
-   Supabase session (any logged-in customer/owner); never a click-only toggle. */
-async function updateNavProfile(){
-  const btn=document.getElementById('nav-profile-btn'); if(!btn) return;
-  let authed=false;
-  try{ if(typeof craftshanSupabase!=='undefined'){ const { data:{ session } } = await craftshanSupabase.auth.getSession(); authed=!!session?.user; } }catch(e){}
-  btn.style.display = authed ? '' : 'none';
+/* v72: the nav Profile icon is ALWAYS visible — it's how a logged-out visitor
+   reaches Login/Signup (via the Account page) and how a logged-in customer reaches
+   their account. Never hidden by auth state. (Auth itself is untouched.) */
+function updateNavProfile(){
+  const btn=document.getElementById('nav-profile-btn'); if(btn) btn.style.display='';
 }
 function openWishlistFromAccount() {
   showPage('wishlist');
