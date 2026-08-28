@@ -4581,7 +4581,7 @@ function resetProductSeo(){
 function applySectionSeo(name){
   if(name==='product') return;
   const cap = name.charAt(0).toUpperCase()+name.slice(1);
-  const canonUrl = 'https://craftshan.studio/'+cap;
+ const canonUrl = name==='home' ? 'https://craftshan.studio/' : 'https://craftshan.studio/'+cap;
   let canon=document.head.querySelector('link[rel="canonical"]'); if(!canon){ canon=document.createElement('link'); canon.rel='canonical'; document.head.appendChild(canon); } canon.href=canonUrl;
   craftshanSeoMeta('meta[property="og:url"]',{property:'og:url'},canonUrl);
   const maintOn = document.documentElement.getAttribute('data-craftshan-maintenance')==='on';
