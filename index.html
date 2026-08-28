@@ -9885,6 +9885,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
       }
     });
   }catch(e){ console.warn('Maintenance auth listener skipped:', e); }
+
   resolve().then(() => window.craftshanSyncMaintenanceToggle());
 })();
 </script>
