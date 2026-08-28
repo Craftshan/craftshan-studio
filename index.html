@@ -5363,12 +5363,12 @@ let currentPage = 'home';
      clean path. Internal back buttons defer to history.back() so there is no
      second, competing navigation stack. */
 function pageUrl(name){
-  // Product pages stay under Shop.
+  // v71: a product lives under Shop as a clean path: /Shop/product=<supabase id>.
+  // Every other section gets a clean capitalised path (/Home, /Shop, /About, ...).
   if(name==='product' && window.__currentProductKey){
     return '/Shop/product='+encodeURIComponent(window.__currentProductKey);
   }
 
-  // Keep the bare root as "/" instead of normalizing it to "/Home".
   if(name==='home' && window.location.pathname === '/'){
     return '/';
   }
