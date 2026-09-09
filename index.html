@@ -94,7 +94,7 @@
   --night:#0D0D0D; --night2:#1A1A1A; --night3:#252525; --night4:#303030;
   --gold:#E8A020; --gold-lt:#F5C55A; --gold-dim:rgba(232,160,32,.15); --gold-glow:rgba(232,160,32,.08);
   --paper:#FAFAF7; --surf:#F4F2EE; --surf2:#ECEAE5; --border:#E2DED8; --border-dk:rgba(255,255,255,.08);
-  --ink:#1C1C1A; --ink2:#4A4845; --ink3:#888580;
+  --ink:#1C1C1A; --ink2:#4A4845; --ink3:#6E6A64;
   --green:#1A6B3C; --green-bg:#E8F5EE;
   --r:12px; --r-lg:20px; --r-xl:28px;
   --shadow:0 8px 32px rgba(0,0,0,.08);
@@ -604,7 +604,7 @@ section,[id^=page-]{scroll-margin-top:88px;}
 .foot-brand-mark{width:27px;height:27px;background:var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;}
 .foot-brand-mark svg{width:14px;height:14px;}
 .foot-brand-name{font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;color:#fff;}
-.foot-desc{font-size:.83rem;color:rgba(255,255,255,.33);line-height:1.7;max-width:230px;}
+.foot-desc{font-size:.83rem;color:rgba(255,255,255,.48);line-height:1.7;max-width:230px;}
 .foot-socials{display:flex;gap:7px;margin-top:1.4rem;}
 .foot-soc{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border-dk);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;}
 .foot-soc svg{width:14px;height:14px;color:rgba(255,255,255,.45);}
@@ -615,12 +615,12 @@ section,[id^=page-]{scroll-margin-top:88px;}
 .foot-col li{margin-bottom:.6rem;}
 .foot-col a{font-size:.83rem;color:rgba(255,255,255,.4);transition:color .18s;cursor:pointer;}
 .foot-col a:hover{color:#fff;}
-.foot-soon{font-size:.83rem;color:rgba(255,255,255,.28);cursor:default;}
-.foot-soon em{font-style:normal;font-size:.7rem;color:rgba(255,255,255,.22);}
+.foot-soon{font-size:.83rem;color:rgba(255,255,255,.48);cursor:default;}
+.foot-soon em{font-style:normal;font-size:.7rem;color:rgba(255,255,255,.5);}
 .foot-bottom{display:flex;justify-content:space-between;align-items:center;}
-.foot-copy{font-size:.75rem;color:rgba(255,255,255,.22);}
+.foot-copy{font-size:.75rem;color:rgba(255,255,255,.5);}
 .foot-legal{display:flex;gap:1.5rem;}
-.foot-legal a{font-size:.75rem;color:rgba(255,255,255,.22);cursor:pointer;transition:color .18s;}
+.foot-legal a{font-size:.75rem;color:rgba(255,255,255,.5);cursor:pointer;transition:color .18s;}
 .foot-legal a:hover{color:rgba(255,255,255,.6);}
 
 /* ═══════════════════════════════════════
@@ -2280,7 +2280,14 @@ html[data-craftshan-maintenance="checking"] body > #home-announcement-bar,
 html[data-craftshan-maintenance="checking"] body > #mobile-store-nav,
 html[data-craftshan-maintenance="checking"] body > section{visibility:hidden;}
 html[data-craftshan-maintenance="checking"] body{background:var(--paper);}
-   
+
+/* Owner working while maintenance is live */
+#craftshan-owner-maintenance-banner{
+  display:none;position:fixed;left:0;right:0;bottom:0;z-index:8000;
+  background:var(--night2);border-top:2px solid var(--gold);
+  color:rgba(255,255,255,.86);padding:11px 18px;
+  font-size:.78rem;text-align:center;
+}
 #craftshan-owner-maintenance-banner strong{color:var(--gold);font-weight:700;}
 html[data-craftshan-maintenance="owner"] #craftshan-owner-maintenance-banner{display:block;}
 /* v56: the owner banner is position:fixed and reserves no space, so it used to
@@ -2337,11 +2344,16 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
   <div class="cm-inner">
     <div class="cm-mark"><img id="craftshan-maintenance-logo" alt="" aria-hidden="true"/></div>
     <div class="cm-kicker">Craftshan Studio</div>
-    <h1 id="craftshan-maintenance-title">Craftshan Studio is temporarily offline</h1>
+    <h1 id="craftshan-maintenance-title"></h1>
     <div class="cm-rule"></div>
-    <p id="craftshan-maintenance-message">We're making a few improvements. Please check back soon.</p>
+    <p id="craftshan-maintenance-message"></p>
     <button type="button" class="cm-owner" onclick="openOwnerGate()">Studio access</button>
   </div>
+</div>
+
+<div id="craftshan-owner-maintenance-banner">
+  <strong>Maintenance mode is ON.</strong>
+  Visitors see the maintenance page — you are seeing the storefront because you are signed in as the owner.
 </div>
 
 <!-- ═══ ANNOUNCEMENT BAR ═══ -->
@@ -2355,13 +2367,13 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
     <div class="brand-name">Craftshan <span>Studio</span></div>
   </div>
   <div class="nav-links">
-    <a onclick="showPage('home')" id="nl-home" class="active">Home</a>
-    <a onclick="showPage('shop')" id="nl-shop">Shop</a>
-    <a onclick="showPage('tools')" id="nl-tools">Tools</a>
-    <a onclick="showPage('license')" id="nl-license">License</a>
-    <a onclick="showPage('about')" id="nl-about">About</a>
-    <a onclick="showPage('contact')" id="nl-contact">Contact</a>
-    <a onclick="showPage('how')" id="nl-how">How It Works</a>
+    <a href="/Home" onclick="event.preventDefault();showPage('home')" id="nl-home" class="active">Home</a>
+    <a href="/Shop" onclick="event.preventDefault();showPage('shop')" id="nl-shop">Shop</a>
+    <a href="/Tools" onclick="event.preventDefault();showPage('tools')" id="nl-tools">Tools</a>
+    <a href="/License" onclick="event.preventDefault();showPage('license')" id="nl-license">License</a>
+    <a href="/About" onclick="event.preventDefault();showPage('about')" id="nl-about">About</a>
+    <a href="/Contact" onclick="event.preventDefault();showPage('contact')" id="nl-contact">Contact</a>
+    <a href="/How" onclick="event.preventDefault();showPage('how')" id="nl-how">How It Works</a>
   </div>
   <div class="nav-right">
     <div class="nav-search" title="Search designs">
@@ -2379,7 +2391,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
     <button class="nav-icon-btn nav-account" id="nav-profile-btn" onclick="showPage('account')" title="My account">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.4 3.2-5.2 7-5.2s6.2 1.8 7 5.2"/></svg>
     </button>
-    <button class="hamburger" onclick="toggleMob()" id="ham"><span></span><span></span><span></span></button>
+    <button class="hamburger" onclick="toggleMob()" id="ham" aria-label="Menu" aria-controls="mob-menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </nav>
 <div class="mob-menu" id="mob-menu">
@@ -2584,7 +2596,6 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
     <div class="prod-info">
       <div class="prod-breadcrumb"><span onclick="showPage('shop')" style="cursor:pointer;color:var(--ink2);">Shop</span> <span>›</span> <span id="prod-cat">Geometric</span> <span>›</span> <span id="prod-name-bc">Apex Bundle</span></div>
       <h1 class="prod-title" id="prod-title">Apex Geometric Bundle</h1>
-      <div class="prod-rating" aria-label="Product rating"><span class="prod-stars">★★★★★</span><span class="prod-rev" id="prod-rating-label">4.9 / 5 · Owner rating</span></div>
       <div class="prod-price-row">
         <span class="prod-price" id="prod-price">$4.99</span>
         <span class="prod-price-old" id="prod-old-price">$9.99</span>
@@ -3433,6 +3444,20 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
   </div>
 </div><!-- /page-contact -->
 
+<div class="page" id="page-notfound">
+  <div class="legal-page-wrap">
+    <div class="legal-hero">
+      <div class="legal-kicker">↳ 404</div>
+      <h1 class="legal-title">Page not found</h1>
+      <p class="legal-intro">The page you're looking for doesn't exist or may have moved. Try heading back to the shop or the homepage.</p>
+      <div style="margin-top:1.5rem;display:flex;gap:12px;flex-wrap:wrap;">
+        <button class="btn-gold" type="button" onclick="showPage('home')">Back to homepage</button>
+        <button class="btn-outline" type="button" onclick="showPage('shop')">Browse designs</button>
+      </div>
+    </div>
+  </div>
+</div><!-- /page-notfound -->
+
 
 <nav id="mobile-store-nav" class="mobile-store-nav" aria-label="Store navigation"><button type="button" onclick="showPage('home')"><span>⌂</span><small>Home</small></button><button type="button" onclick="showPage('shop')"><span>⌕</span><small>Shop</small></button><button type="button" onclick="showPage('license')"><span>▣</span><small>License</small></button><button type="button" onclick="showPage('account')"><span>◉</span><small>Account</small></button><button type="button" onclick="showPage('cart')"><span>🛒</span><small>Cart</small></button></nav>
 
@@ -3454,9 +3479,9 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
           <a class="foot-soc" id="soc-pinterest" href="#" target="_blank" rel="noopener noreferrer" aria-label="Craftshan Studio on Pinterest" title="Pinterest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.5 20.5c-.3-1.4-.1-3 .3-4.4l1.2-4.9s-.3-.6-.3-1.5c0-1.4.8-2.5 1.9-2.5.9 0 1.3.7 1.3 1.5 0 .9-.6 2.2-.9 3.5-.2 1 .5 1.9 1.5 1.9 1.8 0 3.1-2.3 3.1-4.6 0-2.4-1.7-4.1-4.2-4.1-2.9 0-4.6 2.1-4.6 4.4 0 .9.3 1.8.7 2.3"/></svg></a>
         </div>
       </div>
-      <div class="foot-col"><h5>Explore</h5><ul><li><a onclick="showPage('shop')">All Designs</a></li><li data-sf-link="freeFiles"><a onclick="showFreeFiles()">Free Files</a></li><li data-sf-link="bundles"><a onclick="showBundles()">Bundles</a></li><li data-sf-link="tools"><a onclick="showPage('tools')">Tools</a></li><li><a onclick="showPage('how')">How It Works</a></li></ul></div>
+      <div class="foot-col"><h5>Explore</h5><ul><li><a href="/Shop" onclick="event.preventDefault();showPage('shop')">All Designs</a></li><li data-sf-link="freeFiles"><a onclick="showFreeFiles()">Free Files</a></li><li data-sf-link="bundles"><a onclick="showBundles()">Bundles</a></li><li data-sf-link="tools"><a href="/Tools" onclick="event.preventDefault();showPage('tools')">Tools</a></li><li><a href="/How" onclick="event.preventDefault();showPage('how')">How It Works</a></li></ul></div>
       <div class="foot-col"><h5>Create</h5><ul id="footer-tools-list"></ul></div>
-      <div class="foot-col"><h5>Company</h5><ul><li><a onclick="showPage('about')">About</a></li><li><a onclick="showPage('license')">License</a></li><li><a onclick="showPage('contact')">Contact</a></li><li><a onclick="showPage('privacy')">Privacy Policy</a></li></ul></div>
+      <div class="foot-col"><h5>Company</h5><ul><li><a href="/About" onclick="event.preventDefault();showPage('about')">About</a></li><li><a href="/License" onclick="event.preventDefault();showPage('license')">License</a></li><li><a href="/Contact" onclick="event.preventDefault();showPage('contact')">Contact</a></li><li><a href="/Privacy" onclick="event.preventDefault();showPage('privacy')">Privacy Policy</a></li></ul></div>
     </div>
     <div class="foot-bottom">
       <p class="foot-copy">© 2026 Craftshan Studio. All rights reserved.</p>
@@ -3469,13 +3494,13 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
 <!-- =============================================================
      OWNER GATE + ADMIN / CMS + PLUGIN MANAGER
 ============================================================= -->
-<div class="owner-gate" id="owner-gate" aria-hidden="true">
+<div class="owner-gate" id="owner-gate" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="owner-gate-title">
   <div class="owner-gate-card">
     <button class="close" onclick="closeOwnerGate()">×</button>
 
     <div class="kicker">↳ owner access</div>
 
-    <h3>Craftshan Studio Control Center</h3>
+    <h3 id="owner-gate-title">Craftshan Studio Control Center</h3>
 
     <p>Sign in with your secure Owner account.</p>
 
@@ -3516,7 +3541,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
   </div>
 </div>
 
-<div class="owner-gate" id="customer-gate" aria-hidden="true">
+<div class="owner-gate" id="customer-gate" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="customer-gate-title">
   <div class="owner-gate-card">
     <button class="close" onclick="closeCustomerGate()">×</button>
 
@@ -3570,11 +3595,11 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
 </div>
 </div>
 <!-- v62: email OTP verification for new signups (Supabase Auth verifyOtp). v65: Supabase sends an 8-digit signup code. -->
-<div class="owner-gate" id="customer-otp-gate" aria-hidden="true">
+<div class="owner-gate" id="customer-otp-gate" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="customer-otp-title">
   <div class="owner-gate-card">
     <button class="close" onclick="closeCustomerOtp()">×</button>
     <div class="kicker">↳ verify your email</div>
-    <h3>Enter your verification code</h3>
+    <h3 id="customer-otp-title">Enter your verification code</h3>
     <p id="customer-otp-sub">We sent an 8-digit code to your email. Enter it below to finish creating your account.</p>
     <div class="form-box">
       <label>8-digit code</label>
@@ -3709,7 +3734,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
 
 <div class="editor-modal" id="product-preview-modal" onclick="if(event.target===this)closeProductPreview()"><div class="editor-card" style="max-width:620px;"><div class="editor-head"><div><div class="kicker">↳ owner preview</div><h3 id="product-preview-title">Product Preview</h3></div><button class="editor-close" type="button" onclick="closeProductPreview()">×</button></div><div id="product-preview-body"></div><div class="editor-actions"><button class="admin-btn" type="button" onclick="closeProductPreview()">Close Preview</button></div></div></div>
 
-<div class="admin-shell" id="admin-shell">
+<div class="admin-shell" id="admin-shell" data-nosnippet>
   <div class="admin-side-overlay" onclick="closeAdminSidebar()"></div>
   <aside class="admin-side">
     <div class="admin-brand"><div class="admin-brand-mark">CS</div><div><strong>Craftshan Studio</strong><small>Owner Control Center</small></div></div>
@@ -3913,7 +3938,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       <button id="category-select-mode-btn" class="admin-btn" onclick="toggleCategorySelectMode()">Select</button>
       <div id="category-bulk-actions" style="display:none;gap:8px;flex-wrap:wrap;align-items:center;">
         <button class="admin-btn" onclick="toggleAllCategories(true)">Select All</button>
-        <button class="admin-btn" id="category-select-all-btn" onclick="toggleAllCategories(false)">Select All</button>
+        <button class="admin-btn" id="category-select-all-btn" onclick="toggleAllCategories(false)">Deselect All</button>
         <button class="admin-btn" style="color:#b42318;border-color:#f0c8c4;" onclick="deleteSelectedCategories()">Delete</button>
       </div>
     </div>
@@ -4574,7 +4599,7 @@ function applySectionSeo(name){
   craftshanSeoMeta('meta[property="og:url"]',{property:'og:url'},canonUrl);
   const maintOn = document.documentElement.getAttribute('data-craftshan-maintenance')==='on';
   if(!maintOn){
-    const noindex = ['account','cart','checkout'].includes(name);
+    const noindex = ['account','cart','checkout','notfound'].includes(name);
     let robots=document.head.querySelector('meta[name="robots"]'); if(!robots){ robots=document.createElement('meta'); robots.name='robots'; document.head.appendChild(robots); }
     robots.content = noindex ? 'noindex, nofollow' : 'index, follow';
   }
@@ -4830,11 +4855,15 @@ function renderCheckout(items = checkoutItems) {
   }
 }
 
+let paidCheckoutBusy = false;  // v73: guards against a double-click firing two checkout sessions before the button disables
 async function startPaidCheckout(){
+  if (paidCheckoutBusy) return;
   if (!ensureCheckoutItems().length) { showToast('Your checkout is empty.'); return; }
   if (typeof craftshanSupabase === 'undefined') { showToast('Checkout service is unavailable right now.'); return; }
+  paidCheckoutBusy = true;
   const {data:{session}} = await craftshanSupabase.auth.getSession();
   if (!session) {
+    paidCheckoutBusy = false;
     pendingPaidCheckout = true;
     setCustomerGateMode('login');
     openCustomerGate();
@@ -4855,15 +4884,21 @@ async function startPaidCheckout(){
     console.error('Paid checkout error:', e);
     showToast(e?.message || 'Could not start checkout. Please try again.');
     renderCheckout();
+  } finally {
+    paidCheckoutBusy = false;
   }
 }
 let pendingPaidCheckout = false;
 
+let freeCheckoutBusy = false;  // v73: guards against a double-click firing two claim_free_product calls before the button disables
 async function completeFreeCheckout(){
+  if (freeCheckoutBusy) return;
   if (!ensureCheckoutItems().length) { showToast('Your checkout is empty.'); return; }
   if (typeof craftshanSupabase === 'undefined') { showToast('Account service is unavailable right now.'); return; }
+  freeCheckoutBusy = true;
   const {data:{session}} = await craftshanSupabase.auth.getSession();
   if (!session) {
+    freeCheckoutBusy = false;
     pendingFreeCheckout = true;
     setCustomerGateMode('login');
     openCustomerGate();
@@ -4891,6 +4926,7 @@ async function completeFreeCheckout(){
     showToast(e?.message || 'Could not unlock your download. Please try again.');
   } finally {
     if (payBtn) { payBtn.disabled = false; }
+    freeCheckoutBusy = false;
   }
 }
 let pendingFreeCheckout = false;
@@ -5084,12 +5120,14 @@ function switchAccountTab(tab,btn){
 
 function openCustomerGate(){
   const gate=document.getElementById('customer-gate'); if(!gate) return;
+  craftshanModalTrigger=document.activeElement;
   gate.classList.add('open'); gate.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
   setTimeout(()=>document.getElementById('customer-email')?.focus(),80);
 }
 function closeCustomerGate(){
   const gate=document.getElementById('customer-gate'); if(!gate) return;
   gate.classList.remove('open'); gate.setAttribute('aria-hidden','true'); document.body.style.overflow='';
+  if(craftshanModalTrigger&&typeof craftshanModalTrigger.focus==='function'){craftshanModalTrigger.focus();craftshanModalTrigger=null;}
 }
 function setCustomerGateMode(mode){
   document.getElementById('customer-gate').dataset.mode=mode;
@@ -5154,6 +5192,7 @@ let pendingOtpEmail=null; let otpVerifyBusy=false; let otpResendCooldown=0; let 
 function openCustomerOtp(email){
   pendingOtpEmail=email||null;
   const gate=document.getElementById('customer-otp-gate'); if(!gate) return;
+  craftshanModalTrigger=document.activeElement;
   const sub=document.getElementById('customer-otp-sub'); if(sub && email) sub.textContent='We sent an 8-digit code to '+email+'. Enter it below to finish creating your account.';
   const code=document.getElementById('customer-otp-code'); if(code) code.value='';
   const st=document.getElementById('customer-otp-status'); if(st) st.textContent='';
@@ -5165,6 +5204,7 @@ function closeCustomerOtp(){
   const gate=document.getElementById('customer-otp-gate'); if(!gate) return;
   gate.classList.remove('open'); gate.setAttribute('aria-hidden','true'); document.body.style.overflow='';
   if(otpResendTimer){ clearInterval(otpResendTimer); otpResendTimer=null; }
+  if(craftshanModalTrigger&&typeof craftshanModalTrigger.focus==='function'){craftshanModalTrigger.focus();craftshanModalTrigger=null;}
 }
 function startOtpResendCooldown(sec){
   otpResendCooldown=sec; const btn=document.getElementById('customer-otp-resend');
@@ -5480,9 +5520,19 @@ function handleInitialRoute(){
     if(new URLSearchParams(location.search).get('checkout')) return;  // post-checkout handler
     if(document.documentElement.getAttribute('data-craftshan-maintenance')==='on') return;
     const section = sectionFromPath(location.pathname);
-    showPage(section && section!=='product' ? section : 'home', 'replace');
+    if(section && section!=='product'){ showPage(section, 'replace'); }
+    else if(section==='product'){ showPage('home', 'replace'); }
+    else { showPage('notfound', 'replace'); }  // v73: unmatched path -> real not-found page, not a homepage soft-404
   }catch(e){}
 }
+
+// v73: Escape closes whichever login/verify modal is currently open.
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  if(document.getElementById('customer-otp-gate')?.classList.contains('open')){ closeCustomerOtp(); return; }
+  if(document.getElementById('customer-gate')?.classList.contains('open')){ closeCustomerGate(); return; }
+  if(document.getElementById('owner-gate')?.classList.contains('open')){ closeOwnerGate(); return; }
+});
 
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Backspace') return;
@@ -5520,10 +5570,12 @@ function openWishlistFromAccount() {
 }
 
 function toggleMob() {
-  document.getElementById('mob-menu').classList.toggle('open');
+  const open = document.getElementById('mob-menu').classList.toggle('open');
+  document.getElementById('ham')?.setAttribute('aria-expanded', open ? 'true' : 'false');
 }
 function closeMob() {
   document.getElementById('mob-menu').classList.remove('open');
+  document.getElementById('ham')?.setAttribute('aria-expanded', 'false');
 }
 
 /* ═══════════════════
@@ -5788,8 +5840,9 @@ window.openOwnerGate=openOwnerGate;
 window.closeOwnerGate=closeOwnerGate;
 window.ownerLogin=ownerLogin;
 window.openOwnerDashboard=openOwnerDashboard;
-function openOwnerGate(){const gate=document.getElementById('owner-gate');if(!gate)return;gate.classList.add('open');gate.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';craftshanRefreshLoginGateUI();setTimeout(()=>document.getElementById('owner-key')?.focus(),80);}
-function closeOwnerGate(){const gate=document.getElementById('owner-gate');if(!gate)return;gate.classList.remove('open');gate.setAttribute('aria-hidden','true');if(!document.getElementById('admin-shell')?.classList.contains('open'))document.body.style.overflow='';}
+let craftshanModalTrigger = null;  // v73: element to return focus to when a login/verify modal closes
+function openOwnerGate(){const gate=document.getElementById('owner-gate');if(!gate)return;craftshanModalTrigger=document.activeElement;gate.classList.add('open');gate.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';craftshanRefreshLoginGateUI();setTimeout(()=>document.getElementById('owner-key')?.focus(),80);}
+function closeOwnerGate(){const gate=document.getElementById('owner-gate');if(!gate)return;gate.classList.remove('open');gate.setAttribute('aria-hidden','true');if(!document.getElementById('admin-shell')?.classList.contains('open'))document.body.style.overflow='';if(craftshanModalTrigger&&typeof craftshanModalTrigger.focus==='function'){craftshanModalTrigger.focus();craftshanModalTrigger=null;}}
 /* Verifies the *server* state: a live Supabase session whose profiles.role is
    'owner'. This is a UI gate only — RLS + is_owner() remain the real security
    boundary for every row of data. */
@@ -6790,13 +6843,6 @@ function resetProductUploadUI() {
   renderProductUploadFiles();
   renderProductImagePreviews();
   updateProductPricePreview();
-}
-
-function removeProductUploadFile(index) {
-  if (!Array.isArray(productUploadFiles)) return;
-
-  productUploadFiles.splice(index, 1);
-  renderProductUploadFiles();
 }
 
 function renderProductUploadFiles() {
@@ -8568,116 +8614,6 @@ async function refreshOwnerOrderCustomerMetrics(){
 }
 document.addEventListener('DOMContentLoaded',function(){refreshOwnerOrderCustomerMetrics();});
 </script>
-
-<script id="gallery-controller-v41-disabled" type="text/plain">
-(function(){
-  const state = { index:0, images:[], initialized:false };
-
-  function productRoot(){
-    return document.querySelector('#page-product') ||
-           document.querySelector('.product-view') ||
-           document.querySelector('.product-detail') ||
-           document.body;
-  }
-
-  function collect(){
-    const root = productRoot();
-    const thumbs = Array.from(root.querySelectorAll(
-      '.product-gallery-thumbs img, .pv-thumbs img, .gallery-thumbnails img, .product-thumbs img'
-    ));
-    if(!thumbs.length) return [];
-    return thumbs.map(img => img.getAttribute('src') || img.dataset.src).filter(Boolean);
-  }
-
-  function mainImage(){
-    const root = productRoot();
-    return root.querySelector(
-      '.product-main-image img, .product-gallery .gallery-main img, .product-gallery-main img, .pv-main-image img'
-    );
-  }
-
-  function wrapper(){
-    const root = productRoot();
-    return root.querySelector(
-      '.product-main-image, .product-gallery .gallery-main, .product-gallery-main, .pv-main-image'
-    );
-  }
-
-  function makeButton(cls, label, symbol){
-    const b = document.createElement('button');
-    b.type='button';
-    b.className=cls;
-    b.setAttribute('aria-label',label);
-    b.innerHTML='<span aria-hidden="true">'+symbol+'</span>';
-    return b;
-  }
-
-  function ensureArrows(){
-    const wrap=wrapper();
-    if(!wrap) return;
-    if(!wrap.querySelector('.gallery-prev, .pv-prev, [data-gallery-prev]')){
-      const prev=makeButton('gallery-prev','Previous product image','‹');
-      prev.addEventListener('click',()=>move(-1));
-      wrap.appendChild(prev);
-    }
-    if(!wrap.querySelector('.gallery-next, .pv-next, [data-gallery-next]')){
-      const next=makeButton('gallery-next','Next product image','›');
-      next.addEventListener('click',()=>move(1));
-      wrap.appendChild(next);
-    }
-  }
-
-  function show(i){
-    state.images=collect();
-    if(!state.images.length) return;
-    state.index=(i+state.images.length)%state.images.length;
-    const img=mainImage();
-    if(img) img.src=state.images[state.index];
-
-    const root=productRoot();
-    const thumbs=root.querySelectorAll(
-      '.product-gallery-thumbs img, .pv-thumbs img, .gallery-thumbnails img, .product-thumbs img'
-    );
-    thumbs.forEach((t,n)=>{
-      t.style.outline = n===state.index ? '2px solid currentColor' : '';
-      t.style.outlineOffset = n===state.index ? '2px' : '';
-    });
-  }
-
-  function move(delta){
-    show(state.index+delta);
-  }
-
-  function init(){
-    const root=productRoot();
-    if(!root) return;
-    state.images=collect();
-    if(!state.images.length) return;
-    ensureArrows();
-
-    const thumbs=root.querySelectorAll(
-      '.product-gallery-thumbs img, .pv-thumbs img, .gallery-thumbnails img, .product-thumbs img'
-    );
-    thumbs.forEach((t,n)=>{
-      if(t.dataset.galleryV41) return;
-      t.dataset.galleryV41='1';
-      t.addEventListener('click',()=>show(n));
-    });
-    state.initialized=true;
-  }
-
-  document.addEventListener('keydown',function(e){
-    if(!document.querySelector('#page-product')) return;
-    if(e.key==='ArrowLeft') move(-1);
-    if(e.key==='ArrowRight') move(1);
-  });
-
-  init();
-  const observer=new MutationObserver(()=>setTimeout(init,0));
-  observer.observe(document.body,{childList:true,subtree:true});
-})();
-</script>
-
 
 <style id="gallery-arrows-and-thumbnail-upgrade">
 /* ══════════════════════════════════════════════════════════════
