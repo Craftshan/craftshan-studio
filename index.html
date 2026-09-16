@@ -2446,11 +2446,11 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
           </div>
           <div class="pv-mini ml">
             <div class="pv-mini-top"><svg viewBox="0 0 80 80" fill="none"><circle cx="40" cy="40" r="26" fill="none" stroke="#E8A020" stroke-width="1.5"/><circle cx="40" cy="40" r="14" fill="#E8A020" opacity=".1"/><circle cx="40" cy="40" r="7" fill="#E8A020" opacity=".6"/></svg></div>
-            <div class="pv-mini-bot"><div class="n">Wildflower Pack</div><div class="p">Free</div></div>
+             <div class="pv-mini-bot"><div class="n">Wildflower Boho Pack</div><div class="p">Free</div></div>
           </div>
           <div class="pv-mini mr">
             <div class="pv-mini-top"><svg viewBox="0 0 80 80" fill="none"><rect x="14" y="14" width="22" height="22" rx="4" fill="#E8A020" opacity=".9"/><rect x="44" y="14" width="22" height="22" rx="11" fill="#E8A020" opacity=".4"/><rect x="14" y="44" width="22" height="22" rx="11" fill="#E8A020" opacity=".4"/><rect x="44" y="44" width="22" height="22" rx="4" fill="#E8A020" opacity=".9"/></svg></div>
-            <div class="pv-mini-bot"><div class="n">Grid Study</div><div class="p">$2.49</div></div>
+             <div class="pv-mini-bot"><div class="n">Quadrant Study Pack</div><div class="p">$2.49</div></div>
           </div>
         </div>
       </div>
@@ -5500,20 +5500,26 @@ function initNavHistory(){
     }
     // v70: preserve ANY other root query (e.g. ?checkout=success) so its handler runs.
     if(location.search){
-      const section = sectionFromPath(location.pathname) || 'home';
-      history.replaceState({ page:section, product:null }, '', location.pathname+location.search+location.hash);
+      const section = sectionFromPath(location.pathname);
+      history.replaceState({ page:section || null, product:null }, '', location.pathname+location.search+location.hash);
       return;
     }
-    // v70: no query -> normalise to the clean section URL (root/index.html -> /Home).
-    const section = sectionFromPath(location.pathname) || 'home';
-    currentPage = section;
-    history.replaceState({ page:section, product:null }, '', pageUrl(section));
+    // v73: only known paths are normalised. Preserve an unknown path so
+    // handleInitialRoute() can show the existing not-found page instead of
+    // converting the request into a homepage soft-404.
+    const section = sectionFromPath(location.pathname);
+    if(section){
+      currentPage = section;
+      history.replaceState({ page:section, product:null }, '', pageUrl(section));
+    }else{
+      history.replaceState({ page:null, product:null }, '', location.pathname+location.hash);
+    }
   }catch(e){}
 }
 /* v70: after products/maintenance are ready, render the section named by the URL
    path (direct load / refresh of a clean section URL). Product and checkout deep
    links are handled by their own handlers; the storefront stays offline in
-   maintenance. Unknown paths fall back to Home. */
+   maintenance. Unknown paths use the existing not-found page. */
 function handleInitialRoute(){
   try{
     if(productKeyFromUrl()) return;                        // handled by handleProductDeepLink()
