@@ -576,6 +576,9 @@ section,[id^=page-]{scroll-margin-top:88px;}
 .tool-card:hover{background:rgba(255,255,255,.07);border-color:rgba(232,160,32,.3);transform:translateY(-3px);}
 .tool-icon-wrap{width:44px;height:44px;border-radius:11px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
 .tool-icon-wrap svg{width:21px;height:21px;color:var(--gold);}
+.tool-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;}
+.tool-card-head .tool-name{margin-bottom:0;}
+.tool-card-head .tool-pill{margin-top:0;white-space:nowrap;flex-shrink:0;}
 .tool-name{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:7px;font-family:'Playfair Display',serif;}
 .tool-desc{font-size:.8rem;color:rgba(255,255,255,.42);line-height:1.6;}
 .tool-pill{display:inline-block;margin-top:12px;font-size:.67rem;font-weight:700;padding:3px 11px;border-radius:100px;text-transform:uppercase;letter-spacing:.07em;background:rgba(232,160,32,.15);color:var(--gold);}
@@ -2442,15 +2445,15 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
                 <circle cx="60" cy="90" r="3.5" fill="#E8A020"/>
               </svg>
             </div>
-            <div class="pv-foot"><span class="pv-name">Apex Geometric Bundle</span><span class="pv-price">$4.99</span></div>
+            <div class="pv-foot"><span class="pv-name">Featured design</span><span class="pv-price">Ready to make</span></div>
           </div>
           <div class="pv-mini ml">
             <div class="pv-mini-top"><svg viewBox="0 0 80 80" fill="none"><circle cx="40" cy="40" r="26" fill="none" stroke="#E8A020" stroke-width="1.5"/><circle cx="40" cy="40" r="14" fill="#E8A020" opacity=".1"/><circle cx="40" cy="40" r="7" fill="#E8A020" opacity=".6"/></svg></div>
-             <div class="pv-mini-bot"><div class="n">Wildflower Boho Pack</div><div class="p">Free</div></div>
+             <div class="pv-mini-bot"><div class="n">Free design</div><div class="p">Create freely</div></div>
           </div>
           <div class="pv-mini mr">
             <div class="pv-mini-top"><svg viewBox="0 0 80 80" fill="none"><rect x="14" y="14" width="22" height="22" rx="4" fill="#E8A020" opacity=".9"/><rect x="44" y="14" width="22" height="22" rx="11" fill="#E8A020" opacity=".4"/><rect x="14" y="44" width="22" height="22" rx="11" fill="#E8A020" opacity=".4"/><rect x="44" y="44" width="22" height="22" rx="4" fill="#E8A020" opacity=".9"/></svg></div>
-             <div class="pv-mini-bot"><div class="n">Quadrant Study Pack</div><div class="p">$2.49</div></div>
+             <div class="pv-mini-bot"><div class="n">New release</div><div class="p">Made to create</div></div>
           </div>
         </div>
       </div>
@@ -2494,7 +2497,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
     <div class="tools-band-glow"></div>
     <div class="tools-band-inner">
       <div class="tools-top-row">
-        <div><div class="kicker" id="home-tools-kicker">↳ on the roadmap</div><h2 class="sec-title-light" id="home-tools-heading">Studio tools we're building</h2><p style="color:rgba(255,255,255,.45);font-size:.82rem;margin-top:8px;max-width:520px;font-weight:300;">These creator tools are in development and not available yet. They'll be announced here as they launch.</p></div>
+        <div><div class="kicker" id="home-tools-kicker">↳ studio tools</div><h2 class="sec-title-light" id="home-tools-heading">Tools for a smoother making workflow.</h2><p style="color:rgba(255,255,255,.45);font-size:.82rem;margin-top:8px;max-width:520px;font-weight:300;">Useful creative utilities for vector preparation, design cleanup, previews, and everyday laser-cutting workflows.</p></div>
       </div>
       <div class="tools-grid" id="home-tools-grid">
       </div>
@@ -3854,7 +3857,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
   <div class="admin-panel"><h4>Hero Section</h4><p>Edit the main message, highlighted line and actions.</p><div class="form-box"><label>Eyebrow</label><input data-cms="hero.eyebrow" value="Premium files for makers"></div><div class="form-box"><label>Heading</label><textarea data-cms="hero.heading">Designs made for makers.</textarea></div><div class="form-box"><label>Highlighted Text</label><input data-cms="hero.highlight" value="Made to create."></div><div class="form-box"><label>Description</label><textarea data-cms="hero.description">Clean, production-ready SVG and laser-cut designs created for people who love to make.</textarea></div><div class="admin-two"><div class="form-box"><label>Primary Button</label><input data-cms="hero.primary" value="Explore Designs"></div><div class="form-box"><label>Primary URL</label><input data-cms="hero.primaryUrl" value="shop"></div></div><div class="form-box"><label>Free Files Button</label><input data-cms="hero.free" value="View free files"></div></div>
   <div class="admin-panel"><h4>Homepage Stats</h4><p>Edit the two quick trust points displayed beneath the hero.</p><div class="admin-two"><div class="form-box"><label>Stat 1 value</label><input data-cms="stat1.value" value="Instant"></div><div class="form-box"><label>Stat 1 label</label><input data-cms="stat1.label" value="digital download"></div></div><div class="admin-two"><div class="form-box"><label>Stat 2 value</label><input data-cms="stat2.value" value="Cut-ready"></div><div class="form-box"><label>Stat 2 label</label><input data-cms="stat2.label" value="SVG · PNG · DXF"></div></div></div>
   <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Featured Designs</h4><p>Control the heading and supporting copy above the product grid.</p></div><span class="status-pill off" title="Show/hide switches live in Storefront &rsaquo; Visibility">Visibility &rsaquo;</span></div><div class="admin-two"><div class="form-box"><label>Kicker</label><input data-cms="featured.kicker" value="Featured designs"></div><div class="form-box"><label>Heading</label><input data-cms="featured.heading" value="Handpicked this week"></div></div><div class="form-box"><label>Description</label><textarea data-cms="featured.description">A curated selection of premium designs ready for your next project.</textarea></div></div>
-  <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Tools Section</h4><p>Control the homepage tools section heading. Tool cards are managed separately in Tools Settings.</p></div><span class="status-pill off" title="Show/hide switches live in Storefront &rsaquo; Visibility">Visibility &rsaquo;</span></div><div class="admin-two"><div class="form-box"><label>Kicker</label><input data-cms="home.tools.kicker" value="On the roadmap"></div><div class="form-box"><label>Heading</label><input data-cms="home.tools.heading" value="Studio tools we're building"></div></div></div>
+  <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Tools Section</h4><p>Control the homepage tools section heading. Tool cards are managed separately in Tools Settings.</p></div><span class="status-pill off" title="Show/hide switches live in Storefront &rsaquo; Visibility">Visibility &rsaquo;</span></div><div class="admin-two"><div class="form-box"><label>Kicker</label><input data-cms="home.tools.kicker" value="studio tools"></div><div class="form-box"><label>Heading</label><input data-cms="home.tools.heading" value="Tools for a smoother making workflow."></div></div></div>
   <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Sales Banner</h4><p>The actual sale and countdown are managed in Sales. These fields control fallback homepage copy only.</p></div><span class="status-pill off">Sales controls pricing</span></div><div class="admin-two"><div class="form-box"><label>Fallback Kicker</label><input data-cms="sale.kicker" value="Limited time"></div><div class="form-box"><label>Fallback Title</label><input data-cms="sale.title" value="Studio Sale"></div></div><div class="form-box"><label>Fallback Description</label><textarea data-cms="sale.description">Save on selected designs before the timer ends.</textarea></div></div>
   <div class="admin-panel"><div class="admin-panel-head-row"><div><h4>Final CTA</h4><p>Control the final conversion section at the bottom of Home.</p></div><span class="status-pill off" title="Show/hide switches live in Storefront &rsaquo; Visibility">Visibility &rsaquo;</span></div><div class="form-box"><label>Heading</label><textarea data-cms="home.cta.heading">Your next great design is already here</textarea></div><div class="form-box"><label>Description</label><textarea data-cms="home.cta.description">Browse premium SVG files. Download instantly and create with confidence.</textarea></div><div class="admin-two"><div class="form-box"><label>Primary Button</label><input data-cms="home.cta.primary" value="Start browsing free →"></div><div class="form-box"><label>Primary URL</label><input data-cms="home.cta.primaryUrl" value="shop"></div></div></div>
 
@@ -6009,7 +6012,7 @@ function syncHomePublicText(){
  set('home-featured-kicker','↳ '+(pick('home.featured.kicker','featured.kicker')||'featured designs'));
  set('home-featured-heading',pick('home.featured.heading','featured.heading'));
  set('home-featured-description',pick('featured.description'));
- set('home-tools-kicker','↳ '+(pick('home.tools.kicker')||'create with confidence'));
+  set('home-tools-kicker','↳ '+(pick('home.tools.kicker')||'studio tools'));
  set('home-tools-heading',pick('home.tools.heading'));
  set('home-cta-description',pick('home.cta.description'));
  set('home-cta-primary',pick('home.cta.primary'));
@@ -6062,8 +6065,8 @@ function syncHomePreview(){
     featuredKicker:getCmsValue('home.featured.kicker',getCmsValue('featured.kicker','featured designs')),
     featuredHeading:getCmsValue('home.featured.heading',getCmsValue('featured.heading','Handpicked this week')),
     featuredDescription:getCmsValue('featured.description','A curated selection of premium designs ready for your next project.'),
-    toolsKicker:getCmsValue('home.tools.kicker','on the roadmap'),
-    toolsHeading:getCmsValue('home.tools.heading','Studio tools we\'re building'),
+     toolsKicker:getCmsValue('home.tools.kicker','studio tools'),
+     toolsHeading:getCmsValue('home.tools.heading','Tools for a smoother making workflow.'),
     ctaHeading:getCmsValue('home.cta.heading','Your next great design is already here'),
     ctaDescription:getCmsValue('home.cta.description','Browse premium SVG files. Download instantly and create with confidence.'),
     ctaPrimary:getCmsValue('home.cta.primary','Start browsing free →'),
@@ -8345,7 +8348,7 @@ function resetHomeSettings(){
     'hero.eyebrow':'Premium files for makers','hero.heading':'Designs made for makers.','hero.highlight':'Made to create.','hero.description':'Clean, production-ready SVG and laser-cut designs created for people who love to make.','hero.primary':'Explore Designs','hero.primaryUrl':'shop','hero.free':'View free files',
     'stat1.value':'Instant','stat1.label':'digital download','stat2.value':'Cut-ready','stat2.label':'SVG · PNG · DXF',
     'featured.kicker':'Featured designs','featured.heading':'Handpicked this week','featured.description':'A curated selection of premium designs ready for your next project.',
-    'home.tools.kicker':'On the roadmap','home.tools.heading':"Studio tools we're building",
+     'home.tools.kicker':'studio tools','home.tools.heading':'Tools for a smoother making workflow.',
     'sale.kicker':'Limited time','sale.title':'Studio Sale','sale.description':'Save on selected designs before the timer ends.',
     'home.cta.heading':'Your next great design is already here','home.cta.description':'Browse premium SVG files. Download instantly and create with confidence.','home.cta.primary':'Start browsing free →','home.cta.primaryUrl':'shop'
   };
@@ -8906,12 +8909,12 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
     const list = publicTools();
     grid.innerHTML = list.map(t => {
       const st = STATUS_LABEL[t.status] || t.status;
-      const dis = t.status === 'disabled';
+       const dis = t.status === 'disabled';
       return `<div class="tool-card${dis ? ' is-disabled' : ''}"${isOpenable(t) ? ` onclick="openCraftshanTool('${esc(t.id)}')" role="button" tabindex="0"` : ''}>
         <div class="tool-icon-wrap" aria-hidden="true">${iconMarkup(t)}</div>
-        <div class="tool-name">${esc(t.name)}</div>
+        <div class="tool-card-head"><div class="tool-name">${esc(t.name)}</div><span class="tool-pill ${esc(t.status)}">${esc(st)}</span></div>
         <p class="tool-desc">${esc(t.description)}</p>
-        <span class="tool-pill ${esc(t.status)}">${esc(st)}</span>
+        ${isOpenable(t) ? `<button type="button" class="tools-open-btn" onclick="openCraftshanTool('${esc(t.id)}');event.stopPropagation();">Open Tool <span aria-hidden="true">↗</span></button>` : ''}
       </div>`;
     }).join('');
     const band = document.getElementById('home-section-tools');
