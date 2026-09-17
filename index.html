@@ -8611,6 +8611,18 @@ async function loadOwnerCustomers(){
 async function refreshOwnerOrderCustomerMetrics(){
   if(typeof craftshanSupabase==='undefined') return;
   try{
+    // Avoid protected owner queries for anonymous visitors. Verify the local
+    // session first, then confirm it with Supabase before reading metrics.
+    const { data: { session }, error: sessionError } = await craftshanSupabase.auth.getSession();
+    if (sessionError || !session?.user) return;
+    const { data: { user }, error: userError } = await craftshanSupabase.auth.getUser();
+    if (userError || !user) return;
+    const { data: profile, error: profileError } = await craftshanSupabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (profileError || profile?.role !== 'owner') return;
     const [{data:orders,error:oe},{data:customers,error:ce}]=await Promise.all([
       craftshanSupabase.from('orders').select('status,download_count'),
       craftshanSupabase.from('customers').select('id')
