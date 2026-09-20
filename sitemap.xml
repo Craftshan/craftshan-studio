@@ -30,4 +30,36 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+<!-- PRODUCT_SEO_URLS_START -->
+  <url>
+    <loc>https://craftshan.studio/Shop/product=1bc692ec-de47-4d86-96d1-381260904f37/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://craftshan.studio/Shop/product=ccf64eab-3518-4b08-8215-38bd3b807171/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://craftshan.studio/Shop/product=bd170d83-3db1-4fe2-8bf1-d698c0e24f88/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://craftshan.studio/Shop/product=196c5e88-94b7-4c68-adbc-b834f6977331/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://craftshan.studio/Shop/product=02d8ad88-400e-4e49-beed-ac5c691d726f/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://craftshan.studio/Shop/product=63c3f83c-4210-469e-a3b2-967f75eea5ef/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- PRODUCT_SEO_URLS_END -->
 </urlset>
