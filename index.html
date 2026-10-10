@@ -2213,6 +2213,243 @@ input,select,textarea{min-width:0;}
 .checkout-remove{padding:0;border:0;background:transparent;color:var(--ink3);font-size:.72rem;font-weight:500;cursor:pointer;line-height:1.2;}
 .checkout-remove:hover{color:#c0392b;}
 </style>
+
+   <style id="craftshan-motion-upgrade">
+:root {
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 1. NAV: underline grows from the center (.nav-links a, ~line 142) */
+body .nav .nav-links a {
+  position: relative;
+  transition: color .3s var(--ease-premium);
+}
+body .nav .nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -6px;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform .35s var(--ease-premium);
+}
+body .nav .nav-links a:hover::after,
+body .nav .nav-links a.active::after { transform: scaleX(1); }
+
+/* 2. PRODUCT CARDS (.p-card, ~line 210): lift, gold border, soft glow */
+body .p-card {
+  transition: transform .4s var(--ease-premium),
+              border-color .4s var(--ease-premium),
+              box-shadow .4s var(--ease-premium);
+}
+body .p-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--gold);
+  box-shadow: 0 12px 30px rgba(232, 160, 32, .18);
+}
+body .p-card:hover .p-thumb svg,
+body .p-card:hover .p-thumb img { transform: scale(1.06); }
+body .p-thumb svg,
+body .p-thumb img { transition: transform .5s var(--ease-premium); }
+
+/* 3. GOLD BUTTONS (.btn-gold ~line 116, .btn-buy-now, .btn-checkout) */
+body .btn-gold,
+body .btn-buy-now,
+body .btn-checkout {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: transform .4s var(--ease-premium), box-shadow .4s var(--ease-premium), background .3s;
+}
+body .btn-gold::before,
+body .btn-buy-now::before,
+body .btn-checkout::before {
+  content: '';
+  position: absolute; inset: 0;
+  z-index: -1;
+  background: linear-gradient(to right, var(--gold), var(--gold-lt));
+  opacity: 0;
+  transition: opacity .4s var(--ease-premium);
+}
+body .btn-gold:hover,
+body .btn-buy-now:hover,
+body .btn-checkout:hover {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(232, 160, 32, .35);
+}
+body .btn-gold:hover::before,
+body .btn-buy-now:hover::before,
+body .btn-checkout:hover::before { opacity: 1; }
+
+/* 4. HERO reveal on the home page (.hero-inner > div, ~line 2426) */
+@keyframes craftshanReveal {
+  from { opacity: 0; transform: translateY(18px) scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+body .hero .hero-eyebrow,
+body .hero h1,
+body .hero .hero-desc,
+body .hero .hero-actions,
+body .hero .hero-meta,
+body .hero .hero-visual {
+  animation: craftshanReveal .9s var(--ease-premium) both;
+}
+body .hero h1          { animation-delay: .08s; }
+body .hero .hero-desc  { animation-delay: .16s; }
+body .hero .hero-actions { animation-delay: .24s; }
+body .hero .hero-meta  { animation-delay: .32s; }
+body .hero .hero-visual { animation-delay: .2s; }
+
+/* 5. Respect reduced-motion settings (your file has no such rule yet) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+   @supports (animation-timeline: view()) {
+  @keyframes craftshanCardIn {
+    from { opacity: 0; transform: translateY(40px) scale(.96); }
+    to   { opacity: 1; transform: none; }
+  }
+  body .p-grid .p-card {
+    animation: craftshanCardIn linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 60%;
+  }
+}
+</style>
+   
+<style id="craftshan-dark-gold"> 
+#page-home, #page-shop, #page-product, #page-cart, #page-checkout, #page-tools,
+#page-how, #page-about, #page-license, #page-privacy, #page-terms, #page-refund,
+#page-contact, #page-wishlist, #page-notfound {
+  --paper: #0a0a0a;
+  --surf:  #121212;
+  --surf2: #181818;
+  --card:  #151515;
+  --border: rgba(255, 255, 255, .09);
+  --ink:  #F5F1E8;
+  --ink2: rgba(245, 241, 232, .70);
+  --ink3: rgba(245, 241, 232, .48);
+  --shadow: 0 8px 32px rgba(0, 0, 0, .45);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, .55);
+  color-scheme: dark;
+  color: var(--ink);
+  background:
+    radial-gradient(900px 520px at 88% -4%, rgba(232, 160, 32, .13), transparent 62%),
+    #0a0a0a;
+  min-height: calc(100vh - 68px);
+}
+
+/* 2. CARDS: dark surface, thin border, gold edge on hover */
+#page-home .p-card, #page-shop .p-card, #page-wishlist .p-card, #page-product .p-card,
+.how-rule-card, .how-step, .legal-card, .license-card, .blog-card, .review-card, .val-card,
+.tools-page-card, .product-description-box, .cart-heading-panel,
+.checkout-main, .checkout-summary, .shop-search-box, .shop-sort {
+  background: linear-gradient(160deg, #181818, #121212);
+  border-color: rgba(255, 255, 255, .09);
+  color: var(--ink);
+}
+body .p-card:hover, .tools-page-card:hover {
+  border-color: rgba(232, 160, 32, .7);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .5), 0 0 28px rgba(232, 160, 32, .14);
+}
+.product-back-btn, .page-back-btn, .page-mini-back, .shop-clear-btn, .cart-back-btn {
+  background: #151515; color: var(--ink2); border-color: rgba(255, 255, 255, .1);
+}
+.trust-strip, .how-rules-wrap { background: #0f0f0f; border-color: rgba(255, 255, 255, .07); }
+.trust-card { background: #111; }
+
+/* 3. BUTTONS that were dark-on-light */
+.pill { color: var(--ink2); border-color: rgba(255, 255, 255, .14); }
+.pill.on { background: var(--gold); color: var(--night); border-color: var(--gold); }
+.btn-outline { color: var(--ink); border-color: rgba(255, 255, 255, .2); }
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+.btn-add { background: transparent; color: var(--gold); border: 1px solid var(--gold); }
+.btn-add:hover { background: var(--gold-dim); }
+
+/* 4. FORMS (shared) */
+#page-contact .form-input, #page-contact .form-select, #page-checkout .form-input,
+#page-checkout .form-select, .shop-search-box input {
+  background: #0e0e0e; color: #fff;
+  border: 1px solid rgba(255, 255, 255, .1); border-radius: 12px;
+}
+.form-input::placeholder { color: rgba(255, 255, 255, .38); }
+.form-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(232, 160, 32, .14); }
+.form-input option { background: #111; color: #fff; }
+.form-group label {
+  text-transform: none; letter-spacing: .01em; font-size: .82rem; font-weight: 500; color: var(--ink);
+}
+
+/* 5. CONTACT PAGE: layout like the mockup (centered heading, info left, form card right) */
+#page-contact .contact-wrap {
+  max-width: 1100px;
+  grid-template-columns: 1fr 1.05fr;
+  column-gap: 4.5rem; row-gap: 0;
+  padding: 72px 3rem 80px;
+}
+#page-contact .contact-left { display: contents; }  /* lets heading span both columns */
+#page-contact .contact-left > .kicker,
+#page-contact .contact-left > h1,
+#page-contact .contact-left > p { grid-column: 1 / -1; text-align: center; margin-left: auto; margin-right: auto; }
+#page-contact .contact-left > .kicker { color: var(--ink3); letter-spacing: .22em; }
+#page-contact .contact-left > h1 { font-size: clamp(2.2rem, 4.4vw, 3.4rem); color: #fff; margin-bottom: .6rem; }
+#page-contact .contact-left > p { max-width: 560px; color: var(--ink2); margin-bottom: 3rem; }
+
+#page-contact .craftshan-business-info { grid-column: 1; align-self: center; }
+#page-contact .craftshan-business-heading {
+  font-size: .72rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1.6rem;
+}
+#page-contact .contact-method {
+  background: none; border: 0; box-shadow: none; padding: 0;
+  gap: 22px; margin-bottom: 2rem;
+}
+#page-contact .contact-method .contact-icon,
+#page-contact .contact-icon {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: #1a1a1a; border: 1px solid rgba(255, 255, 255, .09);
+}
+#page-contact .contact-icon svg { width: 26px; height: 26px; color: var(--gold); }
+#page-contact .contact-method-title { font-size: 1.25rem; font-weight: 600; color: #fff; margin-bottom: 4px; }
+#page-contact .contact-method-val { font-size: .88rem; color: var(--ink2); }
+
+#page-contact .contact-form {
+  grid-column: 2;
+  padding: 34px;
+  border-radius: 22px;
+  background: linear-gradient(150deg, #1c1c1c 0%, #111 70%);
+  border: 1px solid rgba(232, 160, 32, .65);
+  box-shadow: 0 0 44px rgba(232, 160, 32, .13), inset 0 0 36px rgba(232, 160, 32, .035);
+}
+/* the form heading has an inline font-size, so !important is needed */
+#page-contact .contact-form h2 { font-size: 2rem !important; color: #fff; }
+#page-contact .contact-form .kicker { color: var(--gold); }
+#page-contact .form-textarea { min-height: 130px; }
+
+#page-contact .form-submit {
+  background: linear-gradient(90deg, #15130d 0%, #6a4b12 48%, #F5C55A 100%);
+  color: #fff; border: 1px solid var(--gold);
+  padding: 15px; font-weight: 600; letter-spacing: .02em;
+  transition: transform .4s var(--ease-premium, ease), box-shadow .4s var(--ease-premium, ease);
+}
+#page-contact .form-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(232, 160, 32, .32); }
+#page-contact .form-note { color: var(--ink3); }
+#page-contact .form-error {
+  background: rgba(190, 60, 60, .14); color: #ffb4b4; border-color: rgba(255, 130, 130, .3);
+}
+
+@media (max-width: 860px) {
+  #page-contact .contact-wrap { grid-template-columns: 1fr; padding: 48px 1.25rem 56px; }
+  #page-contact .craftshan-business-info,
+  #page-contact .contact-form { grid-column: 1; }
+  #page-contact .contact-form { padding: 24px 20px; margin-top: 1.5rem; }
+  #page-contact .form-row { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
 
