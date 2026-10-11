@@ -2527,6 +2527,7 @@ body .p-card:hover,body .tools-page-card:hover{
 
 
 /* 11. Footer polish + back-to-top button */
+.toast{pointer-events:none;}  /* hidden toast was an invisible box that blocked clicks in the bottom-right corner */
 .foot-top{align-items:start;}
 .foot-desc{max-width:320px;line-height:1.75;}
 .foot-col li{margin-bottom:.7rem;}
@@ -2541,6 +2542,7 @@ body .p-card:hover,body .tools-page-card:hover{
 .foot-top-btn:hover svg{transform:translateY(-2px);}
 .foot-top-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
 @media(max-width:900px){.foot-top{grid-template-columns:1fr 1fr!important;}.foot-top>div:first-child{grid-column:1/-1;}}
+@media(max-width:760px){html,body{background-color:#0d0d0d;}}  /* strip behind the floating mobile menu */
 @media(max-width:600px){.foot-bottom{align-items:flex-start;}.foot-bottom-links{gap:.9rem 1.25rem;}.foot-top-btn{width:100%;justify-content:center;}}
 
 /* 7. Skeleton loaders + empty-state fix */
