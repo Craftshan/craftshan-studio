@@ -30,6 +30,28 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+  
+  <url>
+    <loc>https://craftshan.studio/How/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://craftshan.studio/Tools/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://craftshan.studio/Terms/</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://craftshan.studio/Refund/</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+
 <!-- PRODUCT_SEO_URLS_START -->
   <url>
     <loc>https://craftshan.studio/Shop/product=1bc692ec-de47-4d86-96d1-381260904f37/</loc>
