@@ -76,12 +76,12 @@
 <meta name="twitter:title" content="Premium SVG & Laser Cut Files | Craftshan Studio"/>
 <meta name="twitter:description" content="Discover premium SVG, DXF and PNG files for laser cutting, Cricut, Silhouette and creative projects. Instant digital downloads from Craftshan Studio."/>
 <link rel="canonical" href="https://craftshan.studio/"/>
-<meta property="og:image" content="https://craftshan.studio/social-image.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image" content="https://craftshan.studio/social-image.png">
+<meta property="og:image:width" content="1734">
+<meta property="og:image:height" content="907">
 <meta property="og:image:alt" content="Craftshan Studio digital design files">
-<meta name="twitter:image" content="https://craftshan.studio/social-image.jpg">
-<script type="application/ld+json" id="ld-org">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://craftshan.studio/#organization","name":"Craftshan Studio","url":"https://craftshan.studio/","sameAs":["https://www.instagram.com/craftshan_studio/","https://www.facebook.com/profile.php?id=61591810850651","https://www.pinterest.com/craftshanstudio/"]},{"@type":"WebSite","@id":"https://craftshan.studio/#website","name":"Craftshan Studio","url":"https://craftshan.studio/","publisher":{"@id":"https://craftshan.studio/#organization"}}]}</script>
+<meta name="twitter:image" content="https://craftshan.studio/social-image.png">
+<script type="application/ld+json" id="ld-org">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://craftshan.studio/#organization","name":"Craftshan Studio","url":"https://craftshan.studio/","sameAs":["https://www.instagram.com/craftshan_studio/","https://www.facebook.com/profile.php?id=61591810850651","https://www.pinterest.com/craftshanstudio/","https://www.atomm.com/@CraftshanStudio","https://www.creativefabrica.com/designer/craftshan-studio/"]},{"@type":"WebSite","@id":"https://craftshan.studio/#website","name":"Craftshan Studio","url":"https://craftshan.studio/","publisher":{"@id":"https://craftshan.studio/#organization"}}]}</script>
 <meta name="theme-color" content="#0D0D0D"/>
 <meta name="referrer" content="strict-origin-when-cross-origin"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -3953,10 +3953,30 @@ html.ann-hidden .mob-menu{inset:68px 0 0 0;}
 
 /* keep the floating Top button clear of the footer's bottom row */
 @media(min-width:761px){#main-footer{padding-bottom:92px!important;}}
+
+/* ===== Forms, checkout agreement and spacing fixes ===== */
+/* long <select> text (e.g. order names) can no longer push a field outside its card */
+.form-row>*,.form-group,.checkout-field{min-width:0;}
+.form-select,select.form-input{width:100%;max-width:100%;min-width:0;text-overflow:ellipsis;}
+/* breathing room between every "Back" button and the card below it */
+.checkout-back-rail,.cart-back-row-outside,.page-back-row{margin-bottom:22px!important;}
+/* checkout: accept terms + privacy */
+.checkout-consent{display:flex;gap:10px;align-items:flex-start;margin:18px 0 4px;padding:12px 14px;border:1px solid var(--border);border-radius:12px;font-size:.8rem;line-height:1.55;color:var(--ink2);cursor:pointer;transition:border-color .2s,background .2s;}
+.checkout-consent input{margin-top:2px;width:17px;height:17px;flex:0 0 17px;accent-color:var(--gold);cursor:pointer;}
+.checkout-consent a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;font-weight:600;}
+.checkout-consent.invalid{border-color:#e5484d;background:rgba(229,72,77,.08);}
+.checkout-consent-error{margin:6px 2px 0;font-size:.78rem;font-weight:600;color:#ff9a9a;}
+html[data-theme="light"] .checkout-consent-error{color:#b42318;}
+.checkout-consent-error[hidden]{display:none;}
+
+/* visible keyboard focus everywhere (accessibility) */
+:where(a,button,[role="button"],summary,[tabindex]):focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px;}
+main#main-content{display:block;outline:none;}
 </style>
 </head>
 <body>
-<a class="skip-link" href="#" onclick="craftshanSkipToContent(event)">Skip to main content</a>
+<noscript><div style="background:#0D0D0D;color:#F5F1E8;padding:14px 18px;text-align:center;font:500 14px/1.5 system-ui,sans-serif">Craftshan Studio needs JavaScript to browse designs, sign in and check out. Please enable JavaScript in your browser to continue.</div></noscript>
+<a class="skip-link" href="#main-content" onclick="craftshanSkipToContent(event)">Skip to main content</a>
 
 <!-- ═══ MAINTENANCE MODE (v44) ═══
      Global state lives in Supabase store_settings['maintenance'].
@@ -4160,6 +4180,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
 <!-- ═══════════════════════════════════════
      PAGE: HOME
 ═══════════════════════════════════════ -->
+<main id="main-content" tabindex="-1">
 <div class="page active" id="page-home">
 
   <!-- Hero -->
@@ -4486,10 +4507,10 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
         <div><strong>Payments are not connected yet.</strong>This store is ready for a payment provider to be added later. No payment or purchase will be recorded from this prototype checkout.</div>
       </div>
       <div class="form-row">
-        <div class="checkout-field"><label for="checkout-name">Your name</label><input id="checkout-name" type="text" placeholder="Your name"></div>
-        <div class="checkout-field"><label for="checkout-email">Email</label><input id="checkout-email" type="email" placeholder="you@example.com"></div>
+        <div class="checkout-field"><label for="checkout-name">Your name</label><input id="checkout-name" name="name" type="text" placeholder="Your name" autocomplete="name"></div>
+        <div class="checkout-field"><label for="checkout-email">Email</label><input id="checkout-email" name="email" type="email" inputmode="email" placeholder="you@example.com" autocomplete="email"></div>
       </div>
-      <div class="checkout-field"><label for="checkout-order-note">Order note (optional)</label><input id="checkout-order-note" type="text" placeholder="Anything you'd like us to know"></div>
+      <div class="checkout-field"><label for="checkout-order-note">Order note (optional)</label><input id="checkout-order-note" name="note" type="text" placeholder="Anything you'd like us to know" autocomplete="off"></div>
       <div class="checkout-note">Please review your cart before continuing. When a real payment provider is connected, this page will hand the order to the secure payment flow.</div>
       <button class="btn-outline" style="margin-top:14px;" onclick="showPage('cart')">Review cart</button>
     </div>
@@ -4499,6 +4520,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       <div class="order-row"><span>Subtotal</span><span class="val" id="checkout-subtotal">$0.00</span></div>
       <div class="order-row"><span>Discount</span><span class="val" style="color:var(--green);" id="checkout-discount">–$0.00</span></div>
       <div class="order-row total"><span>Total</span><span class="val" id="checkout-total">$0.00</span></div>
+      <label class="checkout-consent" id="checkout-consent-wrap" for="checkout-consent"><input type="checkbox" id="checkout-consent" aria-describedby="checkout-consent-error"><span>I have read and agree to the <a href="/Terms/" target="_blank" rel="noopener">Terms &amp; Conditions</a>, <a href="/Privacy/" target="_blank" rel="noopener">Privacy Policy</a>, <a href="/License/" target="_blank" rel="noopener">License</a> and <a href="/Refund/" target="_blank" rel="noopener">Refund Policy</a>.</span></label><p class="checkout-consent-error" id="checkout-consent-error" role="alert" hidden>Please accept the Terms &amp; Privacy Policy to continue.</p>
       <button class="checkout-pay-btn" id="checkout-pay-btn" disabled>Payment provider not connected</button>
     </aside>
   </div>
@@ -5198,7 +5220,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       </div>
     </div>
     <div class="contact-form">
-      <div style="margin-bottom:1.75rem;"><div class="kicker">Send a message</div><h2 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-top:.25rem;">Send a <span style="color:var(--gold)">Message</span></h2></div>
+      <div style="margin-bottom:1.75rem;"><h2 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-top:0;">Send a <span style="color:var(--gold)">Message</span></h2></div>
       <div class="form-row">
         <div class="form-group"><label for="contact-name">Your name</label><input id="contact-name" name="name" type="text" class="form-input" placeholder="Your name" required autocomplete="name"/></div>
         <div class="form-group"><label for="contact-order">Order no. <span style="font-weight:400;color:var(--ink3);text-transform:none;letter-spacing:0;">(optional)</span></label><select id="contact-order" name="order" class="form-input form-select"><option value="">No order / General question</option></select></div>
@@ -5229,12 +5251,13 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
     </div>
   </div>
 </div><!-- /page-notfound -->
+</main>
 
 
 <nav id="mobile-store-nav" class="mobile-store-nav" aria-label="Store navigation"><button type="button" onclick="showPage('home')"><span>⌂</span><small>Home</small></button><button type="button" onclick="showPage('shop')"><span>⌕</span><small>Shop</small></button><button type="button" onclick="showPage('license')"><span>▣</span><small>License</small></button><button type="button" onclick="showPage('account')"><span>◉</span><small>Account</small></button><button type="button" onclick="showPage('cart')"><span>🛒</span><small>Cart</small></button></nav>
 
 <!-- TOAST -->
-<div class="toast" id="toast"><span class="toast-dot"></span><span id="toast-msg">Added to cart</span></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-dot"></span><span id="toast-msg">Added to cart</span></div>
 
 <!-- FOOTER (shared) -->
 <footer class="foot" id="main-footer">
@@ -5255,9 +5278,9 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
           <a class="foot-soc" data-label="Facebook" id="soc-facebook" href="#" target="_blank" rel="noopener noreferrer" aria-label="Craftshan Studio on Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
         </div>
       </div>
-      <div class="foot-col"><h5>Explore</h5><ul><li><a href="/Shop" onclick="event.preventDefault();showPage('shop')">All Designs</a></li><li data-sf-link="freeFiles"><a onclick="showFreeFiles()">Free Files</a></li><li data-sf-link="bundles"><a onclick="showBundles()">Bundles</a></li></ul></div>
-      <div class="foot-col"><h5>Resources</h5><ul><li data-sf-link="tools"><a href="/Tools" onclick="event.preventDefault();showPage('tools')">Tools</a></li><li><a href="/How" onclick="event.preventDefault();showPage('how')">How It Works</a></li><li><a href="/License" onclick="event.preventDefault();showPage('license')">License Terms</a></li><li><a href="/Refund" onclick="event.preventDefault();showPage('refund')">Refund Policy</a></li></ul></div>
-      <div class="foot-col"><h5>Company</h5><ul><li><a href="/About" onclick="event.preventDefault();showPage('about')">About</a></li><li><a href="/Contact" onclick="event.preventDefault();showPage('contact')">Contact</a></li><li><a href="/Privacy" onclick="event.preventDefault();showPage('privacy')">Privacy Policy</a></li><li><a href="/Terms" onclick="event.preventDefault();showPage('terms')">Terms &amp; Conditions</a></li></ul></div>
+      <div class="foot-col"><h5 role="heading" aria-level="2">Explore</h5><ul><li><a href="/Shop" onclick="event.preventDefault();showPage('shop')">All Designs</a></li><li data-sf-link="freeFiles"><a onclick="showFreeFiles()">Free Files</a></li><li data-sf-link="bundles"><a onclick="showBundles()">Bundles</a></li></ul></div>
+      <div class="foot-col"><h5 role="heading" aria-level="2">Resources</h5><ul><li data-sf-link="tools"><a href="/Tools" onclick="event.preventDefault();showPage('tools')">Tools</a></li><li><a href="/How" onclick="event.preventDefault();showPage('how')">How It Works</a></li><li><a href="/License" onclick="event.preventDefault();showPage('license')">License Terms</a></li><li><a href="/Refund" onclick="event.preventDefault();showPage('refund')">Refund Policy</a></li></ul></div>
+      <div class="foot-col"><h5 role="heading" aria-level="2">Company</h5><ul><li><a href="/About" onclick="event.preventDefault();showPage('about')">About</a></li><li><a href="/Contact" onclick="event.preventDefault();showPage('contact')">Contact</a></li><li><a href="/Privacy" onclick="event.preventDefault();showPage('privacy')">Privacy Policy</a></li><li><a href="/Terms" onclick="event.preventDefault();showPage('terms')">Terms &amp; Conditions</a></li></ul></div>
     </div>
     <div class="foot-bottom">
       <p class="foot-copy">© 2026 Craftshan Studio. All rights reserved.</p>
@@ -6049,7 +6072,7 @@ function renderProductList(containerId, items, limit){
       <div class="p-thumb" style="background:${p.bg};">
         ${getProductPricing(p).isOnSale ? `<span class="p-chip chip-hot">${getProductPricing(p).discountPercent}% OFF</span>` : (p.badge||p.chip ? `<span class="p-chip chip-${p.chip||'new'}">${escapeHtml(p.badge|| (p.chip==='hot'?'★ Hot':p.chip==='free'?'Free':'New'))}</span>` : '')}
         <button class="p-like-btn${isWishlisted(p)?' liked':''}" onclick="event.stopPropagation();toggleWishlist(${p.id})" title="Like design"><svg viewBox="0 0 24 24" fill="${isWishlisted(p)?'currentColor':'none'}" stroke="currentColor" stroke-width="1.6"><path d="M20.8 8.7c0 5.5-8.8 10.1-8.8 10.1S3.2 14.2 3.2 8.7A4.7 4.7 0 0 1 12 6.3a4.7 4.7 0 0 1 8.8 2.4Z"/></svg></button>
-        ${(p.thumbnailData||p.coverImage) ? `<img class="product-card-cover" src="${p.thumbnailData||p.coverImage}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="product-card-fallback" style="display:none;">${p.svg||""}</div>` : `<div class="product-card-fallback">${p.svg||""}</div>`}
+        ${(p.thumbnailData||p.coverImage) ? `<img class="product-card-cover" src="${p.thumbnailData||p.coverImage}" alt="${escapeHtml(p.name)}" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="product-card-fallback" style="display:none;">${p.svg||""}</div>` : `<div class="product-card-fallback">${p.svg||""}</div>`}
       </div>
       <div class="p-info"><div class="p-name">${escapeHtml(p.name)}</div><div class="p-row"><span class="p-price${p.free?' free':''}">${p.free?'Free':'$'+effectivePrice(p).toFixed(2)}</span></div><button class="p-add-btn" onclick="event.stopPropagation();openProduct(${p.id})">View Design</button></div>
     </div>`).join('') || '<div style="grid-column:1/-1;padding:54px 20px;text-align:center;color:var(--ink3);border:1px dashed var(--border);border-radius:var(--r-lg);background:#fff;"><div style="font-family:Playfair Display,serif;font-size:1.25rem;color:var(--ink);margin-bottom:6px;">No designs found</div><div style="font-size:.82rem;margin-bottom:14px;">Try another search or clear the filters.</div><button class="btn-outline" type="button" onclick="document.getElementById(\'shop-clear-filters\')?.click()">Clear filters</button></div>';
@@ -6634,6 +6657,7 @@ function renderCheckout(items = checkoutItems) {
 let paidCheckoutBusy = false;  // v73: guards against a double-click firing two checkout sessions before the button disables
 async function startPaidCheckout(){
   if (paidCheckoutBusy) return;
+  if (!craftshanCheckoutConsent()) return;
   if (!ensureCheckoutItems().length) { showToast('Your checkout is empty.'); return; }
   if (typeof craftshanSupabase === 'undefined') { showToast('Checkout service is unavailable right now.'); return; }
   paidCheckoutBusy = true;
@@ -6669,6 +6693,7 @@ let pendingPaidCheckout = false;
 let freeCheckoutBusy = false;  // v73: guards against a double-click firing two claim_free_product calls before the button disables
 async function completeFreeCheckout(){
   if (freeCheckoutBusy) return;
+  if (!craftshanCheckoutConsent()) return;
   if (!ensureCheckoutItems().length) { showToast('Your checkout is empty.'); return; }
   if (typeof craftshanSupabase === 'undefined') { showToast('Account service is unavailable right now.'); return; }
   freeCheckoutBusy = true;
@@ -6846,7 +6871,7 @@ function renderWishlist(){
   }
   c.innerHTML=wishlist.map(p=>{
     const src=p.thumbnailData||p.coverImage||'';
-    const media=src?`<img src="${src}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="product-card-fallback" style="display:none;">${p.svg||''}</div>`:`<div class="product-card-fallback">${p.svg||''}</div>`;
+    const media=src?`<img src="${src}" alt="${escapeHtml(p.name)}" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="product-card-fallback" style="display:none;">${p.svg||''}</div>`:`<div class="product-card-fallback">${p.svg||''}</div>`;
     return `<article class="wishlist-card-v32">
       <div class="wishlist-media-v32">
         ${media}
@@ -7330,7 +7355,7 @@ document.addEventListener('keydown', function(e){
    invented links ship). An empty value hides that icon rather than linking to '#'. */
 const CRAFTSHAN_SOCIAL = {
   pinterest:       'https://www.pinterest.com/craftshanstudio/',
-  atomm:           'https://www.atomm.com/@Craftshan-Studio',
+  atomm:           'https://www.atomm.com/@CraftshanStudio',
   creativefabrica: 'https://www.creativefabrica.com/designer/craftshan-studio/',
   fiverr:          '',   // paste your Fiverr profile URL here; the icon stays hidden until you do
   instagram:       'https://www.instagram.com/craftshan_studio/',
@@ -11124,7 +11149,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
 <script id="craftshan-seo-settings-js">
 (function(){
   const KEY='craftshan_seo_settings_v1';
-  const defaults={title:'Premium SVG & Laser Cut Files | Craftshan Studio',description:'Original SVG, DXF and PNG files for laser cutting, Cricut, Silhouette and creative projects. Instant downloads with clear licensing from Craftshan Studio.',canonical:'https://craftshan.studio/',robots:'index,follow',ogTitle:'Premium SVG & Laser Cut Files | Craftshan Studio',ogDescription:'Original SVG, DXF and PNG files for laser cutting, Cricut, Silhouette and creative projects. Instant downloads with clear licensing from Craftshan Studio.',ogImage:'https://craftshan.studio/social-image.jpg'};
+  const defaults={title:'Premium SVG & Laser Cut Files | Craftshan Studio',description:'Original SVG, DXF and PNG files for laser cutting, Cricut, Silhouette and creative projects. Instant downloads with clear licensing from Craftshan Studio.',canonical:'https://craftshan.studio/',robots:'index,follow',ogTitle:'Premium SVG & Laser Cut Files | Craftshan Studio',ogDescription:'Original SVG, DXF and PNG files for laser cutting, Cricut, Silhouette and creative projects. Instant downloads with clear licensing from Craftshan Studio.',ogImage:'https://craftshan.studio/social-image.png'};
   function read(){try{return Object.assign({},defaults,JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){return {...defaults};}}
   function write(o){try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
   function fields(){return [...document.querySelectorAll('[data-seo-key]')];}
@@ -11772,6 +11797,36 @@ function craftshanSkipToContent(e){
   window.addEventListener('resize',measure);
   window.addEventListener('scroll',onScroll,{passive:true});
   measure(); onScroll();
+})();
+</script>
+<script>
+/* ---- Checkout: must accept Terms + Privacy before paying or claiming free files ---- */
+function craftshanCheckoutConsent(){
+  var cb=document.getElementById('checkout-consent'),err=document.getElementById('checkout-consent-error'),wrap=document.getElementById('checkout-consent-wrap');
+  if(!cb||cb.checked){ if(err) err.hidden=true; if(wrap) wrap.classList.remove('invalid'); return true; }
+  if(err) err.hidden=false; if(wrap) wrap.classList.add('invalid');
+  try{ cb.focus(); wrap.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){}
+  if(typeof showToast==='function') showToast('Please accept the Terms & Privacy Policy to continue.');
+  return false;
+}
+(function(){
+  var cb=document.getElementById('checkout-consent'); if(!cb) return;
+  cb.addEventListener('change',function(){ if(cb.checked){ document.getElementById('checkout-consent-error').hidden=true; document.getElementById('checkout-consent-wrap').classList.remove('invalid'); } });
+})();
+
+/* ---- Search boxes: stop browsers autofilling the account email into them ---- */
+(function(){
+  var fine=window.matchMedia&&window.matchMedia('(pointer: fine)').matches;
+  ['nav-design-search','shop-hero-search'].forEach(function(id){
+    var el=document.getElementById(id); if(!el) return;
+    el.setAttribute('name','q'); el.setAttribute('autocomplete','off'); el.setAttribute('autocapitalize','off'); el.setAttribute('spellcheck','false');
+    el.setAttribute('data-lpignore','true'); el.setAttribute('data-1p-ignore','true');
+    if(fine){ el.setAttribute('readonly',''); var un=function(){el.removeAttribute('readonly');}; el.addEventListener('focus',un); el.addEventListener('mousedown',un); }
+  });
+  window.addEventListener('load',function(){ setTimeout(function(){
+    var el=document.getElementById('nav-design-search');
+    if(el&&document.activeElement!==el&&/@/.test(el.value)) el.value='';
+  },400); });
 })();
 </script>
 </body>
