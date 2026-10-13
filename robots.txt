@@ -1,3 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /Account/
+Disallow: /Cart/
+Disallow: /Checkout/
+Disallow: /Wishlist/
+
 Sitemap: https://craftshan.studio/sitemap.xml
