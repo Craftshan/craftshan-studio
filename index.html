@@ -59,6 +59,10 @@
 </script>
 
 <meta charset="UTF-8"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' data: blob: https://hiqarqiuqtrksedndpmf.supabase.co wss://hiqarqiuqtrksedndpmf.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script>/* anti-clickjacking: if another website frames this page, break out (same-site frames are fine) */(function(){try{if(window.top!==window.self){try{void window.top.location.href;}catch(e){try{window.top.location=window.self.location.href;}catch(e2){}document.documentElement.style.display='none';}}}catch(e){}})();</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Premium SVG &amp; Laser Cut Files | Craftshan Studio</title>
 <!-- Favicon assets are real root files so browsers and Google's favicon crawler can fetch them. -->
@@ -81,7 +85,7 @@
 <meta property="og:image:height" content="907">
 <meta property="og:image:alt" content="Craftshan Studio digital design files">
 <meta name="twitter:image" content="https://craftshan.studio/social-image.png">
-<script type="application/ld+json" id="ld-org">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://craftshan.studio/#organization","name":"Craftshan Studio","url":"https://craftshan.studio/","sameAs":["https://www.instagram.com/craftshan_studio/","https://www.facebook.com/profile.php?id=61591810850651","https://www.pinterest.com/craftshanstudio/","https://www.atomm.com/@CraftshanStudio","https://www.creativefabrica.com/designer/craftshan-studio/"]},{"@type":"WebSite","@id":"https://craftshan.studio/#website","name":"Craftshan Studio","url":"https://craftshan.studio/","publisher":{"@id":"https://craftshan.studio/#organization"}}]}</script>
+<script type="application/ld+json" id="ld-org">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://craftshan.studio/#organization","name":"Craftshan Studio","url":"https://craftshan.studio/","sameAs":["https://www.instagram.com/craftshan_studio/","https://www.facebook.com/profile.php?id=61591810850651","https://www.pinterest.com/craftshanstudio/","https://www.atomm.com/@CraftshanStudio","https://www.creativefabrica.com/designer/craftshan-studio/","https://www.fiverr.com/craftshanstudio"]},{"@type":"WebSite","@id":"https://craftshan.studio/#website","name":"Craftshan Studio","url":"https://craftshan.studio/","publisher":{"@id":"https://craftshan.studio/#organization"}}]}</script>
 <meta name="theme-color" content="#0D0D0D"/>
 <meta name="referrer" content="strict-origin-when-cross-origin"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -2339,8 +2343,9 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound){--paper:#0a0a0a;--surf:#121212;--surf2:#181818;--card:#151515;--border:rgba(255,255,255,.09);--ink:#F5F1E8;--ink2:rgba(245,241,232,.72);--ink3:rgba(245,241,232,.5);--green:#4ade80;--green-bg:rgba(74,222,128,.12);--shadow:0 8px 32px rgba(0,0,0,.45);--shadow-lg:0 20px 60px rgba(0,0,0,.55);color-scheme:dark;color:var(--ink);background:radial-gradient(900px 520px at 88% -4%,rgba(232,160,32,.13),transparent 62%),#0a0a0a}
-:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound).active{display:flow-root}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies){--paper:#0a0a0a;--surf:#121212;--surf2:#181818;--card:#151515;--border:rgba(255,255,255,.09);--ink:#F5F1E8;--ink2:rgba(245,241,232,.72);--ink3:rgba(245,241,232,.5);--green:#4ade80;--green-bg:rgba(74,222,128,.12);--shadow:0 8px 32px rgba(0,0,0,.45);--shadow-lg:0 20px 60px rgba(0,0,0,.55);color-scheme:dark;color:var(--ink);background:radial-gradient(900px 520px at 88% -4%,rgba(232,160,32,.13),transparent 62%),#0a0a0a}
+:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound,#page-cookies).active{display:flow-root}
 #main-footer{margin-top:0;border-top:1px solid rgba(232,160,32,.16)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
@@ -2357,7 +2362,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .p-card,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .p-card,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2373,7 +2379,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .shop-sort,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .shop-sort,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2389,7 +2396,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .shop-search-box,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .shop-search-box,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2405,7 +2413,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .product-description-box,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .product-description-box,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2421,7 +2430,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .order-summary,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .order-summary,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2437,7 +2447,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .checkout-main,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .checkout-main,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2453,7 +2464,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .checkout-summary,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .checkout-summary,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2469,7 +2481,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .val-card,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .val-card,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2485,7 +2498,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .license-card,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .license-card,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2501,7 +2515,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .account-sidebar,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .account-sidebar,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2517,7 +2532,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .account-row,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .account-row,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2533,7 +2549,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .account-quick,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .account-quick,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2549,7 +2566,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .account-empty-icon,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .account-empty-icon,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2565,7 +2583,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .account-stat,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .account-stat,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2581,7 +2600,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .legal-card,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .legal-card,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2597,7 +2617,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .review-card,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .review-card,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2613,7 +2634,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .wishlist-card-v32,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .wishlist-card-v32,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2629,7 +2651,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .wishlist-empty-v32,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .wishlist-empty-v32,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2645,7 +2668,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .wishlist-count-v32,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .wishlist-count-v32,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2661,7 +2685,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .tools-page-card,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .tools-page-card,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2677,7 +2702,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .legal-toc a,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .legal-toc a,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2693,7 +2719,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .cart-heading-panel,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .cart-heading-panel,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2709,7 +2736,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .how-step,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .how-step,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2725,7 +2753,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .how-rule-card,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .how-rule-card,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2741,7 +2770,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .blog-card,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .blog-card,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2757,7 +2787,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .prod-gallery,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .prod-gallery,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2773,7 +2804,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .prod-info,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .prod-info,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2789,7 +2821,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .product-media-main,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .product-media-main,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2805,7 +2838,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .prod-thumbs,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .prod-thumbs,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2821,7 +2855,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .account-panel,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .account-panel,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2837,7 +2872,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .product-secondary-panel{background:linear-gradient(160deg,#181818,#121212);border-color:rgba(255,255,255,.09);color:var(--ink)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .product-secondary-panel{background:linear-gradient(160deg,#181818,#121212);border-color:rgba(255,255,255,.09);color:var(--ink)}
 html:not([data-theme="light"]) body .p-card:hover,
 html:not([data-theme="light"]) body .tools-page-card:hover{border-color:rgba(232,160,32,.7);box-shadow:0 14px 40px rgba(0,0,0,.5),0 0 28px rgba(232,160,32,.14)}
 html:not([data-theme="light"]) :is(#page-home,
@@ -2855,7 +2891,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .shop-clear-btn,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .shop-clear-btn,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2871,7 +2908,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .page-mini-back,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .page-mini-back,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2887,7 +2925,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .page-back-btn,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .page-back-btn,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2903,7 +2942,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .product-back-btn,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .product-back-btn,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2919,7 +2959,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .checkout-back-match,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .checkout-back-match,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2935,7 +2976,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .toggle-row,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .toggle-row,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2951,7 +2993,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .cart-back-btn,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .cart-back-btn,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2967,7 +3010,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .checkout-back,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .checkout-back,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2983,7 +3027,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .shop-search-box button{background:#151515;color:var(--ink2);border-color:rgba(255,255,255,.1)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .shop-search-box button{background:#151515;color:var(--ink2);border-color:rgba(255,255,255,.1)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -2999,7 +3044,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .cart-back-btn:hover,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .cart-back-btn:hover,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3015,7 +3061,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .checkout-back:hover,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .checkout-back:hover,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3031,7 +3078,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .checkout-back-match:hover,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .checkout-back-match:hover,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3047,7 +3095,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .product-back-btn:hover{background:#1d1d1d;color:var(--gold);border-color:var(--gold)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .product-back-btn:hover{background:#1d1d1d;color:var(--gold);border-color:var(--gold)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3063,7 +3112,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .pill{color:var(--ink2);border-color:rgba(255,255,255,.14)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .pill{color:var(--ink2);border-color:rgba(255,255,255,.14)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3079,7 +3129,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .pill.on{background:var(--gold);color:var(--night);border-color:var(--gold)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .pill.on{background:var(--gold);color:var(--night);border-color:var(--gold)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3095,7 +3146,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .btn-outline{color:var(--ink);border-color:rgba(255,255,255,.2)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .btn-outline{color:var(--ink);border-color:rgba(255,255,255,.2)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3111,7 +3163,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3127,7 +3180,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .btn-add{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .btn-add{background:transparent;color:var(--gold);border:1px solid var(--gold)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3143,7 +3197,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .btn-add:hover{background:var(--gold-dim)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .btn-add:hover{background:var(--gold-dim)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3159,7 +3214,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .promo-btn{background:#1d1d1d;color:var(--ink)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .promo-btn{background:#1d1d1d;color:var(--ink)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3175,7 +3231,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .promo-btn:hover{background:var(--gold);color:var(--night);border-color:var(--gold)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .promo-btn:hover{background:var(--gold);color:var(--night);border-color:var(--gold)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3191,7 +3248,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .p-thumb .p-like-btn{background:rgba(14,14,14,.78);color:#fff;border:1px solid rgba(255,255,255,.14)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .p-thumb .p-like-btn{background:rgba(14,14,14,.78);color:#fff;border:1px solid rgba(255,255,255,.14)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3207,17 +3265,18 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .p-thumb .p-like-btn.liked{color:#ff6b81}
-:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound) .form-input,
-:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound) .form-select,
-:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound) .form-box input,
-:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound) .form-box textarea,
-:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound) .form-box select,
-:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound) .promo-input,
-:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound) .shop-search-box input,
-:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound) input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]),
-:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound) select,
-:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound) textarea{border-radius:12px}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .p-thumb .p-like-btn.liked{color:#ff6b81}
+:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound,#page-cookies) .form-input,
+:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound,#page-cookies) .form-select,
+:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound,#page-cookies) .form-box input,
+:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound,#page-cookies) .form-box textarea,
+:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound,#page-cookies) .form-box select,
+:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound,#page-cookies) .promo-input,
+:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound,#page-cookies) .shop-search-box input,
+:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound,#page-cookies) input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]),
+:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound,#page-cookies) select,
+:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound,#page-cookies) textarea{border-radius:12px}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3233,7 +3292,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .form-input,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .form-input,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3249,7 +3309,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .form-select,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .form-select,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3265,7 +3326,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .form-box input,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .form-box input,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3281,7 +3343,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .form-box textarea,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .form-box textarea,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3297,7 +3360,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .form-box select,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .form-box select,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3313,7 +3377,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .promo-input,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .promo-input,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3329,7 +3394,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .shop-search-box input,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .shop-search-box input,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3345,7 +3411,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]),
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]),
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3361,7 +3428,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) select,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) select,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3377,7 +3445,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) textarea{background:#0e0e0e;color:#fff;border:1px solid rgba(255,255,255,.12)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) textarea{background:#0e0e0e;color:#fff;border:1px solid rgba(255,255,255,.12)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3393,7 +3462,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) input::placeholder,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) input::placeholder,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3409,7 +3479,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) textarea::placeholder{color:rgba(255,255,255,.38)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) textarea::placeholder{color:rgba(255,255,255,.38)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3425,7 +3496,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) input:focus,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) input:focus,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3441,7 +3513,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) select:focus,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) select:focus,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3457,7 +3530,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,160,32,.14);outline:none}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,160,32,.14);outline:none}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3473,8 +3547,9 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) option{background:#111;color:#fff}
-:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound) .form-group label{text-transform:none;letter-spacing:.01em;font-size:.82rem;font-weight:500}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) option{background:#111;color:#fff}
+:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound,#page-cookies) .form-group label{text-transform:none;letter-spacing:.01em;font-size:.82rem;font-weight:500}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3490,7 +3565,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .form-group label{color:var(--ink)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .form-group label{color:var(--ink)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3506,7 +3582,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .chip-new{background:rgba(120,140,255,.16);color:#b4bfff}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .chip-new{background:rgba(120,140,255,.16);color:#b4bfff}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3522,7 +3599,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .form-error{background:rgba(190,60,60,.14);color:#ffb4b4;border-color:rgba(255,130,130,.3)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .form-error{background:rgba(190,60,60,.14);color:#ffb4b4;border-color:rgba(255,130,130,.3)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3538,7 +3616,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .legal-note{background:linear-gradient(135deg,rgba(232,160,32,.10),rgba(232,160,32,.03));border-color:rgba(232,160,32,.25)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .legal-note{background:linear-gradient(135deg,rgba(232,160,32,.10),rgba(232,160,32,.03));border-color:rgba(232,160,32,.25)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3554,7 +3633,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .review-status.pending{background:rgba(232,160,32,.14);color:var(--gold-lt)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .review-status.pending{background:rgba(232,160,32,.14);color:var(--gold-lt)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3570,7 +3650,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .review-status.rejected{background:rgba(190,60,60,.16);color:#ffb4b4}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .review-status.rejected{background:rgba(190,60,60,.16);color:#ffb4b4}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3586,7 +3667,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .status-pill.off{background:#222;color:var(--ink3)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .status-pill.off{background:#222;color:var(--ink3)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3602,7 +3684,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .wishlist-remove-v32{background:rgba(26,26,26,.94);color:#ff9aa5}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .wishlist-remove-v32{background:rgba(26,26,26,.94);color:#ff9aa5}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3618,7 +3701,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .wishlist-remove-v32:hover{background:#2a1417}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .wishlist-remove-v32:hover{background:#2a1417}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3634,7 +3718,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .account-chip,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .account-chip,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3650,7 +3735,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .account-quick-icon,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .account-quick-icon,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3666,7 +3752,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .legal-toc .n,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .legal-toc .n,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3682,7 +3769,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .trust-icon,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .trust-icon,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3698,7 +3786,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .tools-page-icon{color:var(--gold)}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .tools-page-icon{color:var(--gold)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3714,7 +3803,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) [style*="color:#8b5f09"]{color:var(--gold)!important}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) [style*="color:#8b5f09"]{color:var(--gold)!important}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3730,7 +3820,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .cart-remove:hover,
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .cart-remove:hover,
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3746,7 +3837,8 @@ html:not([data-theme="light"]) #page-refund,
 html:not([data-theme="light"]) #page-contact,
 html:not([data-theme="light"]) #page-wishlist,
 html:not([data-theme="light"]) #page-account,
-html:not([data-theme="light"]) #page-notfound) .checkout-remove:hover{color:#ff7b6b}
+html:not([data-theme="light"]) #page-notfound,
+html:not([data-theme="light"]) #page-cookies) .checkout-remove:hover{color:#ff7b6b}
 #page-contact .contact-wrap{max-width:1280px;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);column-gap:4rem;row-gap:0;padding:56px 3rem 72px}
 #page-contact .contact-left{display:contents}
 #page-contact .contact-left>.kicker,#page-contact .contact-left>h1,#page-contact .contact-left>p{grid-column:1/-1;text-align:center;margin-left:auto;margin-right:auto}
@@ -3991,6 +4083,14 @@ html.admin-open,html.admin-open body{overflow:hidden!important;}          /* the
 
 /* empty "No tools yet" card spans the full row like the note under it */
 .tools-page-card.tools-page-empty{grid-column:1/-1;}
+
+/* ===== Cookie Policy page (matches the other legal pages) ===== */
+#page-cookies .legal-simple-rule{border-color:rgba(232,160,32,.22);}
+#page-cookies .legal-card ul{padding-left:1.2rem;margin-top:.7rem;}
+#page-cookies .legal-card li{margin:.45rem 0;color:var(--ink2);line-height:1.65;}
+#page-cookies .legal-card code{font:600 .82em ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:rgba(232,160,32,.13);color:var(--gold);padding:1px 7px;border-radius:6px;white-space:nowrap;}
+html[data-theme="light"] #page-cookies .legal-card code{color:#8a5a00;background:rgba(232,160,32,.18);}
+.legal-intro .link-gold,.legal-card p .link-gold{font-size:inherit;display:inline;font-weight:600;border-bottom:1px solid rgba(232,160,32,.45);}
 </style>
 </head>
 <body>
@@ -4922,7 +5022,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
 
       <div class="legal-card"><h2>4. Information Collected Automatically</h2><p>Our website, hosting provider, security services, or analytics tools may collect technical information automatically. This can include browser and device type, operating system, approximate region, pages visited, visit time, referring page, interactions, download activity, error information, and security or server logs.</p><p>These details may help us operate, secure, troubleshoot, and improve Craftshan Studio.</p></div>
 
-      <div class="legal-card"><h2>5. Cookies and Similar Technologies</h2><p>Craftshan Studio may use cookies or similar technologies for essential functions, account sessions, preferences, security, analytics, and optional features. Where consent is legally required for non-essential tracking, the appropriate controls should be provided before those technologies are enabled.</p></div>
+      <div class="legal-card"><h2>5. Cookies and Similar Technologies</h2><p>Craftshan Studio may use cookies or similar technologies for essential functions, account sessions, preferences, security, analytics, and optional features. Where consent is legally required for non-essential tracking, the appropriate controls should be provided before those technologies are enabled. For a full explanation, see our <button type="button" class="link-gold" style="border:0;background:none;padding:0;cursor:pointer;" onclick="showPage('cookies')">Cookie Policy</button>.</p></div>
 
       <div class="legal-card"><h2>6. How We Use Information</h2><p>Information may be used to:</p><ul><li>Operate and maintain the website.</li><li>Create and manage customer accounts.</li><li>Process purchases and provide authorized digital downloads.</li><li>Maintain order and license records.</li><li>Respond to customer questions and technical support requests.</li><li>Investigate corrupted files, fraud, abuse, or unauthorized distribution.</li><li>Improve products, tools, website performance, and customer experience.</li><li>Maintain business, security, accounting, and legal records where reasonably necessary.</li><li>Send important service or transaction-related communications.</li></ul></div>
 
@@ -5079,6 +5179,146 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
     </div>
   </div>
 </div><!-- /page-refund -->
+
+<!-- ═══════════════════════════════════════
+     PAGE: COOKIE POLICY
+═══════════════════════════════════════ -->
+<div class="page" id="page-cookies">
+  <div class="legal-page-wrap">
+    <div class="page-back-row">
+      <button class="page-back-btn" onclick="goBackFromPage('cookies')" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M19 12H5"/><path d="m11 18-6-6 6-6"/></svg>
+        <span>Back</span>
+      </button>
+    </div>
+    <div class="legal-hero">
+      <div class="legal-kicker">↳ cookies &amp; storage</div>
+      <h1 class="legal-title">Cookie Policy</h1>
+      <div class="legal-updated">Last updated: October 13, 2026</div>
+      <p class="legal-intro">This policy explains how Craftshan Studio, an independent digital design store operated by M Kashian Malik, uses cookies and similar browser storage when you visit craftshan.studio, and the choices you have. It should be read together with our <a class="link-gold" href="/Privacy/" onclick="event.preventDefault();showPage('privacy')">Privacy Policy</a>.</p>
+    </div>
+
+    <div class="legal-content">
+      <div class="legal-card">
+        <h2>1. What Are Cookies and Similar Technologies?</h2>
+        <p>Cookies are small text files that a website can save on your device. Craftshan Studio mostly uses a close relative called browser storage (&ldquo;local storage&rdquo;). It works in a similar way, but the information stays in your browser instead of being sent to our servers with every request.</p>
+        <p>In this policy, &ldquo;cookies&rdquo; means both cookies and this kind of browser storage.</p>
+      </div>
+
+      <div class="legal-card legal-simple-rule">
+        <h2>2. The Short Version</h2>
+        <ul>
+          <li><strong>We only use what the shop needs to work:</strong> your login, your cart and a few preferences.</li>
+          <li><strong>We do not currently run analytics or advertising trackers,</strong> and we do not show third-party ads.</li>
+          <li><strong>Optional categories stay off</strong> unless you switch them on.</li>
+          <li><strong>You can change your choice at any time</strong> using &ldquo;Cookie preferences&rdquo; in the footer.</li>
+        </ul>
+      </div>
+
+      <div class="legal-card">
+        <h2>3. Essential Storage</h2>
+        <p>These items are needed to run the shop, so they are always on. They are not used for advertising.</p>
+        <ul>
+          <li><strong>Sign-in session</strong> &mdash; keeps you signed in after you log in with your email code. It is stored by our authentication provider and removed when you sign out or clear your browser data.</li>
+          <li><strong>Cart and coupon</strong> <code>craftshan_cart</code> <code>craftshan_applied_coupon</code> &mdash; remember the designs in your cart and any discount code you applied.</li>
+          <li><strong>Account details cache</strong> <code>craftshan_login_state</code> <code>craftshanCustomerProfile</code> &mdash; lets your account page show your name and sign-in status quickly.</li>
+          <li><strong>Store settings cache</strong> <code>craftshan_storefront_cache</code> <code>craftshanGlobalSettings</code> <code>craftshan_maintenance_cache</code> &mdash; help pages load faster and let us show a maintenance notice when needed.</li>
+          <li><strong>Your cookie choice</strong> <code>craftshan_cookie_consent</code> &mdash; remembers what you picked so we do not ask again on every visit.</li>
+        </ul>
+      </div>
+
+      <div class="legal-card">
+        <h2>4. Preference Storage</h2>
+        <p>We remember your display choice so the website looks the way you left it.</p>
+        <ul>
+          <li><strong>Theme</strong> <code>craftshan_theme</code> &mdash; stores whether you chose the dark or the light look.</li>
+        </ul>
+      </div>
+
+      <div class="legal-card">
+        <h2>5. Analytics</h2>
+        <p>Craftshan Studio does not currently use analytics tools. If we add them in the future, we will update this policy first, and where the law requires consent they will load only if you have turned on Analytics in Cookie preferences.</p>
+      </div>
+
+      <div class="legal-card">
+        <h2>6. Advertising and Marketing</h2>
+        <p>We do not use advertising cookies, social media tracking pixels, or retargeting tools. If that ever changes, they will stay off until you allow them.</p>
+      </div>
+
+      <div class="legal-card">
+        <h2>7. Accounts and Signing In</h2>
+        <p>You can browse the shop without an account. An account is needed for some actions, such as unlocking downloads or sending us a message so we can reply to your email. When you sign in, a session is saved in your browser so you stay signed in. Signing out removes it.</p>
+      </div>
+
+      <div class="legal-card">
+        <h2>8. Payments</h2>
+        <p>Paid checkout is handled by Lemon Squeezy on its own secure page. Lemon Squeezy may set its own cookies to process the payment, prevent fraud, and meet legal requirements. We do not control those cookies, so please see Lemon Squeezy&rsquo;s own policies for details.</p>
+      </div>
+
+      <div class="legal-card">
+        <h2>9. Third-Party Services</h2>
+        <p>Some parts of the website are provided by other companies. When your browser loads them, they can receive technical information that any website visit shares, such as your IP address and browser type.</p>
+        <ul>
+          <li><strong>Supabase</strong> &mdash; provides sign-in, our database, and file storage.</li>
+          <li><strong>Google Fonts</strong> &mdash; Google serves the fonts used on the website.</li>
+          <li><strong>jsDelivr</strong> &mdash; a content delivery network that serves a software library the website needs.</li>
+          <li><strong>GitHub Pages</strong> &mdash; hosts the website and may keep standard server logs.</li>
+          <li><strong>Lemon Squeezy</strong> &mdash; processes paid checkout (see section 8).</li>
+        </ul>
+        <p>These providers are governed by their own privacy and cookie policies.</p>
+      </div>
+
+      <div class="legal-card">
+        <h2>10. Links to Other Websites</h2>
+        <p>Our footer links to our profiles on Pinterest, Atomm, Creative Fabrica, Fiverr, Instagram, and Facebook. Once you click through, you are on their website and their own cookies and policies apply.</p>
+      </div>
+
+      <div class="legal-card">
+        <h2>11. Your Choices</h2>
+        <p>The first time you visit, you can choose:</p>
+        <ul>
+          <li><strong>Accept all</strong> &mdash; allow optional analytics and marketing, if we ever use them.</li>
+          <li><strong>Essential only</strong> &mdash; allow only the storage the shop needs to work.</li>
+          <li><strong>Cookie preferences</strong> &mdash; choose each optional category yourself.</li>
+        </ul>
+        <p>Essential storage cannot be switched off in our settings because the cart and sign-in would stop working. You can change your choice at any time from &ldquo;Cookie preferences&rdquo; in the footer. Continuing to browse is not treated as consent to optional categories.</p>
+      </div>
+
+      <div class="legal-card">
+        <h2>12. Managing Storage in Your Browser</h2>
+        <p>Most browsers let you view, block, or delete cookies and site data. Clearing data for craftshan.studio will sign you out and empty your cart, and will reset your theme and cookie choice. Blocking all site data may stop sign-in, the cart, or checkout from working.</p>
+      </div>
+
+      <div class="legal-card">
+        <h2>13. How Long Items Are Kept</h2>
+        <ul>
+          <li><strong>Sign-in session</strong> &mdash; until you sign out, it expires, or you clear your browser data.</li>
+          <li><strong>Theme and cookie choice</strong> &mdash; until you clear your browser data. We may ask again if this policy changes in a meaningful way.</li>
+          <li><strong>Cart and caches</strong> &mdash; kept on your device and refreshed or replaced automatically as you use the website.</li>
+        </ul>
+      </div>
+
+      <div class="legal-card">
+        <h2>14. Changes to This Policy</h2>
+        <p>We may update this policy when the website, our service providers, or privacy requirements change. The latest version is always on this page, with an updated date at the top.</p>
+      </div>
+
+      <div class="legal-card">
+        <h2>15. Contact</h2>
+        <p>If you have a question about cookies or privacy, please use the Craftshan Studio contact page.</p>
+        <div class="legal-contact"><button class="btn-gold" onclick="showPage('contact')">Contact Craftshan Studio →</button></div>
+      </div>
+
+      <div class="legal-card legal-simple-rule">
+        <h2>The Simple Rule</h2>
+        <p><strong>Essential storage → on, so the shop works.</strong></p>
+        <p><strong>Analytics and marketing → off, unless you say yes.</strong></p>
+        <p><strong>Payments → handled by Lemon Squeezy on its own secure page.</strong></p>
+      </div>
+    </div>
+  </div>
+</div><!-- /page-cookies -->
+
 
 <!-- ═══════════════════════════════════════
      PAGE: TERMS & CONDITIONS
@@ -5299,11 +5539,11 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       </div>
       <div class="foot-col"><h5 role="heading" aria-level="2">Explore</h5><ul><li><a href="/Shop" onclick="event.preventDefault();showPage('shop')">All Designs</a></li><li data-sf-link="freeFiles"><a onclick="showFreeFiles()">Free Files</a></li><li data-sf-link="bundles"><a onclick="showBundles()">Bundles</a></li></ul></div>
       <div class="foot-col"><h5 role="heading" aria-level="2">Resources</h5><ul><li data-sf-link="tools"><a href="/Tools" onclick="event.preventDefault();showPage('tools')">Tools</a></li><li><a href="/How" onclick="event.preventDefault();showPage('how')">How It Works</a></li><li><a href="/License" onclick="event.preventDefault();showPage('license')">License Terms</a></li><li><a href="/Refund" onclick="event.preventDefault();showPage('refund')">Refund Policy</a></li></ul></div>
-      <div class="foot-col"><h5 role="heading" aria-level="2">Company</h5><ul><li><a href="/About" onclick="event.preventDefault();showPage('about')">About</a></li><li><a href="/Contact" onclick="event.preventDefault();showPage('contact')">Contact</a></li><li><a href="/Privacy" onclick="event.preventDefault();showPage('privacy')">Privacy Policy</a></li><li><a href="/Terms" onclick="event.preventDefault();showPage('terms')">Terms &amp; Conditions</a></li></ul></div>
+      <div class="foot-col"><h5 role="heading" aria-level="2">Company</h5><ul><li><a href="/About" onclick="event.preventDefault();showPage('about')">About</a></li><li><a href="/Contact" onclick="event.preventDefault();showPage('contact')">Contact</a></li><li><a href="/Privacy" onclick="event.preventDefault();showPage('privacy')">Privacy Policy</a></li><li><a href="/Cookies" onclick="event.preventDefault();showPage('cookies')">Cookie Policy</a></li><li><a href="/Terms" onclick="event.preventDefault();showPage('terms')">Terms &amp; Conditions</a></li></ul></div>
     </div>
     <div class="foot-bottom">
       <p class="foot-copy">© 2026 Craftshan Studio. All rights reserved.</p>
-      <div class="foot-legal"><a onclick="showPage('terms')">Terms &amp; Conditions</a><a onclick="showPage('privacy')">Privacy Policy</a><a onclick="showPage('license')">License</a><a onclick="showPage('refund')">Refund Policy</a><a role="button" tabindex="0" onclick="craftshanConsent.open()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();craftshanConsent.open();}">Cookie preferences</a></div>
+      <div class="foot-legal"><a onclick="showPage('terms')">Terms &amp; Conditions</a><a onclick="showPage('privacy')">Privacy Policy</a><a onclick="showPage('license')">License</a><a onclick="showPage('refund')">Refund Policy</a><a onclick="showPage('cookies')">Cookie Policy</a><a role="button" tabindex="0" onclick="craftshanConsent.open()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();craftshanConsent.open();}">Cookie preferences</a></div>
     </div>
   </div>
 </footer>
@@ -6698,6 +6938,7 @@ async function startPaidCheckout(){
     if (error) throw error;
     if (data?.error) throw new Error(data.error);
     if (!data?.url) throw new Error('Could not start checkout.');
+    if (!/^https:\/\//i.test(String(data.url))) throw new Error('Invalid checkout link.');
     window.location.href = data.url;
   } catch (e) {
     console.error('Paid checkout error:', e);
@@ -7376,7 +7617,7 @@ const CRAFTSHAN_SOCIAL = {
   pinterest:       'https://www.pinterest.com/craftshanstudio/',
   atomm:           'https://www.atomm.com/@CraftshanStudio',
   creativefabrica: 'https://www.creativefabrica.com/designer/craftshan-studio/',
-  fiverr:          '',   // paste your Fiverr profile URL here; the icon stays hidden until you do
+  fiverr:          'https://www.fiverr.com/craftshanstudio',
   instagram:       'https://www.instagram.com/craftshan_studio/',
   facebook:        'https://www.facebook.com/profile.php?id=61591810850651'
 };
@@ -7476,6 +7717,7 @@ function submitContactForm(){
   const subject=(subjEl?.value||'General enquiry').trim();
   const order=(orderEl?.value||'').trim();
   const company=(document.getElementById('contact-company')?.value||'').trim(); // honeypot
+  try{ if(Date.now()-(+sessionStorage.getItem('craftshan_last_contact')||0)<20000){ showErr('Please wait a few seconds before sending another message.'); return; } }catch(e){}
   if(typeof craftshanSupabase==='undefined'){ showErr('The contact service is unavailable right now. Please try again later.'); return; }
   const submitBtn=document.querySelector('#page-contact .form-submit');
   if(submitBtn){ submitBtn.disabled=true; submitBtn.textContent='Sending…'; }
@@ -7492,6 +7734,7 @@ function submitContactForm(){
       }
       const {data,error}=await craftshanSupabase.functions.invoke('contact-message',{body:{name,email,message,subject,order,company}});
       if(error || !data || !data.ok){ showErr((data&&data.message)||'We could not send your message right now. Please try again shortly.'); return; }
+      try{ sessionStorage.setItem('craftshan_last_contact',String(Date.now())); }catch(e){}
       showToast("✓ Message sent successfully. We'll get back to you soon.");
       if(nameEl) nameEl.value=''; if(msgEl) msgEl.value=''; if(orderEl) orderEl.value='';
     }catch(e){
@@ -7932,7 +8175,7 @@ function clampDiscount(value){
   return Math.min(90,Math.max(0,Math.round(n)));
 }
 function addAdminLog(action){CRAFTSHAN_ADMIN_LOG.unshift({action,at:new Date().toLocaleString()});renderActivity();}
-function renderActivity(){const el=document.getElementById('activity-list');if(!el)return;const rows=CRAFTSHAN_ADMIN_LOG.length?CRAFTSHAN_ADMIN_LOG:[{action:'Owner control center enabled',at:'Just now'},{action:'Craftshan CMS plugin installed',at:'Just now'}];el.innerHTML=rows.slice(0,12).map(x=>`<div class="cms-item"><div class="drag">◷</div><div class="cms-item-main"><strong>${x.action}</strong><small>${x.at}</small></div></div>`).join('');}
+function renderActivity(){const el=document.getElementById('activity-list');if(!el)return;const rows=CRAFTSHAN_ADMIN_LOG.length?CRAFTSHAN_ADMIN_LOG:[{action:'Owner control center enabled',at:'Just now'},{action:'Craftshan CMS plugin installed',at:'Just now'}];el.innerHTML=rows.slice(0,12).map(x=>`<div class="cms-item"><div class="drag">◷</div><div class="cms-item-main"><strong>${escapeHtml(x.action)}</strong><small>${escapeHtml(x.at)}</small></div></div>`).join('');}
 /* Fallback only — the real list is loaded from the Supabase `categories`
    table by loadCraftshanCategories() and this array is replaced in place.
    "Paper Cuts" and "Earrings" were intentionally removed from the database
@@ -11687,7 +11930,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
 
 <div class="ck-banner" id="ck-banner" role="region" aria-label="Cookie notice">
   <h3>Your privacy, your choice</h3>
-  <p>We only use the storage needed to run the shop: your cart, login and theme. Optional analytics and marketing stay off unless you allow them. <button type="button" class="ck-link" onclick="craftshanConsent.open()">Cookie preferences</button> &middot; <button type="button" class="ck-link" onclick="showPage('privacy')">Privacy Policy</button></p>
+  <p>We only use the storage needed to run the shop: your cart, login and theme. Optional analytics and marketing stay off unless you allow them. <button type="button" class="ck-link" onclick="craftshanConsent.open()">Cookie preferences</button> &middot; <button type="button" class="ck-link" onclick="showPage('cookies')">Cookie Policy</button></p>
   <div class="ck-actions">
     <button type="button" class="ck-btn primary" onclick="craftshanConsent.acceptAll()">Accept all</button>
     <button type="button" class="ck-btn" onclick="craftshanConsent.rejectAll()">Essential only</button>
@@ -11697,7 +11940,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
 <div class="ck-overlay" id="ck-overlay" aria-hidden="true">
   <div class="ck-modal" role="dialog" aria-modal="true" aria-labelledby="ck-title">
     <h2 id="ck-title">Cookie preferences</h2>
-    <p class="ck-sub">Choose what Craftshan Studio may store on your device. You can change this at any time from the footer.</p>
+    <p class="ck-sub">Choose what Craftshan Studio may store on your device. You can change this at any time from the footer. <button type="button" class="ck-link" onclick="craftshanConsent.close();showPage('cookies')">Read the Cookie Policy</button></p>
     <div class="ck-row"><div><h4>Essential</h4><p>Needed for the shop to work: your cart, login session, theme choice and this preference. Always on.</p></div><label class="ck-switch"><input type="checkbox" checked disabled aria-label="Essential (always on)"><span></span></label></div>
     <div class="ck-row"><div><h4>Analytics</h4><p>Helps us understand which designs and pages are useful. We don&rsquo;t currently run analytics; if we add it, it will only load if you turn this on.</p></div><label class="ck-switch"><input type="checkbox" id="ck-analytics" aria-label="Analytics"><span></span></label></div>
     <div class="ck-row"><div><h4>Marketing</h4><p>Used for ads and social media pixels. Not currently used, and it stays off unless you allow it.</p></div><label class="ck-switch"><input type="checkbox" id="ck-marketing" aria-label="Marketing"><span></span></label></div>
@@ -11789,6 +12032,7 @@ function craftshanSkipToContent(e){
     get:function(){return read()||{essential:true,analytics:false,marketing:false};},
     has:function(cat){return cat==='essential'?true:!!(read()||{})[cat];},
     open:openDialog,
+    close:closeDialog,
     acceptAll:function(){return save(true,true);},
     rejectAll:function(){return save(false,false);},
     saveFromDialog:function(){return save(cbA.checked,cbM.checked);}
@@ -11857,6 +12101,11 @@ function craftshanCheckoutConsent(){
   new MutationObserver(sync).observe(sh,{attributes:true,attributeFilter:['class']});
   sync();
 })();
+</script>
+<script>
+/* ---- Connection notices ---- */
+window.addEventListener('offline',function(){ if(typeof showToast==='function') showToast('You appear to be offline. Some features may not work until you reconnect.'); });
+window.addEventListener('online',function(){ if(typeof showToast==='function') showToast('You are back online.'); });
 </script>
 </body>
 </html>
