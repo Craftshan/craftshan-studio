@@ -2324,7 +2324,6 @@ body .hero .hero-visual { animation-delay: .2s; }
 </style>
    
 <style id="craftshan-dark-gold">
-:is(#page-home,#page-shop,#page-product,#page-cart,#page-checkout,#page-tools,#page-how,#page-about,#page-license,#page-privacy,#page-terms,#page-refund,#page-contact,#page-wishlist,#page-account,#page-notfound){min-height:calc(100vh - 68px)}
 html:not([data-theme="light"]) :is(#page-home,
 html:not([data-theme="light"]) #page-shop,
 html:not([data-theme="light"]) #page-product,
@@ -3972,6 +3971,26 @@ html[data-theme="light"] .checkout-consent-error{color:#b42318;}
 /* visible keyboard focus everywhere (accessibility) */
 :where(a,button,[role="button"],summary,[tabindex]):focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px;}
 main#main-content{display:block;outline:none;}
+
+/* ===== Footer sits right under the content (no forced full-screen page) ===== */
+body{min-height:100vh;display:flex;flex-direction:column;}
+main#main-content{flex:1 0 auto;min-width:0;}
+html:not([data-theme="light"]),html:not([data-theme="light"]) body{background-color:#0a0a0a;}
+
+/* ===== Owner dashboard: one clean scrollbar ===== */
+html.admin-open,html.admin-open body{overflow:hidden!important;}          /* the page behind the dashboard no longer scrolls */
+.admin-shell{overscroll-behavior:contain;}
+.admin-content{overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#c9c3b8 transparent;}
+.admin-content::-webkit-scrollbar{width:11px;height:11px;}
+.admin-content::-webkit-scrollbar-track{background:transparent;}
+.admin-content::-webkit-scrollbar-thumb{background:#c9c3b8;border-radius:10px;border:3px solid transparent;background-clip:content-box;}
+.admin-content::-webkit-scrollbar-thumb:hover{background:#b3ab9d;background-clip:content-box;}
+.admin-content::-webkit-scrollbar-button{display:none;width:0;height:0;}
+.admin-nav{overscroll-behavior:contain;scrollbar-width:none;}              /* sidebar still scrolls with wheel/touch, bar hidden */
+.admin-nav::-webkit-scrollbar{display:none;}
+
+/* empty "No tools yet" card spans the full row like the note under it */
+.tools-page-card.tools-page-empty{grid-column:1/-1;}
 </style>
 </head>
 <body>
@@ -10740,7 +10759,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
       // here at all — not even an empty-state card. The "no tools yet" message
       // is only for a genuinely empty catalog.
       grid.innerHTML = storefrontToolsOn()
-        ? `<article class="tools-page-card"><div><h3>No tools yet</h3><p>Studio tools will appear here as they are released.</p></div></article>`
+        ? `<article class="tools-page-card tools-page-empty"><div><h3>No tools yet</h3><p>Studio tools will appear here as they are released.</p></div></article>`
         : '';
       return;
     }
@@ -11720,6 +11739,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
   b.addEventListener('click',window.craftshanScrollTop);
   update();
 })();
+
 /* ---- Skip to content (keyboard users) ---- */
 function craftshanSkipToContent(e){
   e.preventDefault();
@@ -11826,6 +11846,16 @@ function craftshanCheckoutConsent(){
     var el=document.getElementById('nav-design-search');
     if(el&&document.activeElement!==el&&/@/.test(el.value)) el.value='';
   },400); });
+})();
+</script>
+<script>
+/* ---- Owner dashboard: lock the page behind it so only the dashboard scrolls ---- */
+(function(){
+  var sh=document.getElementById('admin-shell'); if(!sh) return;
+  var root=document.documentElement;
+  function sync(){ root.classList.toggle('admin-open',sh.classList.contains('open')); }
+  new MutationObserver(sync).observe(sh,{attributes:true,attributeFilter:['class']});
+  sync();
 })();
 </script>
 </body>
