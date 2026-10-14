@@ -4108,6 +4108,47 @@ html[data-theme="light"] #page-cookies .legal-card code{color:#8a5a00;background
   .buy-bar button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
   html.has-buy-bar .to-top{bottom:156px;}
 }
+
+/* ===== Home page upgrades ===== */
+/* hero showcase: real product images */
+.hero-visual[data-live="1"] .pv-thumb,.hero-visual[data-live="1"] .pv-mini-top{padding:0;overflow:hidden;}
+.hero-visual[data-live="1"] .pv-thumb img,.hero-visual[data-live="1"] .pv-mini-top img{width:100%;height:100%;object-fit:cover;display:block;}
+.hero-visual[data-live="1"] .pv-main,.hero-visual[data-live="1"] .pv-mini{cursor:pointer;transition:transform .4s var(--ease-premium,ease),border-color .3s,box-shadow .4s;}
+.hero-visual[data-live="1"] .pv-main:hover{transform:translateY(-4px);border-color:rgba(232,160,32,.55);}
+.hero-visual[data-live="1"] .pv-mini:hover{transform:translateY(-3px);border-color:rgba(232,160,32,.55);}
+.hero-visual[data-live="1"] .pv-main:focus-visible,.hero-visual[data-live="1"] .pv-mini:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+.hero-visual[data-live="1"] .pv-name{max-width:62%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hero-visual[data-live="1"] .pv-mini-bot .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* scrolling strip: pause on hover / focus */
+.ticker:hover .ticker-track,.ticker:focus-within .ticker-track{animation-play-state:paused;}
+/* hide the Tools band while there are no tools yet */
+#home-section-tools[data-tool-count="0"]{display:none!important;}
+
+/* How it works + FAQ */
+.home-sec{padding:76px 0;}
+.home-head{text-align:center;max-width:640px;margin:0 auto 2.6rem;}
+.home-head p{margin:.7rem auto 0;font-size:.92rem;line-height:1.7;color:var(--ink2);}
+.home-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}
+.home-step{position:relative;background:var(--surf);border:1px solid var(--border);border-radius:20px;padding:28px 26px 26px;transition:transform .4s var(--ease-premium,ease),border-color .3s,box-shadow .4s;}
+.home-step:hover{transform:translateY(-4px);border-color:rgba(232,160,32,.5);box-shadow:0 14px 36px rgba(0,0,0,.14);}
+.home-step-num{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--gold-dim,rgba(232,160,32,.12));color:var(--gold);font:700 .8rem 'Inter',sans-serif;letter-spacing:.04em;}
+.home-step h3{font:600 1.15rem 'Playfair Display',serif;margin:16px 0 8px;color:var(--ink);}
+.home-step p{margin:0;font-size:.88rem;line-height:1.7;color:var(--ink2);}
+.home-more{text-align:center;margin-top:1.8rem;}
+.home-faq-list{max-width:820px;margin:0 auto;display:grid;gap:12px;}
+.home-faq-list details{background:var(--surf);border:1px solid var(--border);border-radius:16px;padding:0 22px;transition:border-color .25s;}
+.home-faq-list details[open]{border-color:rgba(232,160,32,.45);}
+.home-faq-list summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-weight:600;font-size:.95rem;color:var(--ink);}
+.home-faq-list summary::-webkit-details-marker{display:none;}
+.home-faq-list summary::after{content:'+';flex:0 0 auto;font-size:1.4rem;font-weight:400;color:var(--gold);line-height:1;transition:transform .25s;}
+.home-faq-list details[open] summary::after{transform:rotate(45deg);}
+.home-faq-list summary:focus-visible{outline:2px solid var(--gold);outline-offset:4px;border-radius:8px;}
+.home-faq-list details p{margin:0;padding:0 0 18px;font-size:.88rem;line-height:1.75;color:var(--ink2);}
+.home-faq-list details p a{color:var(--gold);cursor:pointer;font-weight:600;text-decoration:underline;text-underline-offset:2px;}
+@media(max-width:900px){.home-sec{padding:56px 0;}.home-steps{grid-template-columns:1fr;}}
+@media(max-width:600px){.home-faq-list details{padding:0 16px;}}
+.hero-visual[data-live="1"] .pv-foot{justify-content:flex-end;gap:14px;}
+.hero-visual[data-live="1"] .pv-name{max-width:52%;text-align:right;}
 </style>
 </head>
 <body>
@@ -4396,6 +4437,19 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
     </div>
   </section>
 
+  <!-- How it works -->
+  <section class="home-sec" id="home-section-how" aria-labelledby="home-how-heading">
+    <div class="wrap">
+      <div class="home-head"><div class="kicker">↳ how it works</div><h2 class="sec-title" id="home-how-heading">From download to finished piece</h2></div>
+      <div class="home-steps">
+        <div class="home-step"><span class="home-step-num">01</span><h3>Choose your design</h3><p>Browse the shop and check the formats, price and license information before you buy.</p></div>
+        <div class="home-step"><span class="home-step-num">02</span><h3>Pay once</h3><p>Every design is a one-time purchase. There are no memberships or subscription plans.</p></div>
+        <div class="home-step"><span class="home-step-num">03</span><h3>Receive your files</h3><p>Get a ZIP with the files provided for that design, ready for your machine and your project.</p></div>
+      </div>
+      <div class="home-more"><a class="link-gold" onclick="showPage('how')" style="cursor:pointer;">See the full process →</a></div>
+    </div>
+  </section>
+
   <!-- Tools band -->
   <div class="tools-band" id="home-section-tools">
     <div class="tools-band-glow"></div>
@@ -4407,6 +4461,21 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       </div>
     </div>
   </div>
+
+  <!-- FAQ -->
+  <section class="home-sec" id="home-section-faq" aria-labelledby="home-faq-heading" style="padding-top:20px;">
+    <div class="wrap">
+      <div class="home-head"><div class="kicker">↳ good to know</div><h2 class="sec-title" id="home-faq-heading">Questions, answered</h2></div>
+      <div class="home-faq-list">
+        <details><summary>What will I receive after buying?</summary><p>A ZIP containing the files provided for that design, such as SVG, DXF and PNG where listed. Each product page shows the included formats before you buy, and your files unlock in My Account once payment completes.</p></details>
+        <details><summary>Can I sell products I make with your designs?</summary><p>Where a design includes commercial use, you may create and sell finished physical products. The digital file itself may not be resold, shared, uploaded or redistributed. Free designs are for personal, non-commercial use unless the product page says otherwise. See the <a onclick="showPage('license')">License terms</a> for the full rules.</p></details>
+        <details><summary>Do I need an account?</summary><p>You can browse the whole shop without one. An account, which you sign in to with an email code, is used to unlock your downloads and keep your orders in one place.</p></details>
+        <details><summary>Are there subscriptions or memberships?</summary><p>No. Each design is purchased individually, once.</p></details>
+        <details><summary>Which machines and software do the files work with?</summary><p>Our designs are prepared for laser cutting and for Cricut and Silhouette workflows. Every product page lists the exact formats included, so you can check before you buy.</p></details>
+        <details><summary>What if there is a problem with a file?</summary><p>Digital files cannot be returned, so purchases are generally final, but genuine file problems are handled through support and replacement. Please <a onclick="showPage('contact')">contact us</a> and we will help. You can read the <a onclick="showPage('refund')">Refund Policy</a> for details.</p></details>
+      </div>
+    </div>
+  </section>
 
   <!-- CTA -->
   <div style="max-width:calc(1280px + 6rem);margin:56px auto 64px;" id="home-section-cta">
@@ -12155,6 +12224,41 @@ window.addEventListener('online',function(){ if(typeof showToast==='function') s
   bBuy.addEventListener('click',function(){ buy.click(); });
   bAdd.addEventListener('click',function(){ add.click(); });
   sync();
+})();
+</script>
+<script>
+/* ---- Home hero: show real designs from the catalog (falls back to the artwork if there are none) ---- */
+function craftshanHeroShowcase(){
+  var vis=document.querySelector('#home-section-hero .hero-visual'); if(!vis||typeof PRODUCTS==='undefined'||!PRODUCTS.length) return;
+  function src(p){return p.thumbnailData||p.coverImage||p.previewImage||'';}
+  var list=PRODUCTS.filter(function(p){return p&&src(p);});
+  if(!list.length) return;
+  list=list.slice().sort(function(a,b){return (b.featured?1:0)-(a.featured?1:0);});
+  function esc(t){return typeof escapeHtml==='function'?escapeHtml(t):String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function priceOf(p){return p.free?'Free':'$'+(typeof effectivePrice==='function'?effectivePrice(p):Number(p.price||0)).toFixed(2);}
+  function img(p){return '<img src="'+esc(src(p))+'" alt="'+esc(p.name)+'" loading="eager" decoding="async">';}
+  function wire(el,p){
+    el.setAttribute('role','button'); el.setAttribute('tabindex','0'); el.setAttribute('aria-label','View '+p.name);
+    el.onclick=function(){openProduct(p.id);};
+    el.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openProduct(p.id);}};
+  }
+  var main=vis.querySelector('.pv-main'),minis=[vis.querySelector('.pv-mini.ml'),vis.querySelector('.pv-mini.mr')];
+  if(main){
+    var p=list[0]; main.querySelector('.pv-thumb').innerHTML=img(p);
+    main.querySelector('.pv-name').textContent=p.name; main.querySelector('.pv-price').textContent=priceOf(p); wire(main,p);
+  }
+  minis.forEach(function(el,i){
+    if(!el) return; var q=list[i+1];
+    if(!q){ el.style.display='none'; return; }
+    el.style.display=''; el.querySelector('.pv-mini-top').innerHTML=img(q);
+    el.querySelector('.n').textContent=q.name; el.querySelector('.p').textContent=priceOf(q); wire(el,q);
+  });
+  vis.dataset.live='1';
+}
+(function(){
+  var orig=window.renderProductList;
+  if(typeof orig==='function'){ window.renderProductList=function(){ var r=orig.apply(this,arguments); try{craftshanHeroShowcase();}catch(e){} return r; }; }
+  window.addEventListener('load',function(){ setTimeout(function(){ try{craftshanHeroShowcase();}catch(e){} },900); });
 })();
 </script>
 </body>
