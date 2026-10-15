@@ -4149,6 +4149,40 @@ html[data-theme="light"] #page-cookies .legal-card code{color:#8a5a00;background
 @media(max-width:600px){.home-faq-list details{padding:0 16px;}}
 .hero-visual[data-live="1"] .pv-foot{justify-content:flex-end;gap:14px;}
 .hero-visual[data-live="1"] .pv-name{max-width:52%;text-align:right;}
+
+/* ===== Shop: Filters panel on phones + active filter chips ===== */
+.shop-filters-btn{display:none;align-items:center;gap:8px;height:42px;padding:0 16px;border-radius:999px;border:1px solid var(--border);background:var(--surf);color:var(--ink);font:600 .85rem 'Inter',sans-serif;cursor:pointer;transition:border-color .2s,color .2s;}
+.shop-filters-btn svg{width:16px;height:16px;}
+.shop-filters-btn:hover{border-color:var(--gold);color:var(--gold);}
+.shop-filters-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--gold);color:#0D0D0D;font-size:.72rem;font-weight:800;}
+.shop-filters-badge[hidden]{display:none;}
+.shop-active-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;}
+.shop-active-chips:empty{display:none;}
+.shop-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 8px 7px 14px;border-radius:999px;border:1px solid rgba(232,160,32,.45);background:var(--gold-dim,rgba(232,160,32,.12));color:var(--ink);font:600 .78rem 'Inter',sans-serif;cursor:pointer;transition:background .2s,border-color .2s;}
+.shop-chip:hover{background:rgba(232,160,32,.22);border-color:var(--gold);}
+.shop-chip span{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.18);font-size:.85rem;line-height:1;}
+.shop-chip:focus-visible,.shop-filters-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+.shop-sheet-head,.shop-sheet-foot,.shop-sheet-overlay{display:none;}
+
+@media(max-width:900px){
+  .shop-filters-btn{display:inline-flex;}
+  .shop-top{gap:10px;}
+  .shop-sheet-overlay{display:block;position:fixed;inset:0;z-index:1280;background:var(--ui-overlay);backdrop-filter:blur(2px);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;}
+  #page-shop.filters-open .shop-sheet-overlay{opacity:1;visibility:visible;}
+  #page-shop .sidebar{display:block!important;position:fixed;left:0;right:0;bottom:0;z-index:1290;max-height:84vh;overflow-y:auto;overscroll-behavior:contain;padding:0 22px;background:var(--ui-bg);color:var(--ui-ink);border:1px solid var(--ui-border);border-bottom:0;border-radius:24px 24px 0 0;box-shadow:var(--ui-shadow);transform:translateY(105%);visibility:hidden;transition:transform .4s var(--ease-premium,ease),visibility .4s;}
+  #page-shop.filters-open .sidebar{transform:none;visibility:visible;}
+  #page-shop .sidebar .sidebar-check{font-size:.95rem;margin-bottom:.95rem;color:var(--ui-ink2);}
+  #page-shop .sidebar .sidebar-check input[type=checkbox]{width:19px;height:19px;}
+  #page-shop .sidebar .sidebar-title{color:var(--ui-ink);}
+  #page-shop .sidebar .sidebar-section{border-color:var(--ui-border);}
+  .shop-sheet-head{display:flex;position:sticky;top:0;z-index:2;align-items:center;justify-content:space-between;padding:18px 0 12px;background:var(--ui-bg);}
+  .shop-sheet-head h2{margin:0;font:700 1.2rem 'Playfair Display',serif;color:var(--ui-ink);}
+  .shop-sheet-close{width:38px;height:38px;border-radius:50%;border:1px solid var(--ui-border);background:transparent;color:var(--ui-ink);font-size:1.4rem;line-height:1;cursor:pointer;}
+  .shop-sheet-close:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+  .shop-sheet-foot{display:flex;position:sticky;bottom:0;z-index:2;gap:10px;padding:14px 0 calc(14px + env(safe-area-inset-bottom,0px));background:var(--ui-bg);border-top:1px solid var(--ui-border);margin-top:6px;}
+  .shop-sheet-foot .ck-btn{flex:1;height:46px;}
+  html.shop-filters-open,html.shop-filters-open body{overflow:hidden;}
+}
 </style>
 </head>
 <body>
@@ -4506,8 +4540,9 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       </form>
     </div>
   </div>
+  <div class="shop-sheet-overlay" id="shop-sheet-overlay"></div>
   <div class="shop-layout">
-    <aside class="sidebar">
+    <aside class="sidebar" id="shop-sidebar">
       <div class="sidebar-section" id="shop-filter-categories">
         <div class="sidebar-title">Categories</div>
         <div id="shop-category-filters"></div>
@@ -4531,7 +4566,9 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       <div class="shop-filter-actions">
         <button id="shop-clear-filters" class="shop-clear-btn" type="button">Clear filters</button>
       </div>
+      <div class="shop-active-chips" id="shop-active-chips" aria-live="polite"></div>
       <div class="shop-top">
+        <button type="button" class="shop-filters-btn" id="shop-filters-btn" aria-controls="shop-sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filters <span class="shop-filters-badge" id="shop-filters-badge" hidden>0</span></button>
         <div class="shop-count">Showing <strong id="shop-result-count">8</strong> designs</div>
         <select class="shop-sort" id="shop-sort">
           <option>Most popular</option>
@@ -12259,6 +12296,66 @@ function craftshanHeroShowcase(){
   var orig=window.renderProductList;
   if(typeof orig==='function'){ window.renderProductList=function(){ var r=orig.apply(this,arguments); try{craftshanHeroShowcase();}catch(e){} return r; }; }
   window.addEventListener('load',function(){ setTimeout(function(){ try{craftshanHeroShowcase();}catch(e){} },900); });
+})();
+</script>
+<script>
+/* ---- Shop: filter sheet and chips ---- */
+(function(){
+  var page=document.getElementById('page-shop'),aside=document.getElementById('shop-sidebar'),btn=document.getElementById('shop-filters-btn'),
+      ov=document.getElementById('shop-sheet-overlay'),chips=document.getElementById('shop-active-chips'),badge=document.getElementById('shop-filters-badge');
+  if(!page||!aside||!btn||!ov||!chips) return;
+  var mq=window.matchMedia('(max-width: 900px)'),lastFocus=null;
+  var head=document.createElement('div'); head.className='shop-sheet-head';
+  head.innerHTML='<h2>Filters</h2><button type="button" class="shop-sheet-close" aria-label="Close filters">&times;</button>';
+  var foot=document.createElement('div'); foot.className='shop-sheet-foot';
+  foot.innerHTML='<button type="button" class="ck-btn shop-sheet-clear">Clear all</button><button type="button" class="ck-btn primary shop-sheet-apply">Show designs</button>';
+  aside.insertBefore(head,aside.firstChild); aside.appendChild(foot);
+  var closeBtn=head.querySelector('.shop-sheet-close'),applyBtn=foot.querySelector('.shop-sheet-apply');
+  function checked(){ return page.querySelectorAll('.sidebar-check input[data-filter]:checked:not([data-filter="all"])'); }
+  function labelOf(input){ var l=input.closest('label'); if(!l) return input.dataset.filter; var c=l.cloneNode(true); c.querySelectorAll('input,.sidebar-count').forEach(function(x){x.remove();}); return c.textContent.replace(/\s+/g,' ').trim(); }
+  function chip(text,onRemove){
+    var b=document.createElement('button'); b.type='button'; b.className='shop-chip'; b.setAttribute('aria-label','Remove filter: '+text);
+    b.appendChild(document.createTextNode(text)); var x=document.createElement('span'); x.setAttribute('aria-hidden','true'); x.textContent='\u00d7'; b.appendChild(x);
+    b.addEventListener('click',onRemove); return b;
+  }
+  function refresh(){
+    var list=checked(); badge.textContent=list.length; badge.hidden=!list.length;
+    var rc=document.getElementById('shop-result-count'),n=rc?rc.textContent.trim():'';
+    applyBtn.textContent=n?('Show '+n+' design'+(n==='1'?'':'s')):'Show designs';
+    chips.textContent='';
+    list.forEach(function(i){ chips.appendChild(chip(labelOf(i),function(){ i.checked=false; i.dispatchEvent(new Event('change',{bubbles:true})); })); });
+    var q=(typeof shopFilters!=='undefined'&&shopFilters.query)||'';
+    if(q) chips.appendChild(chip('Search: '+q,function(){ if(typeof clearShopSearchInput==='function') clearShopSearchInput(); refresh(); }));
+  }
+  function open(){
+    lastFocus=document.activeElement; page.classList.add('filters-open'); document.documentElement.classList.add('shop-filters-open');
+    btn.setAttribute('aria-expanded','true'); aside.setAttribute('role','dialog'); aside.setAttribute('aria-modal','true'); aside.setAttribute('aria-label','Filters');
+    setTimeout(function(){ closeBtn.focus(); },60);
+  }
+  function close(){
+    if(!page.classList.contains('filters-open')) return;
+    page.classList.remove('filters-open'); document.documentElement.classList.remove('shop-filters-open');
+    btn.setAttribute('aria-expanded','false'); aside.removeAttribute('role'); aside.removeAttribute('aria-modal'); aside.removeAttribute('aria-label');
+    if(lastFocus&&lastFocus.focus){ try{lastFocus.focus();}catch(e){} }
+  }
+  btn.addEventListener('click',open); ov.addEventListener('click',close); closeBtn.addEventListener('click',close); applyBtn.addEventListener('click',close);
+  foot.querySelector('.shop-sheet-clear').addEventListener('click',function(){ var c=document.getElementById('shop-clear-filters'); if(c) c.click(); setTimeout(refresh,50); });
+  document.addEventListener('keydown',function(e){
+    if(!page.classList.contains('filters-open')) return;
+    if(e.key==='Escape'){ e.preventDefault(); close(); return; }
+    if(e.key==='Tab'){
+      var f=aside.querySelectorAll('button,input:not([disabled])'); if(!f.length) return;
+      var first=f[0],last=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey&&document.activeElement===last){ e.preventDefault(); first.focus(); }
+    }
+  });
+  if(mq.addEventListener) mq.addEventListener('change',function(){ if(!mq.matches) close(); });
+  new MutationObserver(function(){ if(!page.classList.contains('active')) close(); }).observe(page,{attributes:true,attributeFilter:['class']});
+  var rc0=document.getElementById('shop-result-count'); if(rc0) new MutationObserver(refresh).observe(rc0,{childList:true,characterData:true,subtree:true});
+  var orig=window.syncShopFilterUI; if(typeof orig==='function'){ window.syncShopFilterUI=function(){ var r=orig.apply(this,arguments); try{refresh();}catch(e){} return r; }; }
+  window.addEventListener('load',function(){ setTimeout(refresh,800); });
+  refresh();
 })();
 </script>
 </body>
