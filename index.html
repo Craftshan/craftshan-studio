@@ -82,11 +82,11 @@
 <meta name="twitter:title" content="Premium SVG & Laser Cut Files | Craftshan Studio"/>
 <meta name="twitter:description" content="Discover premium SVG, DXF and PNG files for laser cutting, Cricut, Silhouette and creative projects. Instant digital downloads from Craftshan Studio."/>
 <link rel="canonical" href="https://craftshan.studio/"/>
-<meta property="og:image" content="https://craftshan.studio/social-image.png">
-<meta property="og:image:width" content="1734">
-<meta property="og:image:height" content="907">
+<meta property="og:image" content="https://craftshan.studio/social-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Craftshan Studio digital design files">
-<meta name="twitter:image" content="https://craftshan.studio/social-image.png">
+<meta name="twitter:image" content="https://craftshan.studio/social-image.jpg">
 <script type="application/ld+json" id="ld-org">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://craftshan.studio/#organization","name":"Craftshan Studio","url":"https://craftshan.studio/","sameAs":["https://www.instagram.com/craftshan_studio/","https://www.facebook.com/profile.php?id=61591810850651","https://www.pinterest.com/craftshanstudio/","https://www.atomm.com/@CraftshanStudio","https://www.creativefabrica.com/designer/craftshan-studio/","https://www.fiverr.com/craftshanstudio"]},{"@type":"WebSite","@id":"https://craftshan.studio/#website","name":"Craftshan Studio","url":"https://craftshan.studio/","publisher":{"@id":"https://craftshan.studio/#organization"}}]}</script>
 <meta name="theme-color" content="#0D0D0D"/>
 <meta name="referrer" content="strict-origin-when-cross-origin"/>
@@ -4183,6 +4183,45 @@ html[data-theme="light"] #page-cookies .legal-card code{color:#8a5a00;background
   .shop-sheet-foot .ck-btn{flex:1;height:46px;}
   html.shop-filters-open,html.shop-filters-open body{overflow:hidden;}
 }
+
+/* ===== Product page polish ===== */
+/* the design image was hidden on phones and tablets; show it */
+@media(max-width:900px){
+  #page-product .prod-gallery{display:block!important;position:relative;top:auto;}
+  #page-product .prod-gallery .prod-main-img{aspect-ratio:4 / 3;}
+}
+/* readable breadcrumb */
+#page-product .prod-breadcrumb{flex-wrap:wrap;row-gap:4px;color:var(--ink2);}
+#page-product .prod-breadcrumb span{color:var(--ink2);}
+#page-product .prod-breadcrumb span:not([id]):not([onclick]){color:var(--ink3);}
+#page-product .prod-breadcrumb #prod-name-bc{color:var(--ink);font-weight:600;}
+/* buttons: Buy | Add, then Save | Share (no lonely button on its own row) */
+#page-product .prod-actions{grid-template-columns:repeat(2,minmax(0,1fr));}
+@media(max-width:900px){
+  #page-product .prod-actions .btn-buy-now,#page-product .prod-actions .btn-add{grid-column:1 / -1;}
+}
+/* reassurance row */
+.prod-trust{list-style:none;margin:-6px 0 20px;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px;}
+.prod-trust li{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;color:var(--ink2);}
+.prod-trust li::before{content:'✓';display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--gold-dim,rgba(232,160,32,.14));color:var(--gold);font-size:.68rem;font-weight:800;}
+/* a hidden info tile no longer leaves a half-empty row */
+.prod-meta-grid:has(.prod-meta-item[style*="display: none"]) .prod-meta-item:last-child{grid-column:1 / -1;}
+
+/* product page: the column may shrink to the screen (it was forcing ~405px on phones) */
+@media(max-width:900px){#page-product .prod-wrap{grid-template-columns:minmax(0,1fr);}}
+#page-product .prod-wrap>*{min-width:0;}
+#page-product .prod-info,#page-product .prod-gallery{max-width:100%;}
+
+/* footer legal links wrap on small screens (the row had grown wider than a phone) */
+.foot-legal{display:flex;flex-wrap:wrap;gap:8px 20px;max-width:100%;}
+.foot-legal a{white-space:nowrap;}
+@media(max-width:600px){.foot-legal{gap:8px 16px;}.foot-bottom{align-items:flex-start;}}
+
+/* cart: same fix as the product page (the single column could be wider than a very small phone) */
+#page-cart .cart-wrap>*,#page-checkout .checkout-wrap>*{min-width:0;}
+@media(max-width:900px){#page-cart .cart-wrap{grid-template-columns:minmax(0,1fr);}}
+.cart-item{min-width:0;}
+.cart-item-info,.cart-item-name{min-width:0;overflow-wrap:anywhere;}
 </style>
 </head>
 <body>
@@ -4646,6 +4685,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
         <button class="btn-wishlist" id="prod-wishlist-btn" type="button" aria-pressed="false">♥ Save</button>
         <button class="btn-wishlist" id="prod-share-btn" type="button" aria-label="Share this design">↗ Share Design</button>
       </div>
+      <ul class="prod-trust" aria-label="Purchase details"><li>Instant digital download</li><li>One-time payment, no subscription</li><li>Files unlock in My Account</li></ul>
       <div class="prod-meta-grid">
         <div class="prod-meta-item"><div class="prod-meta-label">Original file size</div><div class="prod-meta-val" id="prod-file-size">—</div></div>
         <div class="prod-meta-item"><div class="prod-meta-label">Included formats</div><div class="prod-meta-val" id="prod-formats">—</div></div>
@@ -6678,7 +6718,7 @@ function openProduct(id, fromHistory) {
 
   const fileList=Array.isArray(p.files)?p.files.filter(f=>String(f.ext||f.name?.split('.').pop()||'').toLowerCase()==='zip').slice(0,1):[];
   const zipSize=Number(p.zipFileSize||fileList[0]?.size||0);
-  const sizeEl=document.getElementById('prod-file-size'); if(sizeEl) sizeEl.textContent=zipSize?formatBytes(zipSize):'ZIP size shown after upload';
+  const sizeEl=document.getElementById('prod-file-size'); if(sizeEl){ sizeEl.textContent=zipSize?formatBytes(zipSize):''; const sizeTile=sizeEl.closest('.prod-meta-item'); if(sizeTile) sizeTile.style.display=zipSize?'':'none'; }
   // v43: never claim a format we cannot verify. Previously this line printed
   // 'AI • SVG • EPS • DXF • PNG' on every product regardless of contents.
   const fmtEl=document.getElementById('prod-formats');
@@ -11534,7 +11574,7 @@ document.addEventListener('DOMContentLoaded',loadGlobalSettings);
 <script id="craftshan-seo-settings-js">
 (function(){
   const KEY='craftshan_seo_settings_v1';
-  const defaults={title:'Premium SVG & Laser Cut Files | Craftshan Studio',description:'Original SVG, DXF and PNG files for laser cutting, Cricut, Silhouette and creative projects. Instant downloads with clear licensing from Craftshan Studio.',canonical:'https://craftshan.studio/',robots:'index,follow',ogTitle:'Premium SVG & Laser Cut Files | Craftshan Studio',ogDescription:'Original SVG, DXF and PNG files for laser cutting, Cricut, Silhouette and creative projects. Instant downloads with clear licensing from Craftshan Studio.',ogImage:'https://craftshan.studio/social-image.png'};
+  const defaults={title:'Premium SVG & Laser Cut Files | Craftshan Studio',description:'Original SVG, DXF and PNG files for laser cutting, Cricut, Silhouette and creative projects. Instant downloads with clear licensing from Craftshan Studio.',canonical:'https://craftshan.studio/',robots:'index,follow',ogTitle:'Premium SVG & Laser Cut Files | Craftshan Studio',ogDescription:'Original SVG, DXF and PNG files for laser cutting, Cricut, Silhouette and creative projects. Instant downloads with clear licensing from Craftshan Studio.',ogImage:'https://craftshan.studio/social-image.jpg'};
   function read(){try{return Object.assign({},defaults,JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){return {...defaults};}}
   function write(o){try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
   function fields(){return [...document.querySelectorAll('[data-seo-key]')];}
@@ -12356,6 +12396,18 @@ function craftshanHeroShowcase(){
   var orig=window.syncShopFilterUI; if(typeof orig==='function'){ window.syncShopFilterUI=function(){ var r=orig.apply(this,arguments); try{refresh();}catch(e){} return r; }; }
   window.addEventListener('load',function(){ setTimeout(refresh,800); });
   refresh();
+})();
+</script>
+<script>
+/* ---- Product gallery: no "1 / 1" badge when there is a single image ---- */
+(function(){
+  var host=document.getElementById('prod-main-svg'); if(!host) return;
+  function sync(){
+    var c=document.getElementById('product-gallery-counter'); if(!c) return;
+    c.style.display=/^\s*1\s*\/\s*1\s*$/.test(c.textContent)?'none':'';
+  }
+  new MutationObserver(sync).observe(host,{childList:true,characterData:true,subtree:true});
+  sync();
 })();
 </script>
 </body>
