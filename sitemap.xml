@@ -51,7 +51,7 @@
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
-  <url>
+   <url>
     <loc>https://craftshan.studio/Cookies/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
