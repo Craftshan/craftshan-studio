@@ -4235,6 +4235,19 @@ html[data-theme="light"] :is(.ck-link,.buy-bar-price){color:var(--gold-ink);}
 /* cookie policy: the dark "short version" and "simple rule" cards keep light text in both themes */
 html[data-theme="light"] #page-cookies .legal-simple-rule :is(li,p,strong){color:rgba(255,255,255,.82);}
 html[data-theme="light"] #page-cookies .legal-simple-rule code{color:var(--gold);}
+
+/* ===== Phones: the same 16px side margin on every page (it ranged from 16px to 48px) ===== */
+@media(max-width:600px){
+  :is(.wrap,.shop-layout,.how-steps,.tools-page-wrap,.license-grid,.how-rules-grid,.wishlist-wrap,.account-wrap){padding-left:16px!important;padding-right:16px!important;}
+  #page-contact .contact-wrap{padding-left:16px!important;padding-right:16px!important;}
+  :is(.shop-hero,.tools-page-hero,.how-hero,.license-hero,.about-hero){padding-left:16px!important;padding-right:16px!important;}
+  #main-footer{padding-left:16px!important;padding-right:16px!important;}
+  #main-footer :is(.foot-top,.foot-bottom,.foot-inner){padding-left:0!important;padding-right:0!important;}
+}
+@media(max-width:600px){
+  .about-story,.about-hero-inner{padding-left:16px!important;padding-right:16px!important;}
+  .about-hero{padding-left:0!important;padding-right:0!important;}
+}
 </style>
 </head>
 <body>
