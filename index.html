@@ -61,6 +61,7 @@
 <meta charset="UTF-8"/>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' data: blob: https://hiqarqiuqtrksedndpmf.supabase.co wss://hiqarqiuqtrksedndpmf.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<script>window.__craftshanAuthHash=(window.location.hash||"")+"&"+(window.location.search||"");</script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://hiqarqiuqtrksedndpmf.supabase.co" crossorigin>
 <script>/* anti-clickjacking: if another website frames this page, break out (same-site frames are fine) */(function(){try{if(window.top!==window.self){try{void window.top.location.href;}catch(e){try{window.top.location=window.self.location.href;}catch(e2){}document.documentElement.style.display='none';}}}catch(e){}})();</script>
@@ -4270,6 +4271,102 @@ html[data-theme="light"] .sugg-name mark,html[data-theme="light"] .sugg-all{colo
 html[data-theme="light"] .recent-clear:hover{color:var(--gold-ink);}
 #home-recent-grid,#prod-recent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px;}
 #home-section-recent[hidden],#prod-recent[hidden]{display:none!important;}
+
+/* ===================================================================
+   AUTH: login / sign up / forgot / reset (full-screen, dark + gold)
+   =================================================================== */
+.auth-overlay{position:fixed;inset:0;z-index:1400;display:none;overflow-y:auto;background:#0a0a0a;color:#F5F1E8;-webkit-overflow-scrolling:touch;}
+.auth-overlay.open{display:block;}
+.auth-bg{position:fixed;inset:0;pointer-events:none;background:radial-gradient(900px 520px at 85% -8%,rgba(232,160,32,.14),transparent 62%),radial-gradient(700px 480px at -5% 105%,rgba(232,160,32,.10),transparent 60%),#0a0a0a;}
+.auth-bg svg{position:absolute;width:min(46vw,520px);height:auto;opacity:.5;}
+.auth-bg .a1{left:0;top:0;}
+.auth-bg .a2{right:0;bottom:0;transform:rotate(180deg);}
+.auth-close{position:fixed;top:max(14px,env(safe-area-inset-top));right:16px;z-index:3;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.16);background:rgba(20,20,20,.7);color:#F5F1E8;font-size:1.5rem;line-height:1;cursor:pointer;backdrop-filter:blur(6px);transition:border-color .2s,color .2s;}
+.auth-close:hover{border-color:#E8A020;color:#E8A020;}
+.auth-shell{position:relative;z-index:1;min-height:100%;display:grid;grid-template-columns:minmax(0,1fr);align-items:center;justify-items:center;padding:34px 16px 28px;gap:36px;}
+.auth-features{display:none;}
+.auth-main{width:100%;max-width:468px;display:flex;flex-direction:column;align-items:center;}
+.auth-brand{text-align:center;margin-bottom:22px;}
+.auth-brand img{width:58px;height:58px;border-radius:14px;display:block;margin:0 auto 10px;}
+.auth-brand-name{font:600 2rem 'Playfair Display',serif;color:#fff;line-height:1.15;}
+.auth-tag{margin-top:8px;font:600 .66rem 'Inter',sans-serif;letter-spacing:.24em;color:rgba(245,241,232,.78);}
+.auth-card{width:100%;background:#FBF9F4;color:#1c1c1a;border-radius:20px;padding:30px 30px 26px;box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 1px rgba(232,160,32,.12);}
+.auth-view{display:none;}
+#customer-gate[data-mode="login"] .auth-view[data-view="login"],
+#customer-gate[data-mode="signup"] .auth-view[data-view="signup"],
+#customer-gate[data-mode="forgot"] .auth-view[data-view="forgot"],
+#customer-gate[data-mode="check"] .auth-view[data-view="check"],
+#customer-gate[data-mode="reset"] .auth-view[data-view="reset"],
+#customer-gate[data-mode="updated"] .auth-view[data-view="updated"],
+#customer-gate[data-mode="otp"] .auth-view[data-view="otp"]{display:block;animation:authIn .35s var(--ease-premium,ease);}
+@keyframes authIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.auth-title{margin:0 0 6px;font:700 1.75rem 'Playfair Display',serif;color:#1c1c1a;line-height:1.2;}
+.auth-sub{margin:0 0 20px;font-size:.9rem;line-height:1.6;color:#6b675f;}
+.auth-field{margin-bottom:14px;}
+.auth-field>label{display:block;margin-bottom:6px;font:600 .82rem 'Inter',sans-serif;color:#1c1c1a;}
+.auth-input{position:relative;display:flex;align-items:center;background:#fff;border:1px solid #E3DED3;border-radius:12px;transition:border-color .2s,box-shadow .2s;}
+.auth-input:focus-within{border-color:#C9962B;box-shadow:0 0 0 3px rgba(201,150,43,.18);}
+.auth-input.invalid{border-color:#c0392b;}
+.auth-input>svg{flex:0 0 18px;width:18px;height:18px;margin-left:14px;color:#8a8579;}
+.auth-input input{flex:1;min-width:0;height:48px;padding:0 14px 0 11px;border:0;outline:0;background:transparent;font:400 .95rem 'Inter',sans-serif;color:#1c1c1a;}
+.auth-input input::placeholder{color:#9a958a;}
+.auth-eye{flex:0 0 auto;width:44px;height:44px;margin-right:2px;border:0;background:transparent;color:#6b675f;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:10px;}
+.auth-eye:hover{color:#1c1c1a;}
+.auth-eye svg{width:19px;height:19px;}
+.auth-eye .ico-off{display:none;}
+.auth-eye[aria-pressed="true"] .ico-on{display:none;}
+.auth-eye[aria-pressed="true"] .ico-off{display:block;}
+.auth-hint{margin:6px 2px 0;font-size:.76rem;color:#6b675f;}
+.auth-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 16px;flex-wrap:wrap;}
+.auth-check{display:flex;align-items:flex-start;gap:9px;font-size:.84rem;color:#3d3a34;cursor:pointer;line-height:1.5;}
+.auth-check input{flex:0 0 18px;width:18px;height:18px;margin-top:1px;accent-color:#C9962B;cursor:pointer;}
+.auth-check a{color:#8a5a00;text-decoration:underline;text-underline-offset:2px;font-weight:600;}
+.auth-link{background:none;border:0;padding:0;font:600 .84rem 'Inter',sans-serif;color:#8a5a00;cursor:pointer;text-decoration:none;}
+.auth-link:hover{text-decoration:underline;text-underline-offset:3px;}
+.auth-link:disabled{color:#9a958a;cursor:default;text-decoration:none;}
+.auth-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;}
+.auth-error{margin:0 0 14px;padding:11px 13px;border-radius:10px;background:#fdecea;border:1px solid #f3c1bb;color:#8f2418;font-size:.84rem;line-height:1.5;}
+.auth-info{margin:0 0 14px;padding:11px 13px;border-radius:10px;background:#f4efe1;border:1px solid #e6d9b3;color:#5c4710;font-size:.84rem;line-height:1.5;}
+.auth-error[hidden],.auth-info[hidden]{display:none;}
+.auth-btn{width:100%;height:50px;border:0;border-radius:999px;background:linear-gradient(90deg,#C48E24 0%,#E2B547 100%);color:#fff;font:700 .95rem 'Inter',sans-serif;letter-spacing:.01em;cursor:pointer;box-shadow:0 8px 22px rgba(196,142,36,.3);transition:transform .3s var(--ease-premium,ease),box-shadow .3s,filter .2s;text-shadow:0 1px 1px rgba(0,0,0,.18);}
+.auth-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(196,142,36,.38);}
+.auth-btn:disabled{opacity:.7;cursor:wait;transform:none;}
+.auth-btn.outline{background:#fff;color:#1c1c1a;border:1px solid #C9962B;box-shadow:none;text-shadow:none;}
+.auth-btn.outline:hover{background:#faf3e2;}
+.auth-or{display:flex;align-items:center;gap:12px;margin:20px 0 14px;font-size:.78rem;color:#7a766c;}
+.auth-or::before,.auth-or::after{content:'';flex:1;height:1px;background:#E3DED3;}
+.auth-social-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;}
+.auth-sbtn{height:46px;border-radius:12px;border:1px solid #E3DED3;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,box-shadow .2s,transform .25s;}
+.auth-sbtn:hover{border-color:#C9962B;box-shadow:0 4px 14px rgba(0,0,0,.08);transform:translateY(-1px);}
+.auth-sbtn svg{width:21px;height:21px;}
+.auth-sbtn[hidden],.auth-social[hidden]{display:none;}
+.auth-switch{margin:20px 0 0;text-align:center;font-size:.85rem;color:#5f5b52;}
+.auth-center{text-align:center;}
+.auth-icon{width:84px;height:84px;margin:4px auto 14px;border-radius:50%;background:#f6ecd4;color:#C48E24;display:flex;align-items:center;justify-content:center;}
+.auth-icon svg{width:40px;height:40px;}
+.auth-email-strong{display:block;margin:2px 0 10px;font-weight:700;color:#1c1c1a;word-break:break-all;}
+.auth-code input{letter-spacing:.35em;font-size:1.2rem;text-align:center;padding-left:14px;}
+.auth-foot{margin-top:22px;font-size:.74rem;color:rgba(245,241,232,.7);text-align:center;}
+.auth-foot span{margin:0 8px;color:#E8A020;}
+.auth-fine{margin:16px 0 0;font-size:.78rem;color:#6b675f;text-align:center;line-height:1.55;}
+@media(max-width:480px){.auth-card{padding:24px 20px 22px;border-radius:18px;}.auth-title{font-size:1.55rem;}.auth-brand-name{font-size:1.7rem;}.auth-shell{padding-top:26px;}}
+@media(min-width:1040px){
+  .auth-shell{grid-template-columns:minmax(0,420px) minmax(0,468px);justify-content:center;gap:90px;align-items:center;padding:48px 32px;}
+  .auth-features{display:block;}
+  .auth-features .auth-brand{text-align:left;margin-bottom:34px;}
+  .auth-features .auth-brand img{margin:0 0 12px;width:64px;height:64px;}
+  .auth-main .auth-brand{display:none;}
+  .auth-feat{display:flex;align-items:center;gap:16px;padding:14px 0;}
+  .auth-feat-ico{flex:0 0 52px;width:52px;height:52px;border-radius:50%;border:1.5px solid #C9962B;color:#E8A020;display:flex;align-items:center;justify-content:center;}
+  .auth-feat-ico svg{width:24px;height:24px;}
+  .auth-feat h3{margin:0 0 2px;font:600 1rem 'Inter',sans-serif;color:#fff;}
+  .auth-feat p{margin:0;font-size:.86rem;color:rgba(245,241,232,.72);}
+}
+@media(prefers-reduced-motion:reduce){.auth-view{animation:none!important;}}
+/* auth: readable text on the gold button and the divider label */
+.auth-btn{color:#1c1c1a;text-shadow:none;}
+.auth-btn.outline{color:#1c1c1a;}
+.auth-or{color:#5f5b52;}
 </style>
 </head>
 <body>
@@ -5424,7 +5521,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
     <div class="legal-hero">
       <div class="legal-kicker">↳ cookies &amp; storage</div>
       <h1 class="legal-title">Cookie Policy</h1>
-      <div class="legal-updated">Last updated: October 18, 2026</div>
+      <div class="legal-updated">Last updated: October 19, 2026</div>
       <p class="legal-intro">This policy explains how Craftshan Studio, an independent digital design store operated by M Kashian Malik, uses cookies and similar browser storage when you visit craftshan.studio, and the choices you have. It should be read together with our <a class="link-gold" href="/Privacy/" onclick="event.preventDefault();showPage('privacy')">Privacy Policy</a>.</p>
     </div>
 
@@ -5453,6 +5550,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
           <li><strong>Cart and coupon</strong> <code>craftshan_cart</code> <code>craftshan_applied_coupon</code> &mdash; remember the designs in your cart and any discount code you applied.</li>
           <li><strong>Account details cache</strong> <code>craftshan_login_state</code> <code>craftshanCustomerProfile</code> &mdash; lets your account page show your name and sign-in status quickly.</li>
           <li><strong>Store settings cache</strong> <code>craftshan_storefront_cache</code> <code>craftshanGlobalSettings</code> <code>craftshan_maintenance_cache</code> &mdash; help pages load faster and let us show a maintenance notice when needed.</li>
+          <li><strong>Sign-in helpers</strong> <code>craftshan_session_only</code> <code>craftshan_auth_return</code> <code>craftshan_recovery_pending</code> &mdash; remember if you chose not to stay signed in, the page you were on when you started a Google or Apple sign-in, and that a password reset is in progress. They are removed when they are no longer needed.</li>
           <li><strong>Your cookie choice</strong> <code>craftshan_cookie_consent</code> &mdash; remembers what you picked so we do not ask again on every visit.</li>
         </ul>
       </div>
@@ -5478,7 +5576,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
 
       <div class="legal-card">
         <h2>7. Accounts and Signing In</h2>
-        <p>You can browse the shop without an account. An account is needed for some actions, such as unlocking downloads or sending us a message so we can reply to your email. When you sign in, a session is saved in your browser so you stay signed in. Signing out removes it.</p>
+        <p>You can browse the shop without an account. An account is needed for some actions, such as unlocking downloads or sending us a message so we can reply to your email. You can sign in with your email and password, or with Google or Apple where those options are shown. When you sign in, a session is saved in your browser so you stay signed in, unless you untick &ldquo;Remember me&rdquo;. Signing out removes it.</p>
       </div>
 
       <div class="legal-card">
@@ -5491,6 +5589,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
         <p>Some parts of the website are provided by other companies. When your browser loads them, they can receive technical information that any website visit shares, such as your IP address and browser type.</p>
         <ul>
           <li><strong>Supabase</strong> &mdash; provides sign-in, our database, and file storage.</li>
+          <li><strong>Google and Apple</strong> &mdash; only if you choose &ldquo;continue with Google&rdquo; or &ldquo;continue with Apple&rdquo;. You are taken to their sign-in page, where their own cookies and policies apply.</li>
           <li><strong>Google Fonts</strong> &mdash; Google serves the fonts used on the website.</li>
           <li><strong>jsDelivr</strong> &mdash; a content delivery network that serves a software library the website needs.</li>
           <li><strong>GitHub Pages</strong> &mdash; hosts the website and may keep standard server logs.</li>
@@ -5830,77 +5929,153 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
   </div>
 </div>
 
-<div class="owner-gate" id="customer-gate" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="customer-gate-title">
-  <div class="owner-gate-card">
-    <button class="close" onclick="closeCustomerGate()">×</button>
+<div class="auth-overlay" id="customer-gate" data-mode="login" aria-hidden="true">
+  <div class="auth-bg" aria-hidden="true">
+    <svg class="a1" viewBox="0 0 400 400" fill="none" stroke="#E8A020" stroke-width="1"><path d="M-20 300C60 260 120 180 150 80S200 -10 260 -30" opacity=".5"/><path d="M-20 340C80 290 150 200 190 90S250 -20 320 -40" opacity=".35"/><path d="M-20 380C100 320 180 220 230 100S300 -30 380 -50" opacity=".22"/></svg>
+    <svg class="a2" viewBox="0 0 400 400" fill="none" stroke="#E8A020" stroke-width="1"><path d="M-20 300C60 260 120 180 150 80S200 -10 260 -30" opacity=".5"/><path d="M-20 340C80 290 150 200 190 90S250 -20 320 -40" opacity=".35"/><path d="M-20 380C100 320 180 220 230 100S300 -30 380 -50" opacity=".22"/></svg>
+  </div>
+  <button type="button" class="auth-close" onclick="closeCustomerGate()" aria-label="Close">&times;</button>
+  <div class="auth-shell">
+    <aside class="auth-features" aria-label="Why create an account">
+      <div class="auth-brand"><img src="/logo-128.webp" width="64" height="64" alt="" onerror="this.onerror=null;this.src='/favicon.png'"><div class="auth-brand-name">Craftshan Studio</div><div class="auth-tag">MAKE SOMETHING. SELL WHAT YOU MAKE.</div></div>
+      <div class="auth-feat"><span class="auth-feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.4 3.1 8.3 7.5 9.5 4.4-1.2 7.5-5.1 7.5-9.5V6L12 3z"/><path d="m9 12 2 2 4-4"/></svg></span><div><h3>Secure sign-in</h3><p>Your account is protected by secure authentication.</p></div></div>
+      <div class="auth-feat"><span class="auth-feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><div><h3>Easy access</h3><p>Reset your password any time.</p></div></div>
+      <div class="auth-feat"><span class="auth-feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 5 13h6l-1 8 8-10h-6l1-8z"/></svg></span><div><h3>Simple sign up</h3><p>Get started in seconds.</p></div></div>
+      <div class="auth-feat"><span class="auth-feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="11" rx="2"/><path d="M8 19h4M10 15v4"/><rect x="16" y="9" width="5" height="10" rx="1.5"/></svg></span><div><h3>Works on all devices</h3><p>Log in from your phone, tablet or computer.</p></div></div>
+    </aside>
 
-    <div class="kicker">↳ your account</div>
+    <div class="auth-main">
+      <div class="auth-brand"><img src="/logo-128.webp" width="58" height="58" alt="" onerror="this.onerror=null;this.src='/favicon.png'"><div class="auth-brand-name">Craftshan Studio</div><div class="auth-tag">MAKE SOMETHING. SELL WHAT YOU MAKE.</div></div>
 
-    <h3 id="customer-gate-title">Sign in to Craftshan Studio</h3>
+      <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title-login">
 
-    <p id="customer-gate-sub">Log in to view your orders, downloads and licenses.</p>
+        <!-- LOG IN -->
+        <section class="auth-view" data-view="login">
+          <h2 class="auth-title" id="auth-title-login">Welcome back</h2>
+          <p class="auth-sub">Log in to your account and continue creating, shopping and managing your designs.</p>
+          <div class="auth-info" id="auth-info-login" role="status" hidden></div>
+          <form class="auth-form" id="auth-form-login" novalidate onsubmit="return craftshanAuth.submit('login',event)">
+            <div class="auth-field"><label for="auth-login-email">Email address</label>
+              <div class="auth-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg><input id="auth-login-email" name="email" type="email" autocomplete="username" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="you@example.com"></div></div>
+            <div class="auth-field"><label for="auth-login-pass">Password</label>
+              <div class="auth-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="auth-login-pass" name="password" type="password" autocomplete="current-password" placeholder="Enter your password"><button type="button" class="auth-eye" aria-label="Show password" aria-pressed="false" onclick="craftshanAuth.eye(this)"><svg class="ico-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7c1.6 0 3-.4 4.3-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div></div>
+            <div class="auth-row"><label class="auth-check"><input type="checkbox" id="auth-remember" checked><span>Remember me</span></label><button type="button" class="auth-link" onclick="setCustomerGateMode('forgot')">Forgot password?</button></div>
+            <div class="auth-error" id="auth-err-login" role="alert" hidden></div>
+            <button type="submit" class="auth-btn" id="auth-btn-login">Log in &rarr;</button>
+          </form>
+          <div class="auth-social" data-social hidden>
+            <div class="auth-or"><span>or continue with</span></div>
+            <div class="auth-social-btns">
+              <button type="button" class="auth-sbtn" data-provider="google" hidden aria-label="Continue with Google" onclick="craftshanAuth.oauth('google')"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.46a5.52 5.52 0 0 1-2.4 3.62v3h3.88c2.27-2.09 3.56-5.17 3.56-8.81z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.92l-3.88-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.1A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.27 14.27A7.2 7.2 0 0 1 4.9 12c0-.79.14-1.55.37-2.27v-3.1H1.27A12 12 0 0 0 0 12c0 1.94.46 3.77 1.27 5.37l4-3.1z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.59 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.27 6.63l4 3.1C6.22 6.88 8.87 4.77 12 4.77z"/></svg></button>
+              <button type="button" class="auth-sbtn" data-provider="apple" hidden aria-label="Continue with Apple" onclick="craftshanAuth.oauth('apple')"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#111" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701z"/></svg></button>
+            </div>
+          </div>
+          <p class="auth-switch">Don&rsquo;t have an account? <button type="button" class="auth-link" onclick="setCustomerGateMode('signup')">Sign up</button></p>
+        </section>
 
-    <div style="display:flex;gap:8px;margin:14px 0 4px;">
-      <button type="button" id="customer-gate-tab-login" class="btn-outline" style="flex:1;" onclick="setCustomerGateMode('login')">Log in</button>
-      <button type="button" id="customer-gate-tab-signup" class="btn-outline" style="flex:1;" onclick="setCustomerGateMode('signup')">Sign up</button>
+        <!-- SIGN UP -->
+        <section class="auth-view" data-view="signup">
+          <h2 class="auth-title" id="auth-title-signup">Create your account</h2>
+          <p class="auth-sub">Join Craftshan Studio and start your creative journey.</p>
+          <form class="auth-form" id="auth-form-signup" novalidate onsubmit="return craftshanAuth.submit('signup',event)">
+            <div class="auth-field"><label for="auth-signup-name">Full name</label>
+              <div class="auth-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.2-3.6 4.3-5.5 8-5.5s6.8 1.9 8 5.5"/></svg><input id="auth-signup-name" name="name" type="text" autocomplete="name" placeholder="Your full name"></div></div>
+            <div class="auth-field"><label for="auth-signup-email">Email address</label>
+              <div class="auth-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg><input id="auth-signup-email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="you@example.com"></div></div>
+            <div class="auth-field"><label for="auth-signup-pass">Password</label>
+              <div class="auth-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="auth-signup-pass" name="new-password" type="password" autocomplete="new-password" placeholder="Create a strong password" aria-describedby="auth-signup-hint"><button type="button" class="auth-eye" aria-label="Show password" aria-pressed="false" onclick="craftshanAuth.eye(this)"><svg class="ico-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7c1.6 0 3-.4 4.3-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div>
+              <div class="auth-hint" id="auth-signup-hint">At least 8 characters, including a number.</div></div>
+            <div class="auth-field"><label for="auth-signup-confirm">Confirm password</label>
+              <div class="auth-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="auth-signup-confirm" name="confirm-password" type="password" autocomplete="new-password" placeholder="Confirm your password"><button type="button" class="auth-eye" aria-label="Show password" aria-pressed="false" onclick="craftshanAuth.eye(this)"><svg class="ico-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7c1.6 0 3-.4 4.3-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div></div>
+            <div class="auth-row" style="margin-bottom:14px;"><label class="auth-check"><input type="checkbox" id="auth-terms"><span>I agree to the Craftshan Studio <a href="/Terms/" target="_blank" rel="noopener">Terms &amp; Conditions</a> and <a href="/Privacy/" target="_blank" rel="noopener">Privacy Policy</a>.</span></label></div>
+            <div class="auth-error" id="auth-err-signup" role="alert" hidden></div>
+            <button type="submit" class="auth-btn" id="auth-btn-signup">Create account &rarr;</button>
+          </form>
+          <div class="auth-social" data-social hidden>
+            <div class="auth-or"><span>or continue with</span></div>
+            <div class="auth-social-btns">
+              <button type="button" class="auth-sbtn" data-provider="google" hidden aria-label="Sign up with Google" onclick="craftshanAuth.oauth('google')"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.46a5.52 5.52 0 0 1-2.4 3.62v3h3.88c2.27-2.09 3.56-5.17 3.56-8.81z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.92l-3.88-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.1A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.27 14.27A7.2 7.2 0 0 1 4.9 12c0-.79.14-1.55.37-2.27v-3.1H1.27A12 12 0 0 0 0 12c0 1.94.46 3.77 1.27 5.37l4-3.1z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.59 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.27 6.63l4 3.1C6.22 6.88 8.87 4.77 12 4.77z"/></svg></button>
+              <button type="button" class="auth-sbtn" data-provider="apple" hidden aria-label="Sign up with Apple" onclick="craftshanAuth.oauth('apple')"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#111" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701z"/></svg></button>
+            </div>
+          </div>
+          <p class="auth-switch">Already have an account? <button type="button" class="auth-link" onclick="setCustomerGateMode('login')">Log in</button></p>
+        </section>
+
+        <!-- FORGOT PASSWORD -->
+        <section class="auth-view" data-view="forgot">
+          <button type="button" class="auth-link auth-back" onclick="setCustomerGateMode('login')">&larr; Back to login</button>
+          <h2 class="auth-title" id="auth-title-forgot">Forgot your password?</h2>
+          <p class="auth-sub">Enter your email address and we&rsquo;ll send you a link to reset your password.</p>
+          <form class="auth-form" id="auth-form-forgot" novalidate onsubmit="return craftshanAuth.submit('forgot',event)">
+            <div class="auth-field"><label for="auth-forgot-email">Email address</label>
+              <div class="auth-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg><input id="auth-forgot-email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="you@example.com"></div></div>
+            <div class="auth-error" id="auth-err-forgot" role="alert" hidden></div>
+            <button type="submit" class="auth-btn" id="auth-btn-forgot">Send reset link &rarr;</button>
+          </form>
+          <p class="auth-switch">Remember your password? <button type="button" class="auth-link" onclick="setCustomerGateMode('login')">Log in</button></p>
+        </section>
+
+        <!-- CHECK YOUR EMAIL (reset link sent) -->
+        <section class="auth-view auth-center" data-view="check">
+          <div class="auth-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></div>
+          <h2 class="auth-title" id="auth-title-check">Check your email</h2>
+          <p class="auth-sub" style="margin-bottom:8px;">If an account exists for</p>
+          <span class="auth-email-strong" id="auth-check-email"></span>
+          <p class="auth-sub">we&rsquo;ve sent a password reset link. It expires after a short time, so please use it soon.</p>
+          <div class="auth-info" id="auth-info-check" role="status" hidden></div>
+          <button type="button" class="auth-btn outline" onclick="setCustomerGateMode('login')">Back to login</button>
+          <p class="auth-fine">Didn&rsquo;t receive the email? Check your spam folder or <button type="button" class="auth-link" id="auth-resend-reset" onclick="craftshanAuth.resendReset()">Resend link</button></p>
+        </section>
+
+        <!-- SET NEW PASSWORD -->
+        <section class="auth-view" data-view="reset">
+          <h2 class="auth-title" id="auth-title-reset">Set new password</h2>
+          <p class="auth-sub">Your new password must be at least 8 characters and include a number.</p>
+          <form class="auth-form" id="auth-form-reset" novalidate onsubmit="return craftshanAuth.submit('reset',event)">
+            <div class="auth-field"><label for="auth-reset-pass">New password</label>
+              <div class="auth-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="auth-reset-pass" name="new-password" type="password" autocomplete="new-password" placeholder="Enter new password"><button type="button" class="auth-eye" aria-label="Show password" aria-pressed="false" onclick="craftshanAuth.eye(this)"><svg class="ico-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7c1.6 0 3-.4 4.3-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div></div>
+            <div class="auth-field"><label for="auth-reset-confirm">Confirm new password</label>
+              <div class="auth-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input id="auth-reset-confirm" name="confirm-password" type="password" autocomplete="new-password" placeholder="Confirm your password"><button type="button" class="auth-eye" aria-label="Show password" aria-pressed="false" onclick="craftshanAuth.eye(this)"><svg class="ico-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7c1.6 0 3-.4 4.3-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div></div>
+            <div class="auth-error" id="auth-err-reset" role="alert" hidden></div>
+            <button type="submit" class="auth-btn" id="auth-btn-reset">Reset password &rarr;</button>
+          </form>
+        </section>
+
+        <!-- PASSWORD UPDATED -->
+        <section class="auth-view auth-center" data-view="updated">
+          <div class="auth-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
+          <h2 class="auth-title" id="auth-title-updated">Password updated!</h2>
+          <p class="auth-sub">Your password has been successfully reset. You can now log in to your account.</p>
+          <button type="button" class="auth-btn" onclick="setCustomerGateMode('login')">Go to login &rarr;</button>
+        </section>
+
+        <!-- VERIFY EMAIL (8-digit code after sign up) -->
+        <section class="auth-view auth-center" data-view="otp">
+          <div class="auth-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg></div>
+          <h2 class="auth-title" id="auth-title-otp">Verify your email</h2>
+          <p class="auth-sub" style="margin-bottom:4px;">We sent an 8-digit code to</p>
+          <span class="auth-email-strong" id="auth-otp-email"></span>
+          <div class="auth-info" id="auth-info-otp" role="status" hidden></div>
+          <p class="auth-sub">Enter it below to finish creating your account.</p>
+          <form class="auth-form" id="auth-form-otp" novalidate onsubmit="return craftshanAuth.submit('otp',event)">
+            <div class="auth-field auth-code"><label for="auth-otp-code" class="sr-only">8-digit code</label>
+              <div class="auth-input"><input id="auth-otp-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="00000000"></div></div>
+            <div class="auth-error" id="auth-err-otp" role="alert" hidden></div>
+            <button type="submit" class="auth-btn" id="auth-btn-otp">Verify &rarr;</button>
+          </form>
+          <p class="auth-fine"><button type="button" class="auth-link" id="auth-resend-otp" onclick="craftshanAuth.resendOtp()">Resend code</button> &nbsp;&middot;&nbsp; <button type="button" class="auth-link" onclick="setCustomerGateMode('signup')">Back to sign up</button></p>
+          <p class="auth-fine" style="margin-top:8px;">Already have an account? <button type="button" class="auth-link" onclick="setCustomerGateMode('login')">Log in</button> or <button type="button" class="auth-link" onclick="setCustomerGateMode('forgot')">reset your password</button>.</p>
+        </section>
+      </div>
+
+      <div class="auth-foot">Craftshan Studio<span>&bull;</span>Digital Laser-Cut Designs</div>
     </div>
-
-    <div class="form-box">
-      <label>Email</label>
-      <input
-        id="customer-email"
-        type="email"
-        autocomplete="username"
-        placeholder="you@example.com"
-        onkeydown="if(event.key==='Enter')submitCustomerGate()"
-      >
-    </div>
-
-    <div class="form-box">
-      <label>Password</label>
-      <input
-        id="customer-password"
-        type="password"
-        autocomplete="current-password"
-        placeholder="Enter your password"
-        onkeydown="if(event.key==='Enter')submitCustomerGate()"
-      >
-    </div>
-
-    <button
-      class="btn-gold"
-      style="width:100%;"
-      id="customer-gate-submit"
-      onclick="submitCustomerGate()"
-    >
-      Log in →
-    </button>
-
-    <div
-      id="customer-login-status"
-      style="font-size:.7rem;color:var(--ink3);margin-top:10px;text-align:center;min-height:14px;"
-    ></div>
   </div>
 </div>
+
 </div>
 <!-- v62: email OTP verification for new signups (Supabase Auth verifyOtp). v65: Supabase sends an 8-digit signup code. -->
-<div class="owner-gate" id="customer-otp-gate" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="customer-otp-title">
-  <div class="owner-gate-card">
-    <button class="close" onclick="closeCustomerOtp()">×</button>
-    <div class="kicker">↳ verify your email</div>
-    <h3 id="customer-otp-title">Enter your verification code</h3>
-    <p id="customer-otp-sub">We sent an 8-digit code to your email. Enter it below to finish creating your account.</p>
-    <div class="form-box">
-      <label>8-digit code</label>
-      <input id="customer-otp-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="12345678" onkeydown="if(event.key==='Enter')verifyCustomerOtp()">
-    </div>
-    <button class="btn-gold" style="width:100%;" id="customer-otp-submit" onclick="verifyCustomerOtp()">Verify →</button>
-    <div style="display:flex;justify-content:center;margin-top:10px;">
-      <button type="button" class="btn-outline" id="customer-otp-resend" style="font-size:.72rem;padding:7px 14px;" onclick="resendCustomerOtp()">Resend code</button>
-    </div>
-    <div id="customer-otp-status" style="font-size:.7rem;color:var(--ink3);margin-top:10px;text-align:center;min-height:14px;"></div>
-  </div>
-</div>
+
 <div class="admin-toast" id="admin-toast"></div>
 <div class="plugin-modal" id="plugin-install-modal" onclick="if(event.target===this)closePluginModal('plugin-install-modal')">
   <div class="plugin-modal-card">
@@ -7410,137 +7585,6 @@ function switchAccountTab(tab,btn){
   updateWishlistBadge(); loadCustomerProfile();
 }
 
-function openCustomerGate(){
-  const gate=document.getElementById('customer-gate'); if(!gate) return;
-  craftshanModalTrigger=document.activeElement;
-  gate.classList.add('open'); gate.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
-  setTimeout(()=>document.getElementById('customer-email')?.focus(),80);
-}
-function closeCustomerGate(){
-  const gate=document.getElementById('customer-gate'); if(!gate) return;
-  gate.classList.remove('open'); gate.setAttribute('aria-hidden','true'); document.body.style.overflow='';
-  if(craftshanModalTrigger&&typeof craftshanModalTrigger.focus==='function'){craftshanModalTrigger.focus();craftshanModalTrigger=null;}
-}
-function setCustomerGateMode(mode){
-  document.getElementById('customer-gate').dataset.mode=mode;
-  const isLogin=mode==='login';
-  document.getElementById('customer-gate-title').textContent=isLogin?'Log in to Craftshan Studio':'Create your account';
-  document.getElementById('customer-gate-sub').textContent=isLogin?'Log in to view your orders, downloads and licenses.':'Sign up with email and a password to get started.';
-  document.getElementById('customer-gate-submit').textContent=isLogin?'Log in →':'Create account →';
-  document.getElementById('customer-gate-tab-login').style.borderColor=isLogin?'var(--ink2)':'';
-  document.getElementById('customer-gate-tab-signup').style.borderColor=!isLogin?'var(--ink2)':'';
-  const status=document.getElementById('customer-login-status'); if(status) status.textContent='';
-}
-async function submitCustomerGate(){
-  const mode=document.getElementById('customer-gate').dataset.mode||'login';
-  const email=(document.getElementById('customer-email')?.value||'').trim();
-  const password=(document.getElementById('customer-password')?.value||'').trim();
-  const status=document.getElementById('customer-login-status');
-  if(!email||!password){ if(status) status.textContent='Enter your email and password.'; return; }
-  if(password.length<6){ if(status) status.textContent='Password must be at least 6 characters.'; return; }
-  if(typeof craftshanSupabase==='undefined'){ if(status) status.textContent='Account service is unavailable right now.'; return; }
-  if(status) status.textContent = mode==='login' ? 'Logging in…' : 'Creating account…';
-  try{
-    if(mode==='signup'){
-      const {data,error}=await craftshanSupabase.auth.signUp({email,password});
-      if(error) throw error;
-      if(!data?.session){
-        // v62: email confirmation is required -> collect the 8-digit code instead
-        // of asking the user to click an email link. Supabase Auth verifyOtp does
-        // the verification; no code is ever generated or stored client-side.
-        if(status) status.textContent='';
-        closeCustomerGate();
-        openCustomerOtp(email);
-        return;
-      }
-    } else {
-      const {data,error}=await craftshanSupabase.auth.signInWithPassword({email,password});
-      if(error) throw error;
-    }
-    closeCustomerGate();
-    document.getElementById('customer-email').value='';
-    document.getElementById('customer-password').value='';
-    if (pendingFreeCheckout) {
-      pendingFreeCheckout = false;
-      await completeFreeCheckout();
-    } else if (pendingPaidCheckout) {
-      pendingPaidCheckout = false;
-      await startPaidCheckout();
-    } else {
-      await refreshAccountData();
-      showPage('account');
-      showToast(mode==='signup' ? 'Welcome to Craftshan Studio!' : 'Logged in.');
-    }
-  }catch(e){
-    console.error('Customer auth error:',e);
-    if(status) status.textContent=e?.message||'Something went wrong.';
-  }
-}
-/* ═══════════════════
-   v62: SIGNUP EMAIL OTP (Supabase Auth) — 8-digit code verification.
-   No custom OTP: signUp emails the code (template must contain {{ .Token }}),
-   verifyOtp validates it, resend re-sends it. Nothing is stored client-side. */
-let pendingOtpEmail=null; let otpVerifyBusy=false; let otpResendCooldown=0; let otpResendTimer=null;
-function openCustomerOtp(email){
-  pendingOtpEmail=email||null;
-  const gate=document.getElementById('customer-otp-gate'); if(!gate) return;
-  craftshanModalTrigger=document.activeElement;
-  const sub=document.getElementById('customer-otp-sub'); if(sub && email) sub.textContent='We sent an 8-digit code to '+email+'. Enter it below to finish creating your account.';
-  const code=document.getElementById('customer-otp-code'); if(code) code.value='';
-  const st=document.getElementById('customer-otp-status'); if(st) st.textContent='';
-  gate.classList.add('open'); gate.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
-  startOtpResendCooldown(30);
-  setTimeout(()=>document.getElementById('customer-otp-code')?.focus(),80);
-}
-function closeCustomerOtp(){
-  const gate=document.getElementById('customer-otp-gate'); if(!gate) return;
-  gate.classList.remove('open'); gate.setAttribute('aria-hidden','true'); document.body.style.overflow='';
-  if(otpResendTimer){ clearInterval(otpResendTimer); otpResendTimer=null; }
-  if(craftshanModalTrigger&&typeof craftshanModalTrigger.focus==='function'){craftshanModalTrigger.focus();craftshanModalTrigger=null;}
-}
-function startOtpResendCooldown(sec){
-  otpResendCooldown=sec; const btn=document.getElementById('customer-otp-resend');
-  if(otpResendTimer){ clearInterval(otpResendTimer); otpResendTimer=null; }
-  const tick=()=>{ if(!btn) return; if(otpResendCooldown>0){ btn.disabled=true; btn.textContent='Resend code ('+otpResendCooldown+'s)'; otpResendCooldown--; } else { btn.disabled=false; btn.textContent='Resend code'; if(otpResendTimer){ clearInterval(otpResendTimer); otpResendTimer=null; } } };
-  tick(); otpResendTimer=setInterval(tick,1000);
-}
-async function verifyCustomerOtp(){
-  const st=document.getElementById('customer-otp-status');
-  const code=(document.getElementById('customer-otp-code')?.value||'').trim();
-  if(!pendingOtpEmail){ if(st) st.textContent='Please sign up again to receive a new code.'; return; }
-  if(!/^\d{8}$/.test(code)){ if(st) st.textContent='Enter the 8-digit code from your email.'; return; }
-  if(otpVerifyBusy) return; otpVerifyBusy=true;
-  const btn=document.getElementById('customer-otp-submit'); if(btn){ btn.disabled=true; btn.textContent='Verifying…'; }
-  if(st) st.textContent='Verifying…';
-  try{
-    const {data,error}=await craftshanSupabase.auth.verifyOtp({ email:pendingOtpEmail, token:code, type:'signup' });
-    if(error) throw error;
-    if(!data?.session){ if(st) st.textContent='That code could not be verified. Please try again.'; return; }
-    closeCustomerOtp(); pendingOtpEmail=null;
-    await refreshAccountData();
-    showPage('account');
-    showToast('Welcome to Craftshan Studio!');
-  }catch(e){
-    console.error('OTP verify error:',e);
-    if(st) st.textContent = e?.message || 'Invalid or expired code. Please try again.';
-  }finally{
-    otpVerifyBusy=false; if(btn){ btn.disabled=false; btn.textContent='Verify →'; }
-  }
-}
-async function resendCustomerOtp(){
-  const st=document.getElementById('customer-otp-status');
-  if(!pendingOtpEmail){ if(st) st.textContent='Please sign up again to receive a new code.'; return; }
-  if(otpResendCooldown>0) return;
-  try{
-    const {error}=await craftshanSupabase.auth.resend({ type:'signup', email:pendingOtpEmail });
-    if(error) throw error;
-    if(st) st.textContent='A new code has been sent to your email.';
-    startOtpResendCooldown(30);
-  }catch(e){
-    console.error('OTP resend error:',e);
-    if(st) st.textContent = e?.message || 'Could not resend the code. Please wait a moment and try again.';
-  }
-}
 async function customerLogout(){
   if(typeof craftshanSupabase==='undefined') return;
   await craftshanSupabase.auth.signOut();
@@ -7827,7 +7871,6 @@ function handleInitialRoute(){
 // v73: Escape closes whichever login/verify modal is currently open.
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
-  if(document.getElementById('customer-otp-gate')?.classList.contains('open')){ closeCustomerOtp(); return; }
   if(document.getElementById('customer-gate')?.classList.contains('open')){ closeCustomerGate(); return; }
   if(document.getElementById('owner-gate')?.classList.contains('open')){ closeOwnerGate(); return; }
 });
@@ -12591,13 +12634,334 @@ function craftshanHeroShowcase(){
     render(); if(typeof showToast==='function') showToast('Viewing history cleared.');
   };
   var oOpen=window.openProduct;
-  if(typeof oOpen==='function'){ window.openProduct=function(id){ var r=oOpen.apply(this,arguments); try{ lastOpened=id; record(id); render(); }catch(e){} return r; }; }
+  if(typeof oOpen==='function'){ window.openProduct=function(id){ var r=oOpen.apply(this,arguments); try{ lastOpened=id; window.__craftshanLastProduct=id; record(id); render(); }catch(e){} return r; }; }
   var oShow=window.showPage;
   if(typeof oShow==='function'){ window.showPage=function(){ var r=oShow.apply(this,arguments); setTimeout(function(){ try{render();}catch(e){} },0); return r; }; }
   var oRender=window.renderProducts;
   if(typeof oRender==='function'){ window.renderProducts=function(){ var r=oRender.apply(this,arguments); try{render();}catch(e){} return r; }; }
   window.addEventListener('load',function(){ setTimeout(function(){ try{render();}catch(e){} },900); });
 })();
+</script>
+<script>
+/* ===== Craftshan Studio: customer authentication (login, sign up, forgot / reset password, Google & Apple) ===== */
+(function(){
+  var gate=document.getElementById('customer-gate'); if(!gate) return;
+  var $=function(id){ return document.getElementById(id); };
+  var ALLOWED=['home','shop','product','cart','checkout','account','contact','wishlist','how','tools','about','license','privacy','terms','refund','cookies'];
+  var VIEWS=['login','signup','forgot','check','reset','updated','otp'];
+  var st={email:'',returnPage:null,returnProduct:null,busy:false,providersLoaded:false,lastFocus:null,timers:{},recoveryHandled:false};
+  var RETURN_KEY='craftshan_auth_return',RECOVERY_KEY='craftshan_recovery_pending';
+
+  function sb(){ return (typeof craftshanSupabase!=='undefined')?craftshanSupabase:null; }
+  function pageOk(n){ return typeof n==='string'&&ALLOWED.indexOf(n)>-1&&!!$('page-'+n); }
+  function redirectBase(){ return window.location.origin+'/'; }
+  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
+  function pwOk(v){ return v.length>=8&&/\d/.test(v); }
+  function view(){ return gate.dataset.mode||'login'; }
+  function toast(m){ if(typeof showToast==='function') showToast(m); }
+
+  /* ---------- messages ---------- */
+  function showErr(v,msg,fieldId){
+    var el=$('auth-err-'+v); if(!el) return; el.textContent=msg; el.hidden=false;
+    gate.querySelectorAll('.auth-input.invalid').forEach(function(x){ x.classList.remove('invalid'); });
+    var f=fieldId&&$(fieldId); if(f){ f.setAttribute('aria-invalid','true'); if(f.parentNode) f.parentNode.classList.add('invalid'); try{ f.focus(); }catch(e){} }
+  }
+  function showInfo(v,msg){ var el=$('auth-info-'+v); if(!el) return; el.textContent=msg; el.hidden=false; }
+  function clearMsgs(){
+    gate.querySelectorAll('.auth-error,.auth-info').forEach(function(e){ e.hidden=true; e.textContent=''; });
+    gate.querySelectorAll('.auth-input.invalid').forEach(function(x){ x.classList.remove('invalid'); });
+    gate.querySelectorAll('[aria-invalid]').forEach(function(x){ x.removeAttribute('aria-invalid'); });
+  }
+  function friendly(e){
+    var m=String((e&&e.message)||e||''),c=String((e&&(e.code||e.error_code))||''),s=e&&e.status;
+    if(/invalid login credentials/i.test(m)) return 'That email or password isn\u2019t right. Please check them and try again.';
+    if(/user already registered|already been registered/i.test(m)) return 'An account with this email already exists. Try logging in, or reset your password.';
+    if(/rate limit|too many|only request this after|over_email_send_rate_limit|over_request_rate_limit/i.test(m+' '+c)||s===429) return 'Too many attempts. Please wait a minute and try again.';
+    if(/same password|different from the old/i.test(m)) return 'Please choose a password you haven\u2019t used before.';
+    if(/password should|weak/i.test(m)) return 'Your password must be at least 8 characters and include a number.';
+    if(/token has expired|invalid|otp_expired/i.test(m+' '+c)&&/otp|token|code/i.test(m+' '+c)) return 'That code isn\u2019t right or has expired. Please request a new one.';
+    if(/failed to fetch|network|load failed/i.test(m)) return 'We couldn\u2019t reach the account service. Please check your connection and try again.';
+    if(/signups? not allowed|signup.*disabled/i.test(m)) return 'New accounts are not being accepted right now.';
+    return m||'Something went wrong. Please try again.';
+  }
+  function busy(id,on,label){
+    var b=$(id); if(!b) return; st.busy=on;
+    if(on){ b.dataset.label=b.innerHTML; b.textContent=label; b.disabled=true; b.setAttribute('aria-busy','true'); }
+    else { if(b.dataset.label) b.innerHTML=b.dataset.label; b.disabled=false; b.removeAttribute('aria-busy'); }
+  }
+  function cooldown(id,secs,label){
+    var b=$(id); if(!b) return; clearInterval(st.timers[id]); var left=secs; b.disabled=true; b.textContent=label+' ('+left+'s)';
+    st.timers[id]=setInterval(function(){ left--; if(left<=0){ clearInterval(st.timers[id]); b.disabled=false; b.textContent=label; } else b.textContent=label+' ('+left+'s)'; },1000);
+  }
+
+  /* ---------- open / close / views ---------- */
+  function focusFirst(){
+    setTimeout(function(){
+      var v=gate.querySelector('.auth-view[data-view="'+view()+'"]'); if(!v) return;
+      var t=v.querySelector('input:not([type=checkbox]):not([type=hidden])')||v.querySelector('.auth-btn');
+      if(t){ try{ t.focus({preventScroll:true}); }catch(e){} }
+    },70);
+  }
+  window.setCustomerGateMode=function(mode){
+    if(VIEWS.indexOf(mode)<0) mode='login';
+    gate.dataset.mode=mode; clearMsgs();
+    var card=gate.querySelector('.auth-card'); if(card) card.setAttribute('aria-labelledby','auth-title-'+mode);
+    if(gate.classList.contains('open')) focusFirst();
+  };
+  function show(){
+    st.lastFocus=document.activeElement;
+    gate.classList.add('open'); gate.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+    gate.scrollTop=0; loadProviders(); focusFirst();
+  }
+  window.openCustomerGate=function(){
+    if(!gate.classList.contains('open')){
+      var cp=(typeof currentPage==='string')?currentPage:null;
+      st.returnPage=pageOk(cp)?cp:null;
+      st.returnProduct=(cp==='product'&&window.__craftshanLastProduct!=null)?window.__craftshanLastProduct:null;
+    }
+    show();
+  };
+  window.closeCustomerGate=function(){
+    if(!gate.classList.contains('open')) return;
+    gate.classList.remove('open'); gate.setAttribute('aria-hidden','true'); document.body.style.overflow='';
+    ['auth-login-pass','auth-signup-pass','auth-signup-confirm','auth-reset-pass','auth-reset-confirm','auth-otp-code'].forEach(function(id){ var f=$(id); if(f) f.value=''; });
+    gate.querySelectorAll('.auth-eye[aria-pressed="true"]').forEach(function(b){ eye(b); });
+    var f=st.lastFocus; st.lastFocus=null; if(f&&f.focus){ try{ f.focus(); }catch(e){} }
+  };
+  function openReset(){ st.recoveryHandled=true; window.setCustomerGateMode('reset'); if(!gate.classList.contains('open')) show(); else focusFirst(); }
+
+  /* ---------- helpers ---------- */
+  function eye(btn){
+    var inp=btn.parentNode.querySelector('input'); if(!inp) return;
+    var on=inp.type==='password'; inp.type=on?'text':'password';
+    btn.setAttribute('aria-pressed',on?'true':'false'); btn.setAttribute('aria-label',on?'Hide password':'Show password');
+  }
+  function applyRemember(remember){
+    try{
+      if(remember){ localStorage.removeItem('craftshan_session_only'); }
+      else { localStorage.setItem('craftshan_session_only','1'); sessionStorage.setItem('craftshan_session_alive','1'); }
+    }catch(e){}
+  }
+  function syncProfile(user,fallbackName){
+    try{
+      if(!user) return;
+      var md=user.user_metadata||{},name=md.full_name||md.name||fallbackName||'';
+      var cur={}; try{ cur=JSON.parse(localStorage.getItem('craftshanCustomerProfile')||'{}')||{}; }catch(e){}
+      if(name&&!cur.name){ cur.name=name; }
+      if(user.email&&!cur.email){ cur.email=user.email; }
+      localStorage.setItem('craftshanCustomerProfile',JSON.stringify(cur));
+      if(typeof loadCustomerProfile==='function') loadCustomerProfile();
+    }catch(e){}
+  }
+  function saveReturn(){
+    try{
+      var page=st.returnPage;
+      if((typeof pendingPaidCheckout!=='undefined'&&pendingPaidCheckout)||(typeof pendingFreeCheckout!=='undefined'&&pendingFreeCheckout)) page='checkout';
+      localStorage.setItem(RETURN_KEY,JSON.stringify({page:page,product:st.returnProduct,ts:Date.now()}));
+    }catch(e){}
+  }
+  function restoreReturn(){
+    var d=null;
+    try{ d=JSON.parse(localStorage.getItem(RETURN_KEY)||'null'); localStorage.removeItem(RETURN_KEY); }catch(e){ return false; }
+    if(!d||!d.ts||Date.now()-d.ts>15*60*1000) return false;
+    try{
+      if(d.page==='product'&&d.product!=null&&/^[\w-]{1,64}$/.test(String(d.product))&&typeof openProduct==='function'){ openProduct(isNaN(d.product)?d.product:Number(d.product)); }
+      else if(pageOk(d.page)&&d.page!=='account'){ showPage(d.page); }
+      else { showPage('account'); }
+      toast('Logged in.'); return true;
+    }catch(e){ return false; }
+  }
+  async function afterLogin(kind,user,nameHint){
+    window.closeCustomerGate(); syncProfile(user,nameHint);
+    try{
+      if(typeof pendingFreeCheckout!=='undefined'&&pendingFreeCheckout){ pendingFreeCheckout=false; if(typeof pendingPaidCheckout!=='undefined') pendingPaidCheckout=false; await completeFreeCheckout(); return; }
+      if(typeof pendingPaidCheckout!=='undefined'&&pendingPaidCheckout){ pendingPaidCheckout=false; await startPaidCheckout(); return; }
+      if(typeof refreshAccountData==='function') await refreshAccountData();
+    }catch(e){}
+    var dest=st.returnPage;
+    if(dest&&dest!=='account'&&pageOk(dest)){
+      if(dest==='product'&&st.returnProduct!=null&&typeof openProduct==='function') openProduct(st.returnProduct); else showPage(dest);
+    } else { showPage('account'); }
+    toast(kind==='signup'?'Welcome to Craftshan Studio!':'Logged in.');
+  }
+  function loadProviders(){
+    if(st.providersLoaded) return; st.providersLoaded=true;
+    try{
+      var c=sb(); var url=c&&c.supabaseUrl,key=c&&c.supabaseKey; if(!url||!key) return;
+      fetch(String(url).replace(/\/$/,'')+'/auth/v1/settings',{headers:{apikey:key}}).then(function(r){ return r.ok?r.json():null; }).then(function(j){
+        var ext=(j&&j.external)||{},any=false;
+        ['google','apple'].forEach(function(p){ if(ext[p]){ any=true; gate.querySelectorAll('.auth-sbtn[data-provider="'+p+'"]').forEach(function(b){ b.hidden=false; }); } });
+        if(any) gate.querySelectorAll('[data-social]').forEach(function(s){ s.hidden=false; });
+      }).catch(function(){});
+    }catch(e){}
+  }
+
+  /* ---------- actions ---------- */
+  async function doLogin(){
+    var email=$('auth-login-email').value.trim(),pass=$('auth-login-pass').value;
+    if(!validEmail(email)) return showErr('login','Please enter a valid email address.','auth-login-email');
+    if(!pass) return showErr('login','Please enter your password.','auth-login-pass');
+    var c=sb(); if(!c) return showErr('login','The account service is unavailable right now. Please try again later.');
+    clearMsgs(); busy('auth-btn-login',true,'Logging in\u2026');
+    try{
+      var r=await c.auth.signInWithPassword({email:email,password:pass});
+      if(r.error) throw r.error;
+      applyRemember($('auth-remember').checked);
+      busy('auth-btn-login',false);
+      await afterLogin('login',r.data&&r.data.user);
+    }catch(e){
+      busy('auth-btn-login',false);
+      if(/not confirmed/i.test(String(e&&e.message))){
+        st.email=email;
+        try{ await c.auth.resend({type:'signup',email:email,options:{emailRedirectTo:redirectBase()}}); }catch(x){}
+        $('auth-otp-email').textContent=email; window.setCustomerGateMode('otp'); cooldown('auth-resend-otp',30,'Resend code');
+        showInfo('otp','Your email isn\u2019t confirmed yet. We\u2019ve sent you a new code.');
+      } else showErr('login',friendly(e));
+    }
+  }
+  async function doSignup(){
+    var name=$('auth-signup-name').value.trim(),email=$('auth-signup-email').value.trim(),pass=$('auth-signup-pass').value,conf=$('auth-signup-confirm').value;
+    if(name.length<2) return showErr('signup','Please enter your full name.','auth-signup-name');
+    if(!validEmail(email)) return showErr('signup','Please enter a valid email address.','auth-signup-email');
+    if(!pwOk(pass)) return showErr('signup','Your password must be at least 8 characters and include a number.','auth-signup-pass');
+    if(pass!==conf) return showErr('signup','The two passwords don\u2019t match.','auth-signup-confirm');
+    if(!$('auth-terms').checked) return showErr('signup','Please accept the Terms & Conditions and Privacy Policy to create an account.','auth-terms');
+    var c=sb(); if(!c) return showErr('signup','The account service is unavailable right now. Please try again later.');
+    clearMsgs(); busy('auth-btn-signup',true,'Creating account\u2026');
+    try{
+      var r=await c.auth.signUp({email:email,password:pass,options:{data:{full_name:name},emailRedirectTo:redirectBase()}});
+      if(r.error) throw r.error;
+      try{ var cur=JSON.parse(localStorage.getItem('craftshanCustomerProfile')||'{}')||{}; cur.name=name; cur.email=email; localStorage.setItem('craftshanCustomerProfile',JSON.stringify(cur)); }catch(x){}
+      busy('auth-btn-signup',false);
+      if(r.data&&r.data.session){ applyRemember(true); await afterLogin('signup',r.data.user,name); }
+      else { st.email=email; $('auth-otp-email').textContent=email; window.setCustomerGateMode('otp'); cooldown('auth-resend-otp',30,'Resend code'); }
+    }catch(e){ busy('auth-btn-signup',false); showErr('signup',friendly(e)); }
+  }
+  async function doForgot(){
+    var email=$('auth-forgot-email').value.trim();
+    if(!validEmail(email)) return showErr('forgot','Please enter a valid email address.','auth-forgot-email');
+    var c=sb(); if(!c) return showErr('forgot','The account service is unavailable right now. Please try again later.');
+    clearMsgs(); busy('auth-btn-forgot',true,'Sending\u2026');
+    try{
+      try{ localStorage.setItem(RECOVERY_KEY,String(Date.now())); }catch(x){}
+      var r=await c.auth.resetPasswordForEmail(email,{redirectTo:redirectBase()});
+      if(r.error&&(/rate limit|too many|after/i.test(String(r.error.message))||r.error.status===429||/failed to fetch|network/i.test(String(r.error.message)))) throw r.error;
+      busy('auth-btn-forgot',false);
+      st.email=email; $('auth-check-email').textContent=email; window.setCustomerGateMode('check'); cooldown('auth-resend-reset',60,'Resend link');
+    }catch(e){ busy('auth-btn-forgot',false); showErr('forgot',friendly(e)); }
+  }
+  async function resendReset(){
+    var c=sb(); if(!c||!st.email) return; var b=$('auth-resend-reset'); if(b&&b.disabled) return;
+    try{
+      var r=await c.auth.resetPasswordForEmail(st.email,{redirectTo:redirectBase()});
+      if(r.error) throw r.error;
+      showInfo('check','A new link is on its way. It can take a minute to arrive.'); cooldown('auth-resend-reset',60,'Resend link');
+    }catch(e){ showInfo('check',friendly(e)); }
+  }
+  async function doReset(){
+    var p=$('auth-reset-pass').value,cf=$('auth-reset-confirm').value;
+    if(!pwOk(p)) return showErr('reset','Your password must be at least 8 characters and include a number.','auth-reset-pass');
+    if(p!==cf) return showErr('reset','The two passwords don\u2019t match.','auth-reset-confirm');
+    var c=sb(); if(!c) return showErr('reset','The account service is unavailable right now. Please try again later.');
+    clearMsgs(); busy('auth-btn-reset',true,'Updating\u2026');
+    try{
+      var r=await c.auth.updateUser({password:p});
+      if(r.error) throw r.error;
+      try{ localStorage.removeItem(RECOVERY_KEY); }catch(x){}
+      try{ await c.auth.signOut(); }catch(x){}
+      busy('auth-btn-reset',false); window.setCustomerGateMode('updated');
+    }catch(e){
+      busy('auth-btn-reset',false);
+      if(/session|jwt|expired|not authenticated/i.test(String(e&&e.message))) showErr('reset','This reset link has expired or was already used. Please request a new one.');
+      else showErr('reset',friendly(e));
+    }
+  }
+  async function doOtp(){
+    var code=$('auth-otp-code').value.replace(/\s+/g,'');
+    if(!/^\d{6,8}$/.test(code)) return showErr('otp','Please enter the code from your email.','auth-otp-code');
+    var c=sb(); if(!c||!st.email) return showErr('otp','Something went wrong. Please go back and try again.');
+    clearMsgs(); busy('auth-btn-otp',true,'Verifying\u2026');
+    try{
+      var r=await c.auth.verifyOtp({email:st.email,token:code,type:'signup'});
+      if(r.error) throw r.error;
+      applyRemember(true); busy('auth-btn-otp',false);
+      await afterLogin('signup',(r.data&&(r.data.user||(r.data.session&&r.data.session.user)))||null);
+    }catch(e){ busy('auth-btn-otp',false); showErr('otp',friendly(e)); }
+  }
+  async function resendOtp(){
+    var c=sb(); if(!c||!st.email) return; var b=$('auth-resend-otp'); if(b&&b.disabled) return;
+    try{
+      var r=await c.auth.resend({type:'signup',email:st.email,options:{emailRedirectTo:redirectBase()}});
+      if(r&&r.error) throw r.error;
+      clearMsgs(); showInfo('otp','A new code is on its way.'); cooldown('auth-resend-otp',30,'Resend code');
+    }catch(e){ showErr('otp',friendly(e)); }
+  }
+  async function oauth(provider){
+    if(st.busy) return; var c=sb(); if(!c) return;
+    var name=provider==='apple'?'Apple':'Google';
+    clearMsgs(); saveReturn();
+    try{
+      var r=await c.auth.signInWithOAuth({provider:provider,options:{redirectTo:redirectBase()}});
+      if(r&&r.error) throw r.error;
+    }catch(e){
+      try{ localStorage.removeItem(RETURN_KEY); }catch(x){}
+      var m=String(e&&e.message||'');
+      showErr(view(),/provider is not enabled|unsupported provider/i.test(m)?name+' sign-in isn\u2019t available yet. Please use your email and password.':friendly(e));
+    }
+  }
+  function submit(v,e){
+    if(e&&e.preventDefault) e.preventDefault();
+    if(st.busy) return false;
+    ({login:doLogin,signup:doSignup,forgot:doForgot,reset:doReset,otp:doOtp}[v]||function(){})();
+    return false;
+  }
+  window.craftshanAuth={submit:submit,oauth:oauth,eye:eye,resendReset:resendReset,resendOtp:resendOtp};
+
+  /* old function names kept so nothing else on the site breaks */
+  window.openCustomerOtp=function(email){ st.email=email||st.email; $('auth-otp-email').textContent=st.email; window.setCustomerGateMode('otp'); show(); };
+  window.closeCustomerOtp=function(){ window.setCustomerGateMode('signup'); };
+  window.verifyCustomerOtp=doOtp; window.resendCustomerOtp=resendOtp; window.submitCustomerGate=function(){ return submit(view()); };
+
+  /* keyboard: keep Tab inside the sign-in screen; Esc closes it */
+  gate.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){ e.preventDefault(); window.closeCustomerGate(); return; }
+    if(e.key!=='Tab') return;
+    var f=[].slice.call(gate.querySelectorAll('button,input,a[href]')).filter(function(x){ return !x.disabled&&x.offsetParent!==null&&x.tabIndex>=0; });
+    if(!f.length) return; var first=f[0],last=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey&&document.activeElement===last){ e.preventDefault(); first.focus(); }
+  });
+  gate.addEventListener('click',function(e){ if(e.target===gate||e.target.classList.contains('auth-shell')){ /* clicking the dark backdrop does not close: avoids losing typed details */ } });
+
+  /* "remember me" off = sign out when the browser session ends */
+  try{
+    if(localStorage.getItem('craftshan_session_only')==='1'&&!sessionStorage.getItem('craftshan_session_alive')){
+      localStorage.removeItem('craftshan_session_only'); var c0=sb(); if(c0) c0.auth.signOut({scope:'local'});
+    }
+  }catch(e){}
+
+  /* coming back from an email link or Google / Apple */
+  var hash=window.__craftshanAuthHash||'';
+  var isRecovery=/(^|[#&?])type=recovery/.test(hash);
+  var urlErr=(/error_description=([^&]+)/.exec(hash)||[])[1];
+  var urlCode=(/error_code=([^&]+)/.exec(hash)||[])[1];
+  var c1=sb();
+  if(c1){
+    c1.auth.onAuthStateChange(function(ev,sess){
+      if(ev==='PASSWORD_RECOVERY'){ openReset(); return; }
+      if(ev==='SIGNED_IN'&&sess){
+        if(isRecovery&&!st.recoveryHandled){ openReset(); return; }
+        if(localStorage.getItem(RETURN_KEY)){ restoreReturn(); }
+      }
+    });
+    if(isRecovery){ setTimeout(function(){ c1.auth.getSession().then(function(r){ if(r&&r.data&&r.data.session&&!st.recoveryHandled) openReset(); }).catch(function(){}); },700); }
+  }
+  if(urlErr||urlCode){
+    var msg=/expired|invalid/i.test((urlErr||'')+' '+(urlCode||''))?'That link has expired or was already used. Please request a new one.':decodeURIComponent((urlErr||'').replace(/\+/g,' '))||'That link isn\u2019t valid.';
+    setTimeout(function(){ window.setCustomerGateMode('forgot'); show(); showErr('forgot',msg); try{ history.replaceState(null,'',window.location.pathname); }catch(e){} },500);
+  }
+})();
+
 </script>
 </body>
 </html>
