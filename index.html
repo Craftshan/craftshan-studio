@@ -2156,6 +2156,25 @@ input,select,textarea{min-width:0;}
 }
 #page-product .prod-use-note .prod-includes-title{color:var(--ink);}
 #page-product .prod-use-note p{font-size:.81rem;line-height:1.65;}
+#page-product .prod-whats-included{
+  margin:0 0 18px;
+  padding:15px 16px;
+  background:var(--surf);
+  border:1px solid var(--border);
+  border-radius:14px;
+}
+#page-product .prod-whats-included-title{
+  margin:0 0 11px;
+  color:var(--ink);
+  font-size:.74rem;
+  font-weight:700;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+}
+#page-product .prod-whats-included-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(110px,.8fr);gap:12px;}
+#page-product .prod-whats-included-item{display:flex;flex-direction:column;gap:4px;min-width:0;}
+#page-product .prod-whats-included-label{color:var(--ink3);font-size:.66rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;}
+#page-product .prod-whats-included-value{color:var(--ink);font-size:.82rem;line-height:1.5;overflow-wrap:anywhere;white-space:pre-line;}
 #page-product .prod-actions{
   display:grid;
   grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;
@@ -2184,6 +2203,7 @@ input,select,textarea{min-width:0;}
 }
 @media(max-width:600px){
   #page-product .prod-info{padding:20px;}
+  #page-product .prod-whats-included-grid{grid-template-columns:1fr;}
   #page-product .prod-actions{grid-template-columns:1fr;}
   #page-product .prod-actions .btn-wishlist{grid-column:auto;}
   #page-product .prod-actions .btn-buy-now,
@@ -4696,11 +4716,11 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
     <div class="wrap">
       <div class="home-head"><div class="kicker">↳ good to know</div><h2 class="sec-title" id="home-faq-heading">Questions, answered</h2></div>
       <div class="home-faq-list">
-        <details><summary>What will I receive after buying?</summary><p>A ZIP containing the files provided for that design, such as SVG, DXF and PNG where listed. Each product page shows the included formats before you buy, and your files unlock in My Account once payment completes.</p></details>
+        <details><summary>What will I receive after buying?</summary><p>A ZIP containing the files provided for that design. Product pages show the ZIP package size and any file types the owner has listed. Your files unlock in My Account once payment completes.</p></details>
         <details><summary>Can I sell products I make with your designs?</summary><p>Where a design includes commercial use, you may create and sell finished physical products. The digital file itself may not be resold, shared, uploaded or redistributed. Free designs are for personal, non-commercial use unless the product page says otherwise. See the <a onclick="showPage('license')">License terms</a> for the full rules.</p></details>
         <details><summary>Do I need an account?</summary><p>You can browse the whole shop without one. An account, which you sign in to with an email code, is used to unlock your downloads and keep your orders in one place.</p></details>
         <details><summary>Are there subscriptions or memberships?</summary><p>No. Each design is purchased individually, once.</p></details>
-        <details><summary>Which machines and software do the files work with?</summary><p>Our designs are prepared for laser cutting and for Cricut and Silhouette workflows. Every product page lists the exact formats included, so you can check before you buy.</p></details>
+        <details><summary>Which machines and software do the files work with?</summary><p>Our designs are prepared for laser cutting and for Cricut and Silhouette workflows. Check the What’s included box for the file types listed for each design; contact us before purchase if you need to confirm compatibility.</p></details>
         <details><summary>What if there is a problem with a file?</summary><p>Digital files cannot be returned, so purchases are generally final, but genuine file problems are handled through support and replacement. Please <a onclick="showPage('contact')">contact us</a> and we will help. You can read the <a onclick="showPage('refund')">Refund Policy</a> for details.</p></details>
       </div>
     </div>
@@ -4835,6 +4855,13 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
         <div class="prod-includes-title">Commercial Use</div>
         <p>Create and sell finished physical products made with this design. The digital design file may not be resold, shared, uploaded, or redistributed.</p>
       </div>
+      <section class="prod-whats-included" aria-labelledby="prod-whats-included-title">
+        <h2 class="prod-whats-included-title" id="prod-whats-included-title">What’s included</h2>
+        <div class="prod-whats-included-grid">
+          <div class="prod-whats-included-item"><span class="prod-whats-included-label">File types in the ZIP</span><strong class="prod-whats-included-value" id="prod-included-formats">Not listed for this design yet</strong></div>
+          <div class="prod-whats-included-item"><span class="prod-whats-included-label">ZIP package size</span><strong class="prod-whats-included-value" id="prod-included-size">Not available yet</strong></div>
+        </div>
+      </section>
       <div class="prod-actions">
         <button class="btn-buy-now" id="prod-buy-btn">Buy Now</button>
         <button class="btn-add" id="prod-add-btn">Add to cart</button>
@@ -4843,8 +4870,6 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
       </div>
       <ul class="prod-trust" aria-label="Purchase details"><li>Instant digital download</li><li>One-time payment, no subscription</li><li>Files unlock in My Account</li></ul>
       <div class="prod-meta-grid">
-        <div class="prod-meta-item"><div class="prod-meta-label">Original file size</div><div class="prod-meta-val" id="prod-file-size">—</div></div>
-        <div class="prod-meta-item"><div class="prod-meta-label">Included formats</div><div class="prod-meta-val" id="prod-formats">—</div></div>
         <div class="prod-meta-item"><div class="prod-meta-label">License</div><div class="prod-meta-val">Commercial use ✓</div></div>
         <div class="prod-meta-item"><div class="prod-meta-label">Instant download</div><div class="prod-meta-val" id="prod-file-count">Available after purchase</div></div>
       </div>
@@ -5042,7 +5067,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
   </div></div>
   <div class="how-faq-wrap"><div class="kicker">↳ quick answers</div><h2>Good to know</h2>
     <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Are there subscriptions?<span class="faq-icon">+</span></div><p class="faq-a">No. Craftshan Studio sells digital designs individually. You pay for the design you choose at the time of purchase.</p></div>
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What do I receive?<span class="faq-icon">+</span></div><p class="faq-a">You receive the digital ZIP package associated with the product. The product page shows the included formats and original uploaded package size.</p></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What do I receive?<span class="faq-icon">+</span></div><p class="faq-a">You receive the digital ZIP package associated with the product. The product page shows its ZIP package size and any file types the owner has listed.</p></div>
     <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I sell the finished physical products?<span class="faq-icon">+</span></div><p class="faq-a">Yes, where the applicable license permits it. The permission applies to finished physical products, not to reselling or distributing the underlying digital file.</p></div>
   </div>
 </div><!-- /page-how -->
@@ -6148,6 +6173,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
               <input id="product-file-input" type="file" accept=".zip,application/zip,application/x-zip-compressed" hidden>
             </div>
             <div id="product-file-list" class="publish-file-list"></div>
+            <div class="form-box" style="margin-top:14px;"><label for="edit-product-included-formats">Included file types</label><textarea id="edit-product-included-formats" maxlength="240" placeholder="For example: SVG, DXF, PNG" style="min-height:78px;"></textarea><small class="publish-field-note">List only the file types actually inside this ZIP. The ZIP package size is captured automatically from the uploaded file.</small></div>
           </div>
         </section>
 
@@ -6334,11 +6360,11 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
 
     <h4 style="margin:24px 0 10px;">Homepage FAQ</h4>
     <div class="admin-two"><div class="form-box"><label>FAQ eyebrow</label><input data-frontend-key="faq.home.kicker" value="↳ good to know"></div><div class="form-box"><label>FAQ heading</label><input data-frontend-key="faq.home.heading" value="Questions, answered"></div></div>
-    <div class="admin-two"><div class="form-box"><label>Question 1</label><input data-frontend-key="faq.home.1.question" value="What will I receive after buying?"></div><div class="form-box"><label>Answer 1</label><textarea data-frontend-key="faq.home.1.answer">A ZIP containing the files provided for that design, such as SVG, DXF and PNG where listed. Each product page shows the included formats before you buy, and your files unlock in My Account once payment completes.</textarea></div></div>
+    <div class="admin-two"><div class="form-box"><label>Question 1</label><input data-frontend-key="faq.home.1.question" value="What will I receive after buying?"></div><div class="form-box"><label>Answer 1</label><textarea data-frontend-key="faq.home.1.answer">A ZIP containing the files provided for that design. Product pages show the ZIP package size and any file types the owner has listed. Your files unlock in My Account once payment completes.</textarea></div></div>
     <div class="admin-two"><div class="form-box"><label>Question 2</label><input data-frontend-key="faq.home.2.question" value="Can I sell products I make with your designs?"></div><div class="form-box"><label>Answer 2</label><textarea data-frontend-key="faq.home.2.answer">Where a design includes commercial use, you may create and sell finished physical products. The digital file itself may not be resold, shared, uploaded or redistributed. Free designs are for personal, non-commercial use unless the product page says otherwise.</textarea><small class="publish-field-note">The License terms link is kept after this answer.</small></div></div>
     <div class="admin-two"><div class="form-box"><label>Question 3</label><input data-frontend-key="faq.home.3.question" value="Do I need an account?"></div><div class="form-box"><label>Answer 3</label><textarea data-frontend-key="faq.home.3.answer">You can browse the whole shop without one. An account, which you sign in to with an email code, is used to unlock your downloads and keep your orders in one place.</textarea></div></div>
     <div class="admin-two"><div class="form-box"><label>Question 4</label><input data-frontend-key="faq.home.4.question" value="Are there subscriptions or memberships?"></div><div class="form-box"><label>Answer 4</label><textarea data-frontend-key="faq.home.4.answer">No. Each design is purchased individually, once.</textarea></div></div>
-    <div class="admin-two"><div class="form-box"><label>Question 5</label><input data-frontend-key="faq.home.5.question" value="Which machines and software do the files work with?"></div><div class="form-box"><label>Answer 5</label><textarea data-frontend-key="faq.home.5.answer">Our designs are prepared for laser cutting and for Cricut and Silhouette workflows. Every product page lists the exact formats included, so you can check before you buy.</textarea></div></div>
+    <div class="admin-two"><div class="form-box"><label>Question 5</label><input data-frontend-key="faq.home.5.question" value="Which machines and software do the files work with?"></div><div class="form-box"><label>Answer 5</label><textarea data-frontend-key="faq.home.5.answer">Our designs are prepared for laser cutting and for Cricut and Silhouette workflows. Check the What’s included box for the file types listed for each design; contact us before purchase if you need to confirm compatibility.</textarea></div></div>
     <div class="admin-two"><div class="form-box"><label>Question 6</label><input data-frontend-key="faq.home.6.question" value="What if there is a problem with a file?"></div><div class="form-box"><label>Answer 6</label><textarea data-frontend-key="faq.home.6.answer">Digital files cannot be returned, so purchases are generally final, but genuine file problems are handled through support and replacement.</textarea><small class="publish-field-note">Contact and Refund Policy links are kept after this answer.</small></div></div>
 
     <h4 style="margin:24px 0 10px;">How It Works page — introduction</h4>
@@ -6358,7 +6384,7 @@ html[data-sf-categories="off"] #shop-filter-categories{display:none !important;}
     <h4 style="margin:24px 0 10px;">How It Works page FAQ</h4>
     <div class="admin-two"><div class="form-box"><label>FAQ eyebrow</label><input data-frontend-key="how.faq.kicker" value="↳ quick answers"></div><div class="form-box"><label>FAQ heading</label><input data-frontend-key="how.faq.heading" value="Good to know"></div></div>
     <div class="admin-two"><div class="form-box"><label>Question 1</label><input data-frontend-key="how.faq.1.question" value="Are there subscriptions?"></div><div class="form-box"><label>Answer 1</label><textarea data-frontend-key="how.faq.1.answer">No. Craftshan Studio sells digital designs individually. You pay for the design you choose at the time of purchase.</textarea></div></div>
-    <div class="admin-two"><div class="form-box"><label>Question 2</label><input data-frontend-key="how.faq.2.question" value="What do I receive?"></div><div class="form-box"><label>Answer 2</label><textarea data-frontend-key="how.faq.2.answer">You receive the digital ZIP package associated with the product. The product page shows the included formats and original uploaded package size.</textarea></div></div>
+    <div class="admin-two"><div class="form-box"><label>Question 2</label><input data-frontend-key="how.faq.2.question" value="What do I receive?"></div><div class="form-box"><label>Answer 2</label><textarea data-frontend-key="how.faq.2.answer">You receive the digital ZIP package associated with the product. The product page shows its ZIP package size and any file types the owner has listed.</textarea></div></div>
     <div class="admin-two"><div class="form-box"><label>Question 3</label><input data-frontend-key="how.faq.3.question" value="Can I sell the finished physical products?"></div><div class="form-box"><label>Answer 3</label><textarea data-frontend-key="how.faq.3.answer">Yes, where the applicable license permits it. The permission applies to finished physical products, not to reselling or distributing the underlying digital file.</textarea></div></div>
 
     <div class="admin-head-actions" style="margin-top:20px;"><button type="button" class="admin-btn gold" onclick="saveFrontendSectionSettings('faq-how-settings')">Save FAQ &amp; How It Works</button><button type="button" class="admin-btn" onclick="resetFrontendSectionSettings('faq-how-settings')">Reset this content</button></div>
@@ -6722,8 +6748,8 @@ function productVerifiedFormats(p){
   if(!p) return [];
   const found = new Set();
 
-  // 1. An explicit formats field on the product, if one is ever added.
-  const declared = p.formats ?? p.file_formats;
+  // 1. Formats entered by the owner for the product.
+  const declared = p.formats ?? p.file_formats ?? craftshanReadProductIncludedFormats(p);
   if(declared){
     const list = Array.isArray(declared) ? declared : String(declared).split(/[,;|•/]+/);
     list.forEach(v=>{
@@ -6926,6 +6952,55 @@ function renderProducts(containerId, limit) {
 ═══════════════════ */
 const DEFAULT_PRODUCT_DESCRIPTION = `Clean, production-ready laser-cut design files made for makers. Includes editable vector and high-resolution formats where provided. Mockups are for presentation only and are not included.`;
 
+function craftshanProductIncludesKey(p){
+  const id=p?.supabase_id || (p?.id!=null ? 'legacy-'+p.id : '');
+  return id ? 'product.includedFormats.'+String(id) : '';
+}
+function craftshanReadProductIncludedFormats(p,settings){
+  const key=craftshanProductIncludesKey(p);
+  if(!key) return '';
+  let source=settings;
+  if(!source || typeof source!=='object'){
+    try{
+      source=typeof window.craftshanReadContent==='function'
+        ? window.craftshanReadContent()
+        : JSON.parse(localStorage.getItem(window.craftshanContentKey||'craftshan_frontend_settings_v2')||'{}');
+    }catch(e){ source={}; }
+  }
+  return String(source?.[key] ?? p?.includedFormats ?? '').trim();
+}
+function craftshanWriteProductIncludedFormats(p,value){
+  const key=craftshanProductIncludesKey(p);
+  if(!key) return false;
+  const storeKey=window.craftshanContentKey||'craftshan_frontend_settings_v2';
+  try{
+    const current=typeof window.craftshanReadContent==='function'
+      ? window.craftshanReadContent()
+      : JSON.parse(localStorage.getItem(storeKey)||'{}');
+    const settings=current&&typeof current==='object'&&!Array.isArray(current)?{...current}:{};
+    const text=String(value||'').trim();
+    if(text) settings[key]=text; else delete settings[key];
+    localStorage.setItem(storeKey,JSON.stringify(settings));
+    return true;
+  }catch(e){return false;}
+}
+function renderProductIncludedBox(p,settings){
+  const formatsEl=document.getElementById('prod-included-formats');
+  const sizeEl=document.getElementById('prod-included-size');
+  if(!formatsEl&&!sizeEl) return;
+  const formats=craftshanReadProductIncludedFormats(p,settings);
+  if(formatsEl) formatsEl.textContent=formats||'Not listed for this design yet';
+  const fileList=Array.isArray(p?.files)?p.files.filter(f=>String(f.ext||f.name?.split('.').pop()||'').toLowerCase()==='zip').slice(0,1):[];
+  const zipSize=Number(p?.zipFileSize||fileList[0]?.size||0);
+  if(sizeEl) sizeEl.textContent=zipSize?formatBytes(zipSize):'Not available yet';
+}
+window.craftshanRefreshProductInclusions=function(settings){
+  const activeId=window.__openProductId;
+  if(activeId==null) return;
+  const p=PRODUCTS.find(x=>String(x.id)===String(activeId));
+  if(p) renderProductIncludedBox(p,settings);
+};
+
 function openProduct(id, fromHistory) {
   const p = PRODUCTS.find(x => x.id === id);
   window.__openProductId = id;
@@ -7001,23 +7076,7 @@ function openProduct(id, fromHistory) {
   renderGalleryItem();
   try{renderProductReviews(p);}catch(e){console.warn('Reviews render skipped:',e);}
 
-  const fileList=Array.isArray(p.files)?p.files.filter(f=>String(f.ext||f.name?.split('.').pop()||'').toLowerCase()==='zip').slice(0,1):[];
-  const zipSize=Number(p.zipFileSize||fileList[0]?.size||0);
-  const sizeEl=document.getElementById('prod-file-size'); if(sizeEl){ sizeEl.textContent=zipSize?formatBytes(zipSize):''; const sizeTile=sizeEl.closest('.prod-meta-item'); if(sizeTile) sizeTile.style.display=zipSize?'':'none'; }
-  // v43: never claim a format we cannot verify. Previously this line printed
-  // 'AI • SVG • EPS • DXF • PNG' on every product regardless of contents.
-  const fmtEl=document.getElementById('prod-formats');
-  if(fmtEl){
-    const formats=productVerifiedFormats(p);
-    const fmtLabel=fmtEl.closest('.prod-meta-item')?.querySelector('.prod-meta-label');
-    if(formats.length){
-      if(fmtLabel) fmtLabel.textContent='Included formats';
-      fmtEl.textContent=formats.join(' • ');
-    }else{
-      if(fmtLabel) fmtLabel.textContent='What you get';
-      fmtEl.textContent='Digital files included with your purchase.';
-    }
-  }
+  renderProductIncludedBox(p);
   const countEl=document.getElementById('prod-file-count'); if(countEl) countEl.textContent='Available after purchase';
 
   const relatedEl=document.getElementById('related-products-grid');
@@ -9384,6 +9443,11 @@ function openProductEditor(id=null){
     document.getElementById('edit-product-featured').classList.remove('on');
     document.getElementById('edit-product-free')?.classList.remove('on');
   }
+  const includedFormatsInput=document.getElementById('edit-product-included-formats');
+  if(includedFormatsInput){
+    const currentProduct=id?PRODUCTS.find(x=>Number(x.id)===Number(id)):null;
+    includedFormatsInput.value=currentProduct?craftshanReadProductIncludedFormats(currentProduct):'';
+  }
   updateProductTitleCounter();
   updateProductPricePreview();
   try{ craftshanReflectFreeState(); }catch(e){}
@@ -9459,6 +9523,7 @@ async function saveProductEditor(){
   const price=Number(document.getElementById('edit-product-price').value);
   const discount=clampDiscount(document.getElementById('edit-product-discount').value);
   const badge=document.getElementById('edit-product-badge').value.trim();
+  const includedFormats=(document.getElementById('edit-product-included-formats')?.value||'').trim();
   const description=DEFAULT_PRODUCT_DESCRIPTION;
   const ratingInput=Number(document.getElementById('edit-product-rating').value)||4.9;
   const status=(document.getElementById('edit-product-status')?.value||'published');
@@ -9510,6 +9575,7 @@ async function saveProductEditor(){
     ...zipMeta
   };
 
+  let includedFormatsSynced=false;
   try{
     if(typeof craftshanSupabase==='undefined') throw new Error('Supabase client is unavailable.');
 
@@ -9602,6 +9668,11 @@ async function saveProductEditor(){
     }).eq('id',supabaseProductId);
     if(pathError) throw pathError;
 
+    const formatsStored=craftshanWriteProductIncludedFormats({supabase_id:supabaseProductId},includedFormats);
+    if(formatsStored&&typeof window.craftshanPushSiteSetting==='function'){
+      includedFormatsSynced=await window.craftshanPushSiteSetting('content');
+    }
+
     // Update the local object immediately, then re-sync from Supabase so Home,
     // Shop, and the Owner/Create list all use the same source of truth.
     if(existingProduct){
@@ -9613,6 +9684,7 @@ async function saveProductEditor(){
 
     addAdminLog((status==='draft'?'Saved draft: ':'Created product: ')+name);
     showAdminToast(status==='draft'?'Draft saved':'Product published successfully');
+    if(!includedFormatsSynced) showAdminToast('Product saved, but file-type details did not sync to all visitors. Check owner access and save again.');
 
     closeEditorModal('product-editor-modal');
 
@@ -10891,7 +10963,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   txt('#page-license .license-hero .kicker',v('license.kicker'));txt('#page-license .license-hero h1',v('license.heading'));txt('#page-license .license-hero p',v('license.intro'));const cards=document.querySelectorAll('#page-license .license-card');if(cards[0]&&v('license.summary')!=null)cards[0].querySelector('p').textContent=v('license.summary');if(cards[1]&&v('license.may')!=null)cards[1].querySelector('li').textContent=v('license.may');if(cards[2]&&v('license.maynot')!=null)cards[2].querySelector('li').textContent=v('license.maynot');if(cards[3]&&v('license.physical')!=null)cards[3].querySelector('p').textContent=v('license.physical');if(cards[6]&&v('license.ownership')!=null)cards[6].querySelector('p').textContent=v('license.ownership');
   if(v('global.brand')!=null){const b=document.querySelectorAll('.brand-name,.foot-brand-name');b.forEach(e=>e.textContent=v('global.brand'));}/* v53: document.title is owned by the SEO block; content engine no longer writes it. Support email has no standalone public element — it is edited on the Contact page (contact.email). */if(v('global.accent')!=null)document.documentElement.style.setProperty('--gold',v('global.accent'));if(v('global.surface')!=null)document.documentElement.style.setProperty('--paper',v('global.surface'));if(v('global.text')!=null)document.documentElement.style.setProperty('--ink',v('global.text'));
   /* v53: meta description is owned by the SEO block (single source of truth). */
-  if(v('sales.kicker')!=null)id('home-sale-kicker','sales.kicker');if(v('sales.title')!=null)id('home-sale-title','sales.title');if(v('sales.copy')!=null)id('home-sale-copy','sales.copy');if(v('sales.button')!=null){const b=document.querySelector('#home-sale-banner .btn-gold');if(b)b.textContent=v('sales.button');}
+   if(v('sales.kicker')!=null)id('home-sale-kicker','sales.kicker');if(v('sales.title')!=null)id('home-sale-title','sales.title');if(v('sales.copy')!=null)id('home-sale-copy','sales.copy');if(v('sales.button')!=null){const b=document.querySelector('#home-sale-banner .btn-gold');if(b)b.textContent=v('sales.button');}if(typeof window.craftshanRefreshProductInclusions==='function')window.craftshanRefreshProductInclusions(o);
  }
  function loadFields(){const o=read();document.querySelectorAll('[data-frontend-key]').forEach(e=>{if(o[e.dataset.frontendKey]!==undefined)e.value=o[e.dataset.frontendKey];});apply(o);}
  window.saveFrontendSectionSettings=function(prefix){const panel=document.querySelector('[data-frontend-panel="'+prefix+'"]')||document.getElementById('admin-page-'+prefix);if(!panel)return;const o=read();panel.querySelectorAll('[data-frontend-key]').forEach(e=>o[e.dataset.frontendKey]=e.value);write(o);apply(o);if(typeof addAdminLog==='function')addAdminLog('Updated frontend content: '+prefix);if(typeof showAdminToast==='function')showAdminToast('Frontend content saved');};
