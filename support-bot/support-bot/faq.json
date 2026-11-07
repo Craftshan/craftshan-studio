@@ -1,0 +1,652 @@
+{
+  "config": {
+    "site": "https://craftshan.studio",
+    "contact_path": "/Contact/",
+    "payments_live": false,
+    "not_live_notice": "Note: online checkout isn't switched on yet, so you can't place an order right now.",
+    "handoff_terms": [
+      "lawyer",
+      "legal action",
+      "sue you",
+      "fraud",
+      "scam",
+      "stolen",
+      "police",
+      "emergency",
+      "tax advice",
+      "legal advice",
+      "medical advice"
+    ],
+    "greeting": "Hi, I'm Crafty, Craftshan Studio's automated help assistant. I can answer questions about licensing, refunds, downloads, privacy and more. I can't see orders or accounts. What would you like to know?",
+    "handoff": "I'm not sure about that, and I'd rather not guess. A real person can help through our contact page.",
+    "sensitive": "That sounds important, so it's best handled by the owner directly. Please use the contact page and include your order number if you have one.",
+    "starters": [
+      "Can I sell products I make with your designs?",
+      "Can I get a refund?",
+      "What will I receive after buying a design?",
+      "How can I contact you?"
+    ],
+    "unsupported_terms": [
+      "recommend",
+      "tutorial",
+      "power and speed",
+      "what settings"
+    ],
+    "unsupported": "I can only answer questions about Craftshan Studio's published policies, such as licensing, refunds, downloads and privacy. For anything else, the owner can help through the contact page.",
+    "topics": [
+      "Licensing",
+      "Refunds and problems",
+      "Files and downloads",
+      "Orders and payments",
+      "Privacy and data",
+      "The studio and contact"
+    ],
+    "bot_name": "Crafty",
+    "position": "right",
+    "avoid": [
+      ".to-top",
+      ".toast",
+      "#mobile-store-nav",
+      ".buy-bar",
+      ".ck-banner"
+    ],
+    "thanks": "You're welcome! Is there anything else I can help with?",
+    "tooltip": "Hi, I'm Crafty! Ask me about licensing, refunds or downloads.",
+    "feedback_down": "Thanks for telling me. I don't keep feedback, so if an answer looks wrong, please let the owner know through the contact page."
+  },
+  "entries": [
+    {
+      "id": "refund",
+      "q": "Can I get a refund?",
+      "also": [
+        "money back",
+        "return my purchase",
+        "cancel my order",
+        "refund policy",
+        "get my money back",
+        "can i return it",
+        "reimburse"
+      ],
+      "a": "Because designs are digital files that can't be returned, purchases are generally final. Genuine file problems are handled through support, with a corrected file, a replacement download or another reasonable fix. Examples that qualify: a corrupted or unopenable ZIP, a missing listed file, a serious technical defect, the wrong product delivered, a verified duplicate purchase, or a product materially different from its listing.",
+      "link": {
+        "text": "Refund Policy",
+        "path": "/Refund/"
+      },
+      "topic": "Refunds and problems"
+    },
+    {
+      "id": "refund-no",
+      "q": "Which situations do not qualify for a refund?",
+      "also": [
+        "changed my mind",
+        "wrong design",
+        "bought the wrong one",
+        "machine not compatible",
+        "software not compatible",
+        "prefer another design",
+        "dont want it anymore",
+        "unexpected result",
+        "not what i expected",
+        "doesnt work with my machine",
+        "file doesnt work with my machine refund"
+      ],
+      "a": "A refund or replacement is normally not provided if you changed your mind, bought the wrong design when the listing was clear, expected a physical item, your machine or software isn't compatible, you're unsure how to use your software, your settings or materials gave an unexpected result, you edited or converted the file incorrectly, or you found a design you prefer. Please check the formats and license on the product page before buying.",
+      "link": {
+        "text": "Refund Policy",
+        "path": "/Refund/"
+      },
+      "topic": "Refunds and problems"
+    },
+    {
+      "id": "file-problem",
+      "q": "My file is corrupted, missing or won't open. What do I do?",
+      "also": [
+        "zip wont open",
+        "corrupted file",
+        "broken file",
+        "damaged file",
+        "file missing",
+        "cant open the zip",
+        "wrong file delivered",
+        "something wrong with my download",
+        "replacement file"
+      ],
+      "a": "Please contact us as soon as possible, ideally within 3 calendar days of purchase. Include your order number, the product name, a short description of the problem and, if useful, a screenshot or error message. We will try to correct or replace the files.",
+      "link": {
+        "text": "Contact us",
+        "path": "/Contact/"
+      },
+      "topic": "Refunds and problems"
+    },
+    {
+      "id": "duplicate",
+      "q": "I bought the same design twice. What can I do?",
+      "also": [
+        "paid twice",
+        "double purchase",
+        "charged twice",
+        "purchased by mistake twice",
+        "duplicate order"
+      ],
+      "a": "Contact us promptly with your order details. Once the duplicate purchase is verified, we may provide an appropriate remedy.",
+      "link": {
+        "text": "Contact us",
+        "path": "/Contact/"
+      },
+      "topic": "Refunds and problems"
+    },
+    {
+      "id": "refund-license",
+      "q": "If I am refunded, can I keep using the design?",
+      "also": [
+        "refunded design",
+        "keep the files after refund",
+        "license after refund",
+        "delete files after refund"
+      ],
+      "a": "If a refund is approved, the license for that design may be terminated. You would need to stop using the design and delete the files unless we confirm otherwise in writing. A refund doesn't give you any right to keep selling or sharing work based on the refunded file.",
+      "link": {
+        "text": "Refund Policy",
+        "path": "/Refund/"
+      },
+      "topic": "Refunds and problems"
+    },
+    {
+      "id": "chargeback",
+      "q": "Should I dispute the payment with my bank?",
+      "also": [
+        "chargeback",
+        "payment dispute",
+        "bank dispute",
+        "billing problem",
+        "wrong charge"
+      ],
+      "a": "Please contact us before starting a chargeback whenever possible. We will make reasonable efforts to investigate genuine billing or delivery problems and find a fair resolution.",
+      "link": {
+        "text": "Contact us",
+        "path": "/Contact/"
+      },
+      "topic": "Refunds and problems"
+    },
+    {
+      "id": "commercial-use",
+      "q": "Can I sell products I make with your designs?",
+      "also": [
+        "commercial use",
+        "sell finished products",
+        "sell what i make",
+        "sell my crafts",
+        "use for business",
+        "make and sell",
+        "etsy",
+        "craft fair",
+        "sell keychains",
+        "sell ornaments",
+        "can i sell items",
+        "commercial license",
+        "do i get a license",
+        "licence"
+      ],
+      "a": "Where a design includes commercial use, you can create and sell finished physical products with it, such as ornaments, signs, earrings, keychains and layered decor. The digital file itself can't be resold, shared, uploaded or redistributed. Free designs are for personal, non-commercial use unless the product page says otherwise, and any product-specific terms take priority.",
+      "link": {
+        "text": "License",
+        "path": "/License/"
+      },
+      "topic": "Licensing"
+    },
+    {
+      "id": "resell-file",
+      "q": "Can I resell or share the digital file?",
+      "also": [
+        "share the file",
+        "give the file to a friend",
+        "upload the file",
+        "send file to customer",
+        "redistribute",
+        "sell the svg",
+        "sell the file",
+        "put it in a bundle",
+        "share with contractor",
+        "file sharing",
+        "pass it on",
+        "production partner",
+        "send the file to someone else",
+        "email the file"
+      ],
+      "a": "No. You can't sell, give away, share or upload the digital file. That includes sharing with customers, friends, contractors or production partners, uploading to file libraries, marketplaces or groups, and including it in another downloadable product. Edited, converted, traced or resized versions of the file can't be resold either.",
+      "link": {
+        "text": "License",
+        "path": "/License/"
+      },
+      "topic": "Licensing"
+    },
+    {
+      "id": "edit-modify",
+      "q": "Can I resize, recolor or personalize a design?",
+      "also": [
+        "edit the design",
+        "change the size",
+        "add a name",
+        "customize",
+        "modify the file",
+        "personalise",
+        "change colors",
+        "adjust the design",
+        "layer it"
+      ],
+      "a": "Yes, for the physical product you're making you can resize, recolor, personalize, layer or otherwise adjust a design. These changes don't transfer ownership of the artwork and don't give you the right to sell the edited digital file.",
+      "link": {
+        "text": "License",
+        "path": "/License/"
+      },
+      "topic": "Licensing"
+    },
+    {
+      "id": "unlimited-copies",
+      "q": "How many products can I make with one design?",
+      "also": [
+        "unlimited copies",
+        "how many times can i use",
+        "number of copies",
+        "limit on products",
+        "make more than one",
+        "how many can i make"
+      ],
+      "a": "With a commercially licensed design you can make unlimited physical copies, unless the product page states a different limit.",
+      "link": {
+        "text": "License",
+        "path": "/License/"
+      },
+      "topic": "Licensing"
+    },
+    {
+      "id": "free-designs",
+      "q": "Can I use free designs commercially?",
+      "also": [
+        "free files",
+        "free download license",
+        "free svg commercial",
+        "free designs for business",
+        "free design terms"
+      ],
+      "a": "Free designs are for personal, non-commercial crafting unless the specific product page says otherwise. Please don't resell, share or include a free design in another digital product. Check the individual listing for any special terms.",
+      "link": {
+        "text": "License",
+        "path": "/License/"
+      },
+      "topic": "Licensing"
+    },
+    {
+      "id": "marketing-photos",
+      "q": "Can I show photos of my finished products to advertise them?",
+      "also": [
+        "mockups",
+        "product photos",
+        "advertise my products",
+        "use pictures in my listings",
+        "photographs of items",
+        "promote my work"
+      ],
+      "a": "Yes. You can use photographs or mockups of your finished physical products in your own advertising and product listings. You just can't present the original digital design as your own work.",
+      "link": {
+        "text": "License",
+        "path": "/License/"
+      },
+      "topic": "Licensing"
+    },
+    {
+      "id": "what-receive",
+      "q": "What will I receive after buying a design?",
+      "also": [
+        "what do i get",
+        "what is included",
+        "whats in the download",
+        "zip file",
+        "package contents",
+        "what comes with my purchase"
+      ],
+      "a": "You receive one ZIP package with the files provided for that design. The product page shows the ZIP size and the file types the owner has listed. Your files unlock in My Account once payment completes.",
+      "link": {
+        "text": "How it works",
+        "path": "/How/"
+      },
+      "needs_payments": true,
+      "topic": "Files and downloads"
+    },
+    {
+      "id": "formats",
+      "q": "Which file formats are included?",
+      "also": [
+        "svg",
+        "dxf",
+        "png",
+        "ai eps",
+        "file types",
+        "vector files",
+        "what formats"
+      ],
+      "a": "Designs are prepared as SVG, PNG and DXF, and some also include AI or EPS where listed. Each product page lists the file types that are actually in its ZIP.",
+      "link": {
+        "text": "How it works",
+        "path": "/How/"
+      },
+      "topic": "Files and downloads"
+    },
+    {
+      "id": "machines",
+      "q": "Will the files work with my machine or software?",
+      "also": [
+        "cricut",
+        "silhouette",
+        "laser cutter",
+        "glowforge",
+        "compatible",
+        "compatibility",
+        "which software",
+        "does it work with",
+        "xtool",
+        "machine"
+      ],
+      "a": "Designs are prepared for laser cutting and for Cricut and Silhouette workflows. Check the What's included box on each product page for its file types. We can't guarantee compatibility with every machine or software setup, so please contact us before buying if you need to confirm.",
+      "link": {
+        "text": "Contact us",
+        "path": "/Contact/"
+      },
+      "topic": "Files and downloads"
+    },
+    {
+      "id": "subscription",
+      "q": "Are there subscriptions or memberships?",
+      "also": [
+        "monthly fee",
+        "recurring payment",
+        "membership",
+        "subscribe",
+        "pay once"
+      ],
+      "a": "No. Each design is a one-time purchase. There are no memberships or subscription plans.",
+      "link": {
+        "text": "How it works",
+        "path": "/How/"
+      },
+      "topic": "Orders and payments"
+    },
+    {
+      "id": "account",
+      "q": "Do I need an account?",
+      "also": [
+        "create an account",
+        "do i need to log in to buy",
+        "email code",
+        "forgot password",
+        "google sign in",
+        "log in",
+        "login",
+        "password",
+        "register",
+        "reset password",
+        "sign in",
+        "sign up"
+      ],
+      "a": "You can browse the whole shop without an account. An account is used to unlock your downloads and keep your orders, licenses and saved designs in one place. You sign up with your email (we send a code to confirm it) and then log in with your email and password, or use Google or Apple where those options are shown.",
+      "link": {
+        "text": "How it works",
+        "path": "/How/"
+      },
+      "topic": "Orders and payments"
+    },
+    {
+      "id": "my-downloads",
+      "q": "Where do I find my downloads and orders?",
+      "also": [
+        "where is my download",
+        "cant find my files",
+        "order history",
+        "my account downloads",
+        "how do i download",
+        "download link",
+        "didnt get my files",
+        "where are my files",
+        "didnt get my files after buying",
+        "bought but no download",
+        "files not delivered after purchase"
+      ],
+      "a": "After a purchase completes, your ZIP appears under My Account, in the Downloads section, and your orders and licenses are listed there too. If something is missing, contact us with your order number.",
+      "link": {
+        "text": "Contact us",
+        "path": "/Contact/"
+      },
+      "needs_payments": true,
+      "topic": "Files and downloads"
+    },
+    {
+      "id": "delivery-speed",
+      "q": "How fast will I get my files?",
+      "also": [
+        "instant download",
+        "delivery time",
+        "how long until i get it",
+        "when will i receive",
+        "immediately"
+      ],
+      "a": "Delivery is digital and instant. Once a purchase is completed, the download becomes available in your customer account, linked to your order and license record.",
+      "link": {
+        "text": "How it works",
+        "path": "/How/"
+      },
+      "needs_payments": true,
+      "topic": "Files and downloads"
+    },
+    {
+      "id": "shipping",
+      "q": "Do you ship physical products?",
+      "also": [
+        "shipping",
+        "postage",
+        "delivery address",
+        "physical item",
+        "ship to",
+        "do you deliver",
+        "send me a physical"
+      ],
+      "a": "No. Craftshan Studio sells digital design files only, unless a listing clearly says otherwise, so nothing is shipped.",
+      "link": {
+        "text": "Shop",
+        "path": "/Shop/"
+      },
+      "topic": "Files and downloads"
+    },
+    {
+      "id": "payments",
+      "q": "How do payments work and is my card information safe?",
+      "also": [
+        "payment method",
+        "pay with card",
+        "paypal",
+        "credit card",
+        "secure payment",
+        "lemon squeezy",
+        "how do i pay",
+        "card details",
+        "checkout payment"
+      ],
+      "a": "Paid checkout is handled by a third-party payment provider (Lemon Squeezy) on its own secure page. We don't intend to store full card numbers. Please never type card details into this chat.",
+      "link": {
+        "text": "Privacy Policy",
+        "path": "/Privacy/"
+      },
+      "needs_payments": true,
+      "topic": "Orders and payments"
+    },
+    {
+      "id": "shop-open",
+      "q": "Can I buy a design right now?",
+      "also": [
+        "is checkout working",
+        "is the shop open",
+        "can i place an order",
+        "when can i buy",
+        "is the store live",
+        "add to cart",
+        "purchase now",
+        "buy now"
+      ],
+      "a": "Yes. Add designs to your cart and check out. Your files unlock in My Account after payment.",
+      "link": {
+        "text": "Shop",
+        "path": "/Shop/"
+      },
+      "a_not_live": "Online checkout isn't switched on yet, so orders can't be placed right now. You can browse the designs and licensing information, and use the contact page if you have questions.",
+      "topic": "Orders and payments"
+    },
+    {
+      "id": "discounts",
+      "q": "Do you have discounts or coupon codes?",
+      "also": [
+        "coupon",
+        "promo code",
+        "sale",
+        "discount",
+        "voucher",
+        "cheaper",
+        "on sale"
+      ],
+      "a": "Sales appear on the home page and on product pages. If you have a discount code, enter it in your cart and press Apply.",
+      "link": {
+        "text": "Shop",
+        "path": "/Shop/"
+      },
+      "topic": "Orders and payments"
+    },
+    {
+      "id": "custom-design",
+      "q": "Do you make custom designs?",
+      "also": [
+        "custom request",
+        "personalised design",
+        "commission",
+        "design for me",
+        "custom order",
+        "special request"
+      ],
+      "a": "The contact page has a Custom design request option. Send your idea there and the owner will reply by email. I can't confirm availability or pricing here.",
+      "link": {
+        "text": "Contact us",
+        "path": "/Contact/"
+      },
+      "topic": "The studio and contact"
+    },
+    {
+      "id": "contact",
+      "q": "How can I contact you or get help from a person?",
+      "also": [
+        "talk to a human",
+        "email",
+        "get in touch",
+        "support",
+        "customer service",
+        "speak to someone",
+        "phone number",
+        "reach the owner",
+        "message the owner",
+        "help"
+      ],
+      "a": "Use the contact form on the Contact page. Choose a subject (general enquiry, licensing, custom design, technical issue or billing), add your order number if you have one, and you will get a reply by email.",
+      "link": {
+        "text": "Contact us",
+        "path": "/Contact/"
+      },
+      "topic": "The studio and contact"
+    },
+    {
+      "id": "privacy",
+      "q": "What personal information do you collect?",
+      "also": [
+        "privacy",
+        "my data",
+        "personal information",
+        "gdpr",
+        "data protection",
+        "do you sell my data",
+        "what do you store"
+      ],
+      "a": "We collect what the store needs to run, such as your name, email, orders, support messages and technical information. Payment details are handled by the payment provider. We don't sell personal information as a normal part of the business. The Privacy Policy has the full details.",
+      "link": {
+        "text": "Privacy Policy",
+        "path": "/Privacy/"
+      },
+      "topic": "Privacy and data"
+    },
+    {
+      "id": "cookies",
+      "q": "Do you use cookies or tracking?",
+      "also": [
+        "tracking",
+        "analytics",
+        "advertising cookies",
+        "cookie policy",
+        "cookie preferences",
+        "local storage"
+      ],
+      "a": "The store only uses storage it needs to work: your sign-in, cart and display preferences. It doesn't currently run analytics or advertising trackers. You can change your choice any time from Cookie preferences in the footer.",
+      "link": {
+        "text": "Cookie Policy",
+        "path": "/Cookies/"
+      },
+      "topic": "Privacy and data"
+    },
+    {
+      "id": "delete-data",
+      "q": "How can I see, correct or delete my personal data?",
+      "also": [
+        "delete my account",
+        "remove my data",
+        "data request",
+        "access my data",
+        "right to be forgotten",
+        "privacy request"
+      ],
+      "a": "Depending on where you live, you may have rights to access, correct or delete your information. Use the contact page to make a privacy request and include enough detail for us to understand it. Some records may need to be kept for legal, accounting or licensing reasons.",
+      "link": {
+        "text": "Privacy Policy",
+        "path": "/Privacy/"
+      },
+      "topic": "Privacy and data"
+    },
+    {
+      "id": "reviews",
+      "q": "Are the reviews real?",
+      "also": [
+        "customer reviews",
+        "ratings",
+        "fake reviews",
+        "testimonials",
+        "feedback"
+      ],
+      "a": "Only genuine customer-submitted reviews are shown, and they are tied to verified orders. We never display invented reviews.",
+      "link": {
+        "text": "Shop",
+        "path": "/Shop/"
+      },
+      "topic": "The studio and contact"
+    },
+    {
+      "id": "about",
+      "q": "Who runs Craftshan Studio?",
+      "also": [
+        "who are you",
+        "about the studio",
+        "founder",
+        "owner",
+        "who made these designs",
+        "tell me about craftshan"
+      ],
+      "a": "Craftshan Studio is an independent digital design store run by its founder, M Kashian Malik, focused on practical laser-cut and crafting design files.",
+      "link": {
+        "text": "About",
+        "path": "/About/"
+      },
+      "topic": "The studio and contact"
+    }
+  ]
+}
