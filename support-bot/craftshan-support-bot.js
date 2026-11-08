@@ -134,7 +134,7 @@
     privacy: '<path d="M12 3 5 6v5c0 5 3 8 7 10 4-2 7-5 7-10V6z"/>',
     contact: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
     restart: '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>',
-    close: '<path d="M6 6l12 12M18 6 6 18"/>',
+    close: '<path d="M6 6l12 12M18 6 6 18"/>', alert: '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.4v.1"/>',
     up: '<path d="m6 15 6-6 6 6"/>', arrow: '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',
     thumbUp: '<path d="M7 11v9H4v-9z"/><path d="M7 11l4-8a2 2 0 0 1 2 2v4h5.5a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 17.3 20H7"/>',
     thumbDown: '<path d="M17 13V4h3v9z"/><path d="M17 13l-4 8a2 2 0 0 1-2-2v-4H5.5a2 2 0 0 1-2-2.3l1.2-6A2 2 0 0 1 6.7 4H17"/>',
@@ -163,7 +163,7 @@ header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:
 .av{flex:none;width:38px;height:38px;border-radius:50%;background:var(--gold);display:grid;place-items:center}.av .crafty{width:28px;height:28px}
 .ttl{flex:1;min-width:0}.ttl b{display:block;font-weight:600;font-size:16px;line-height:1.2}.ttl small{display:block;color:#F5F1E8;opacity:.72;font-size:12px;line-height:1.3}
 .hb{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:10px;border:0;background:transparent;color:#F5F1E8;cursor:pointer;text-decoration:none}.hb:hover{background:#252525}
-.log{position:relative;flex:1;overflow-y:auto;padding:14px 14px 6px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.log{position:relative;flex:1;overflow-y:auto;padding:14px 14px 16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
 .row{display:flex;gap:8px;align-items:flex-start}.row.me{justify-content:flex-end}.row .mini{flex:none;width:26px;height:26px;border-radius:50%;background:var(--gold);display:grid;place-items:center}.row .mini .crafty{width:19px;height:19px}
 .bub{max-width:86%;padding:10px 13px;border-radius:16px;white-space:pre-wrap;word-wrap:break-word}
 .bot .bub{background:var(--bot);border:1px solid var(--line);border-bottom-left-radius:5px}.me .bub{background:var(--gold);color:var(--ink);border-bottom-right-radius:5px;font-weight:500}
@@ -172,8 +172,12 @@ header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:
 @keyframes b{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-4px);opacity:1}}
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;white-space:normal}.card{display:flex;align-items:center;gap:8px;text-align:left;border:1px solid var(--line);background:var(--chip);color:var(--text);border-radius:12px;padding:10px;cursor:pointer;font-size:13.5px;line-height:1.25}.card:hover,.q:hover{border-color:var(--gold)}.card svg{flex:none;color:var(--gold)}
 .qs{display:flex;flex-direction:column;gap:6px;margin-top:10px;white-space:normal}.q{display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;border:1px solid var(--line);background:var(--chip);color:var(--text);border-radius:12px;padding:9px 12px;cursor:pointer;font-size:13.5px;line-height:1.3}.q svg{flex:none;color:var(--gold)}
-.more{display:inline-flex;align-items:center;gap:6px;margin-top:10px;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;color:var(--link);text-decoration:none;font-weight:600}.more:hover{border-color:var(--gold)}
-.human{display:inline-flex;align-items:center;gap:8px;margin-top:10px;background:var(--gold);color:var(--ink);border-radius:999px;padding:8px 16px;text-decoration:none;font-weight:600;font-size:14px}.human:hover{filter:brightness(1.08)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 16px;font-weight:600;font-size:14px;line-height:1.2;text-decoration:none;border:1px solid var(--gold);background:var(--gold);color:var(--ink);cursor:pointer}.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--link)}.btn.ghost:hover{background:rgba(232,160,32,.12);filter:none}
+.card.wide{grid-column:1/-1;border-color:var(--gold);background:rgba(232,160,32,.1)}
+.log{scrollbar-width:thin;scrollbar-color:#4a4a4a transparent}.log::-webkit-scrollbar{width:8px}.log::-webkit-scrollbar-thumb{background:#4a4a4a;border-radius:8px}.log::-webkit-scrollbar-track{background:transparent}
+:host([data-theme=light]) .log{scrollbar-color:#c9c4bb transparent}:host([data-theme=light]) .log::-webkit-scrollbar-thumb{background:#c9c4bb}
 .fb{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:12.5px;color:var(--muted);white-space:normal}.fb button{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:transparent;color:var(--text);border-radius:999px;padding:4px 10px;cursor:pointer;font-size:12.5px}.fb button:hover{border-color:var(--gold)}
 form{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:var(--panel)}
 input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;padding:10px 15px;outline:none;background:var(--input);color:var(--text)}input::placeholder{color:var(--muted)}input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,160,32,.28)}input:focus-visible{outline:none}input:disabled{opacity:.6}
@@ -213,7 +217,7 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
     const humanHref = url(cfg.contact_path || "/Contact/");
     const head = el("header", {}, [
       html("span", { class: "av" }, crafty(28)),
-      el("div", { class: "ttl" }, [el("b", { text: name }), el("small", { text: "Automated help assistant for Craftshan Studio" })]),
+      el("div", { class: "ttl" }, [el("b", { text: name }), el("small", { text: "Automated assistant" })]),
       html("a", { class: "hb", href: humanHref, target: "_blank", rel: "noopener", "aria-label": "Contact the owner (opens in a new tab)", title: "Talk to a person" }, ico(I.contact, 19)),
       html("button", { class: "hb restart", type: "button", "aria-label": "Start over", title: "Start over" }, ico(I.restart, 18)),
       html("button", { class: "hb close", type: "button", "aria-label": "Close chat", title: "Close" }, ico(I.close, 20)),
@@ -224,6 +228,8 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
     ]);
     root.append(panel, tip, fab);
 
+    const PROBLEM = "I have a problem";
+    const problemEntries = () => (cfg.problems || ["file-problem", "my-downloads", "duplicate", "refund", "chargeback"]).map((id) => faq.entries.find((e) => e.id === id)).filter(Boolean);
     let busy = false, count = 0, started = false;
     const form = panel.querySelector("form");
     const byQ = new Map(faq.entries.map((e) => [e.q, e]));
@@ -233,7 +239,8 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
 
     function botRow(content) { // returns the bubble; content may be text or a typing indicator
       const bub = el("div", { class: "bub" });
-      if (typeof content === "string") bub.textContent = content; else bub.appendChild(content);
+      if (typeof content === "string") content.split("\n\n").filter(Boolean).forEach((t, i) => bub.appendChild(el("div", { class: i ? "txt note2" : "txt", text: t })));
+      else bub.appendChild(content);
       const row = el("div", { class: "row bot" }, [html("span", { class: "mini" }, crafty(19)), bub]);
       log.appendChild(row);
       return { row, bub };
@@ -241,8 +248,9 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
     function me(text) { log.appendChild(el("div", { class: "row me" }, [el("div", { class: "bub", text })])); toBottom(); }
     function cards(parent) {
       const box = el("div", { class: "cards" });
-      topics.forEach((t) => box.appendChild(html("button", { class: "card", type: "button" }, ico(topicIcon(t), 20) + `<span></span>`)).querySelector("span").textContent = t);
-      [...box.children].forEach((b, i) => b.addEventListener("click", () => pick(topics[i])));
+      const add = (icon, label, cls) => { const b = html("button", { class: "card " + (cls || ""), type: "button" }, ico(icon, 20) + "<span></span>"); b.querySelector("span").textContent = label; b.addEventListener("click", () => pick(label)); box.appendChild(b); };
+      topics.forEach((t) => add(topicIcon(t), t));
+      add(I.alert, PROBLEM, "wide");
       parent.appendChild(box);
     }
     function questions(list, parent) {
@@ -250,7 +258,8 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
       list.forEach((label) => { const b = html("button", { class: "q", type: "button" }, `<span></span>` + ico(I.arrow, 15)); b.firstChild.textContent = label; b.addEventListener("click", () => pick(label)); box.appendChild(b); });
       parent.appendChild(box);
     }
-    const humanLink = (parent, label) => parent.appendChild(html("a", { class: "human", href: humanHref, target: "_blank", rel: "noopener" }, ico(I.contact, 16) + `<span></span>`)).querySelector("span").textContent = label || "Talk to a person";
+    const actions = (parent) => parent.querySelector(":scope > .actions") || parent.appendChild(el("div", { class: "actions" }));
+    const humanLink = (parent, label, ghost) => { const a = html("a", { class: "btn" + (ghost ? " ghost" : ""), href: humanHref, target: "_blank", rel: "noopener" }, ico(I.contact, 16) + "<span></span>"); a.querySelector("span").textContent = label || "Talk to a person"; actions(parent).appendChild(a); };
     function feedback(parent, entry) {
       const box = el("div", { class: "fb" }, [el("span", { text: "Was this helpful?" })]);
       const yes = html("button", { type: "button" }, ico(I.thumbUp, 14) + " Yes"), no = html("button", { type: "button" }, ico(I.thumbDown, 14) + " No"), more = html("button", { type: "button" }, "More topics");
@@ -264,6 +273,7 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
 
     function pick(label) {
       if (busy) return;
+      if (label === PROBLEM) { me(label); respondLater(() => { const r = botRow("I'm sorry you're having trouble. What's going on?"); questions(problemEntries().map((e) => e.q), r.bub); humanLink(r.bub, "Talk to a person"); return r; }); return; }
       if (topics.includes(label)) { me(label); respondLater(() => { const r = botRow("Here's what I can help with about " + label.toLowerCase() + ":"); questions(faq.entries.filter((e) => e.topic === label).map((e) => e.q), r.bub); return r; }); }
       else if (byQ.has(label)) { me(label); respondLater(() => answer(byQ.get(label), [])); }
       else ask(label);
@@ -282,7 +292,7 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
         r.bub.appendChild(more);
       }
       notes.forEach((n) => r.bub.appendChild(el("div", { class: "txt note2", text: n })));
-      if (entry.link) r.bub.appendChild(html("a", { class: "more", href: url(entry.link.path), target: "_blank", rel: "noopener" }, `<span></span>` + ico(I.arrow, 14))).firstChild.textContent = "Read the " + entry.link.text;
+      if (entry.link) { const a = html("a", { class: "btn ghost", href: url(entry.link.path), target: "_blank", rel: "noopener" }, "<span></span>" + ico(I.arrow, 14)); a.firstChild.textContent = entry.link.label || "Read the " + entry.link.text; actions(r.bub).appendChild(a); }
       if (related.length) { r.bub.appendChild(el("div", { class: "fb", text: "You might also want to know:" })); questions(related.map((x) => x.q), r.bub); }
       feedback(r.bub, entry);
       return r;
