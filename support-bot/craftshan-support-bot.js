@@ -75,12 +75,44 @@
     docs.forEach((d) => d.set.forEach((t) => df.set(t, (df.get(t) || 0) + 1)));
     const n = docs.length, idf = new Map();
     df.forEach((c, t) => idf.set(t, Math.log(1 + n / c)));
-    const built = { docs, idf, oov: Math.log(1 + n) };
+    const lex = new Map(); // every word the knowledge base knows, for spelling correction
+    const addWords = (t) => (String(t).toLowerCase().replace(/[’']/g, "").match(/[a-z]{4,}/g) || []).forEach((w) => lex.set(w, (lex.get(w) || 0) + 1));
+    faq.entries.forEach((e) => { addWords(e.q); (e.also || []).forEach(addWords); addWords(e.a); });
+    GROUPS.forEach(([, re]) => addWords(re.source));
+    const built = { docs, idf, oov: Math.log(1 + n), lex };
     cache.set(faq, built);
     return built;
   }
 
+  // Edit distance where swapping two neighbouring letters counts as one mistake ("refudn" -> "refund").
+  function osa(a, b, max) {
+    const m = a.length, n = b.length;
+    if (Math.abs(m - n) > max) return max + 1;
+    const d = [];
+    for (let i = 0; i <= m; i++) d[i] = [i];
+    for (let j = 1; j <= n; j++) d[0][j] = j;
+    for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) {
+      let v = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) v = Math.min(v, d[i - 2][j - 2] + 1);
+      d[i][j] = v;
+    }
+    return d[m][n];
+  }
+  /** Fix likely typos using only words the knowledge base already knows. Short or known words are left alone. */
+  function correct(text, faq) {
+    const { lex } = index(faq);
+    return String(text).replace(/[’']/g, "").replace(/[A-Za-z]{5,}/g, (w) => {
+      const lw = w.toLowerCase();
+      if (lex.has(lw) || STOP.has(lw)) return w;
+      const max = lw.length >= 9 ? 2 : 1;
+      let best = null, bd = max + 1, bf = 0;
+      for (const [v, f] of lex) { const dist = osa(lw, v, max); if (dist < bd || (dist === bd && f > bf)) { best = v; bd = dist; bf = f; } }
+      return best && bd <= max ? best : w;
+    });
+  }
+
   function rank(text, faq) {
+    text = correct(text, faq);
     const { docs, idf, oov } = index(faq);
     const q = [...new Set(tokens(text))];
     if (!q.length) return [];
@@ -135,57 +167,73 @@
     contact: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
     restart: '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>',
     close: '<path d="M6 6l12 12M18 6 6 18"/>', alert: '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.4v.1"/>',
-    up: '<path d="m6 15 6-6 6 6"/>', arrow: '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',
+    arrow: '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>', copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+    pen: '<path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/>',
     thumbUp: '<path d="M7 11v9H4v-9z"/><path d="M7 11l4-8a2 2 0 0 1 2 2v4h5.5a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 17.3 20H7"/>',
     thumbDown: '<path d="M17 13V4h3v9z"/><path d="M17 13l-4 8a2 2 0 0 1-2-2v-4H5.5a2 2 0 0 1-2-2.3l1.2-6A2 2 0 0 1 6.7 4H17"/>',
   };
   const TOPIC_ICON = [/licens/i, "licensing", /refund/i, "refunds", /file|download/i, "files", /order|payment/i, "orders", /privacy|data/i, "privacy", /studio|contact/i, "contact"];
   const topicIcon = (t) => { for (let k = 0; k < TOPIC_ICON.length; k += 2) if (TOPIC_ICON[k].test(t)) return I[TOPIC_ICON[k + 1]]; return I.contact; };
 
-  // Crafty: a friendly laser-bot. Rounded speech-bubble head, spark antenna (a nod to the laser), blinking eyes.
-  const crafty = (size) => `<svg class="crafty" width="${size}" height="${size}" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 11v5" stroke="#0D0D0D" stroke-width="2.6" stroke-linecap="round"/><path class="spark" d="M24 1.5l1.9 4.6 4.6 1.9-4.6 1.9L24 14.5l-1.9-4.6L17.5 8l4.6-1.9z" fill="#0D0D0D"/><rect x="1.5" y="24" width="3.5" height="8" rx="1.75" fill="#0D0D0D"/><rect x="43" y="24" width="3.5" height="8" rx="1.75" fill="#0D0D0D"/><path d="M11 16.5h26a5.5 5.5 0 0 1 5.5 5.5v11a5.5 5.5 0 0 1-5.5 5.5H29.5L24 44.5l-5.5-5.5H11A5.5 5.5 0 0 1 5.5 33V22A5.5 5.5 0 0 1 11 16.5z" fill="#0D0D0D"/><g class="eyes"><circle cx="17.5" cy="27" r="3.2" fill="#E8A020"/><circle cx="30.5" cy="27" r="3.2" fill="#E8A020"/></g><path d="M19.5 33.2q4.5 3.6 9 0" stroke="#E8A020" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>`;
+  // Three avatars. Pick one with "avatar" in faq.json: "smile" (default), "rosette" or "support".
+  const AV = {
+    smile: (n) => `<svg class="crafty" width="${n}" height="${n}" viewBox="0 0 48 48" aria-hidden="true"><path d="M11 12h26a6.5 6.5 0 0 1 6.5 6.5v11A6.5 6.5 0 0 1 37 36H27.5L21 43l-1.2-7H11A6.5 6.5 0 0 1 4.5 29.5v-11A6.5 6.5 0 0 1 11 12z" fill="#0D0D0D"/><g class="eyes"><path d="M14.5 23.5q3.5-5 7 0M26.5 23.5q3.5-5 7 0" stroke="#F5C55A" stroke-width="2.8" fill="none" stroke-linecap="round"/></g><path d="M17 28.5q7 6.5 14 0" stroke="#F5C55A" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="13.2" cy="28" r="2" fill="#E8A020" opacity=".7"/><circle cx="34.8" cy="28" r="2" fill="#E8A020" opacity=".7"/><path class="spark" d="M39 1.5l1.7 4.1 4.1 1.7-4.1 1.7L39 13l-1.7-4.1-4.1-1.7 4.1-1.7z" fill="#0D0D0D"/></svg>`,
+    rosette: (n) => `<svg class="crafty" width="${n}" height="${n}" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3.5a20.5 20.5 0 1 1-9.4 38.7L5.5 45l3.1-8.6A20.5 20.5 0 0 1 24 3.5z" fill="#0D0D0D"/><g fill="#F5C55A">${[0, 45, 90, 135, 180, 225, 270, 315].map((a) => `<ellipse cx="24" cy="14" rx="3.3" ry="7.2" transform="rotate(${a} 24 24)"/>`).join("")}</g><circle cx="24" cy="24" r="4.4" fill="#0D0D0D"/><circle cx="24" cy="24" r="2" fill="#E8A020"/></svg>`,
+    support: (n) => `<svg class="crafty" width="${n}" height="${n}" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="19" r="9.5" fill="#0D0D0D"/><path d="M13.5 8.5a10.6 10.6 0 0 1 21 0" stroke="#0D0D0D" stroke-width="2.6" fill="none" stroke-linecap="round"/><rect x="8.8" y="16" width="5" height="8.5" rx="2.5" fill="#0D0D0D"/><rect x="34.2" y="16" width="5" height="8.5" rx="2.5" fill="#0D0D0D"/><path d="M36.5 24.5v3.5q0 3-4 3h-4" stroke="#0D0D0D" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="27.5" cy="31" r="1.9" fill="#0D0D0D"/><circle cx="20.5" cy="18.5" r="1.5" fill="#F5C55A"/><circle cx="27.5" cy="18.5" r="1.5" fill="#F5C55A"/><path d="M20.5 22.2q3.5 2.8 7 0" stroke="#F5C55A" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M12.5 44c0-6.4 5.1-10 11.5-10s11.5 3.6 11.5 10z" fill="#0D0D0D"/></svg>`,
+  };
+  let AVATAR = "smile";
+  const crafty = (n) => AV[AVATAR](n);
 
   const CSS = `
 :host{all:initial;--gold:#E8A020;--ink:#0D0D0D;--head:#0D0D0D;--panel:#1A1A1A;--bot:#252525;--chip:#252525;--input:#0D0D0D;--text:#F5F1E8;--muted:#A9A397;--line:#303030;--link:#F5C55A;--side:22px;--fab-bottom:24px;--sh:0 20px 60px rgba(0,0,0,.55)}
 :host([data-theme=light]){--panel:#FAFAF7;--bot:#fff;--chip:#fff;--input:#fff;--text:#1C1C1A;--muted:#6E6A64;--line:#E2DED8;--link:#8C5E00;--sh:0 20px 60px rgba(0,0,0,.22)}
-*{box-sizing:border-box}button,a,input{font:inherit}
-.fab{position:fixed;right:var(--side);bottom:var(--fab-bottom);z-index:2147483000;width:60px;height:60px;border-radius:50%;border:0;background:var(--gold);color:var(--ink);cursor:pointer;display:grid;place-items:center;box-shadow:0 8px 28px rgba(0,0,0,.4),0 0 0 3px rgba(232,160,32,.25);transition:bottom .2s ease,transform .15s ease}
+*{box-sizing:border-box}button,a,input,select,textarea{font:inherit}
+.fab{position:fixed;right:var(--side);bottom:calc(var(--fab-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;width:60px;height:60px;border-radius:50%;border:0;background:radial-gradient(circle at 30% 25%,#F5C55A,#E8A020 62%);color:var(--ink);cursor:pointer;display:grid;place-items:center;box-shadow:0 8px 28px rgba(0,0,0,.4),0 0 0 3px rgba(232,160,32,.25);transition:bottom .2s ease,transform .15s ease;animation:ring 2.4s ease-out 3 2.5s}
+@keyframes ring{0%{box-shadow:0 8px 28px rgba(0,0,0,.4),0 0 0 3px rgba(232,160,32,.25),0 0 0 0 rgba(232,160,32,.55)}100%{box-shadow:0 8px 28px rgba(0,0,0,.4),0 0 0 3px rgba(232,160,32,.25),0 0 0 20px rgba(232,160,32,0)}}
 :host([data-pos=left]) .fab,:host([data-pos=left]) .tip{right:auto;left:var(--side)}
-.fab:hover{transform:scale(1.06)}.fab:focus-visible,button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.fab:hover{transform:scale(1.06)}.fab:focus-visible,button:focus-visible,input:focus-visible,a:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .fab .crafty{width:42px;height:42px}.fab .x{display:none}.fab[aria-expanded=true] .crafty{display:none}.fab[aria-expanded=true] .x{display:block}
 .eyes{transform-box:fill-box;transform-origin:center;animation:blink 5.5s infinite}.spark{transform-box:fill-box;transform-origin:center;animation:tw 2.8s ease-in-out infinite}
-@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}@keyframes tw{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
-.tip{position:fixed;right:var(--side);bottom:calc(var(--fab-bottom) + 72px);z-index:2147483000;max-width:240px;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:14px 14px 4px 14px;padding:10px 14px;box-shadow:var(--sh);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Inter,sans-serif;cursor:pointer;text-align:left;transition:bottom .2s ease}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.15)}}@keyframes tw{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+.tip{position:fixed;right:var(--side);bottom:calc(var(--fab-bottom) + 72px + env(safe-area-inset-bottom,0px));z-index:2147483000;max-width:240px;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:14px 14px 4px 14px;padding:10px 14px;box-shadow:var(--sh);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Inter,sans-serif;cursor:pointer;text-align:left;transition:bottom .2s ease}
 .tip[hidden],.panel[hidden]{display:none}
-.panel{position:fixed;right:var(--side);bottom:calc(var(--fab-bottom) + 72px);z-index:2147483000;width:min(396px,calc(100vw - 24px));height:min(620px,calc(100vh - var(--fab-bottom) - 96px));background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:22px;box-shadow:var(--sh);display:flex;flex-direction:column;overflow:hidden;font:15px/1.5 system-ui,-apple-system,"Segoe UI",Inter,sans-serif;transition:bottom .2s ease}
+.panel{position:fixed;right:var(--side);bottom:calc(var(--fab-bottom) + 72px + env(safe-area-inset-bottom,0px));z-index:2147483000;width:min(396px,calc(100vw - 24px));height:min(640px,calc(100vh - var(--fab-bottom) - 96px));background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:22px;box-shadow:var(--sh);display:flex;flex-direction:column;overflow:hidden;font:15px/1.5 system-ui,-apple-system,"Segoe UI",Inter,sans-serif;transition:bottom .2s ease}
 :host([data-pos=left]) .panel{right:auto;left:var(--side)}
 header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #303030}
-.av{flex:none;width:38px;height:38px;border-radius:50%;background:var(--gold);display:grid;place-items:center}.av .crafty{width:28px;height:28px}
+.av{flex:none;width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#F5C55A,#E8A020 62%);display:grid;place-items:center}.av .crafty{width:28px;height:28px}
 .ttl{flex:1;min-width:0}.ttl b{display:block;font-weight:600;font-size:16px;line-height:1.2}.ttl small{display:block;color:#F5F1E8;opacity:.72;font-size:12px;line-height:1.3}
 .hb{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:10px;border:0;background:transparent;color:#F5F1E8;cursor:pointer;text-decoration:none}.hb:hover{background:#252525}
-.log{position:relative;flex:1;overflow-y:auto;padding:14px 14px 16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
-.row{display:flex;gap:8px;align-items:flex-start}.row.me{justify-content:flex-end}.row .mini{flex:none;width:26px;height:26px;border-radius:50%;background:var(--gold);display:grid;place-items:center}.row .mini .crafty{width:19px;height:19px}
-.bub{max-width:86%;padding:10px 13px;border-radius:16px;white-space:pre-wrap;word-wrap:break-word}
-.bot .bub{background:var(--bot);border:1px solid var(--line);border-bottom-left-radius:5px}.me .bub{background:var(--gold);color:var(--ink);border-bottom-right-radius:5px;font-weight:500}
-.txt+.txt{margin-top:8px}.note2{font-size:13.5px;color:var(--muted)}.showmore{display:block;margin-top:6px;border:0;background:none;color:var(--link);cursor:pointer;padding:2px 0;font-weight:600;font-size:13px}.showmore:hover{text-decoration:underline}
+.log{position:relative;flex:1;overflow-y:auto;padding:14px 14px 16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:#4a4a4a transparent}
+.log::-webkit-scrollbar{width:8px}.log::-webkit-scrollbar-thumb{background:#4a4a4a;border-radius:8px}.log::-webkit-scrollbar-track{background:transparent}
+:host([data-theme=light]) .log{scrollbar-color:#c9c4bb transparent}:host([data-theme=light]) .log::-webkit-scrollbar-thumb{background:#c9c4bb}
+.row{display:flex;gap:8px;align-items:flex-start}.row.me{justify-content:flex-end}.row .mini{flex:none;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#F5C55A,#E8A020 62%);display:grid;place-items:center}.row .mini .crafty{width:19px;height:19px}
+.bub{max-width:88%;padding:10px 13px;border-radius:16px;word-wrap:break-word}.txt{white-space:pre-wrap}.txt+.txt{margin-top:8px}.note2{font-size:13.5px;color:var(--muted)}
+.bot .bub{background:var(--bot);border:1px solid var(--line);border-bottom-left-radius:5px}.me .bub{background:var(--gold);color:var(--ink);border-bottom-right-radius:5px;font-weight:500;white-space:pre-wrap}
+.showmore{display:block;margin-top:6px;border:0;background:none;color:var(--link);cursor:pointer;padding:2px 0;font-weight:600;font-size:13px}.showmore:hover{text-decoration:underline}
 .dots{display:inline-flex;gap:4px;padding:5px 2px}.dots i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:b 1s infinite}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
 @keyframes b{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-4px);opacity:1}}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;white-space:normal}.card{display:flex;align-items:center;gap:8px;text-align:left;border:1px solid var(--line);background:var(--chip);color:var(--text);border-radius:12px;padding:10px;cursor:pointer;font-size:13.5px;line-height:1.25}.card:hover,.q:hover{border-color:var(--gold)}.card svg{flex:none;color:var(--gold)}
-.qs{display:flex;flex-direction:column;gap:6px;margin-top:10px;white-space:normal}.q{display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;border:1px solid var(--line);background:var(--chip);color:var(--text);border-radius:12px;padding:9px 12px;cursor:pointer;font-size:13.5px;line-height:1.3}.q svg{flex:none;color:var(--gold)}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.card{display:flex;align-items:center;gap:8px;text-align:left;border:1px solid var(--line);background:var(--chip);color:var(--text);border-radius:12px;padding:10px;cursor:pointer;font-size:13.5px;line-height:1.25}.card:hover,.q:hover{border-color:var(--gold)}.card svg{flex:none;color:var(--gold)}
+.card.wide{grid-column:1/-1;border-color:var(--gold);background:rgba(232,160,32,.1)}
+.qs{display:flex;flex-direction:column;gap:6px;margin-top:10px}.q{display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;border:1px solid var(--line);background:var(--chip);color:var(--text);border-radius:12px;padding:9px 12px;cursor:pointer;font-size:13.5px;line-height:1.3}.q svg{flex:none;color:var(--gold)}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 16px;font-weight:600;font-size:14px;line-height:1.2;text-decoration:none;border:1px solid var(--gold);background:var(--gold);color:var(--ink);cursor:pointer}.btn:hover{filter:brightness(1.08)}
 .btn.ghost{background:transparent;color:var(--link)}.btn.ghost:hover{background:rgba(232,160,32,.12);filter:none}
-.card.wide{grid-column:1/-1;border-color:var(--gold);background:rgba(232,160,32,.1)}
-.log{scrollbar-width:thin;scrollbar-color:#4a4a4a transparent}.log::-webkit-scrollbar{width:8px}.log::-webkit-scrollbar-thumb{background:#4a4a4a;border-radius:8px}.log::-webkit-scrollbar-track{background:transparent}
-:host([data-theme=light]) .log{scrollbar-color:#c9c4bb transparent}:host([data-theme=light]) .log::-webkit-scrollbar-thumb{background:#c9c4bb}
-.fb{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:12.5px;color:var(--muted);white-space:normal}.fb button{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:transparent;color:var(--text);border-radius:999px;padding:4px 10px;cursor:pointer;font-size:12.5px}.fb button:hover{border-color:var(--gold)}
-form{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:var(--panel)}
-input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;padding:10px 15px;outline:none;background:var(--input);color:var(--text)}input::placeholder{color:var(--muted)}input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,160,32,.28)}input:focus-visible{outline:none}input:disabled{opacity:.6}
+.fb{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:12.5px;color:var(--muted)}.fb button{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:transparent;color:var(--text);border-radius:999px;padding:4px 10px;cursor:pointer;font-size:12.5px}.fb button:hover{border-color:var(--gold)}
+.cmp{display:flex;flex-direction:column;gap:10px;margin-top:10px}.cmp label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.cmp input,.cmp select,.cmp textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--input);color:var(--text);font-size:14px;outline:none}.cmp textarea{resize:vertical;min-height:84px}
+.cmp input:focus,.cmp select:focus,.cmp textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,160,32,.28)}
+.err{color:#FF8A7A;font-size:13px}.err:empty{display:none}:host([data-theme=light]) .err{color:#B42318}
+.out{width:100%;margin-top:10px;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--input);color:var(--text);font-size:13.5px;line-height:1.45;resize:vertical;min-height:200px}
+.sug{display:flex;flex-direction:column;gap:6px;padding:8px 12px 0;background:var(--panel);border-top:1px solid var(--line)}.sug[hidden]{display:none}
+.sq{display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;border:1px solid var(--line);background:var(--chip);color:var(--text);border-radius:10px;padding:7px 11px;cursor:pointer;font-size:13px;line-height:1.3}.sq:hover{border-color:var(--gold)}.sq svg{flex:none;color:var(--gold)}
+.chatform{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:var(--panel)}
+.sug:not([hidden])+.chatform{border-top:0}
+.chatform input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;padding:10px 15px;outline:none;background:var(--input);color:var(--text)}.chatform input::placeholder{color:var(--muted)}.chatform input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,160,32,.28)}.chatform input:disabled{opacity:.6}
 .send{flex:none;border:0;border-radius:999px;background:var(--gold);color:var(--ink);font-weight:700;padding:0 18px;cursor:pointer}.send:disabled{opacity:.5;cursor:default}
 .note{padding:0 14px 10px;font-size:11.5px;line-height:1.4;color:var(--muted);background:var(--panel)}
 @media (prefers-reduced-motion:no-preference){.row{animation:in .2s ease-out}@keyframes in{from{opacity:0;transform:translateY(5px)}}}
-@media (prefers-reduced-motion:reduce){.eyes,.spark,.dots i{animation:none}.log{scroll-behavior:auto}.fab,.tip,.panel{transition:none}}
-@media (max-width:520px){.panel{left:8px;right:8px;bottom:8px;width:auto;height:min(660px,calc(100dvh - 16px))}:host([data-pos=left]) .panel{left:8px}.fab[aria-expanded=true]{display:none}.cards{grid-template-columns:1fr 1fr}}`;
+@media (prefers-reduced-motion:reduce){.eyes,.spark,.dots i,.fab{animation:none}.log{scroll-behavior:auto}.fab,.tip,.panel{transition:none}}
+@media (max-width:520px){.panel{left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom,0px));width:auto;height:min(680px,calc(100dvh - 16px - env(safe-area-inset-bottom,0px)))}:host([data-pos=left]) .panel{left:8px}.fab[aria-expanded=true]{display:none}}`;
 
   function el(tag, props, children) {
     const n = document.createElement(tag);
@@ -195,9 +243,22 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
   }
   const html = (tag, props, inner) => { const n = el(tag, props); n.innerHTML = inner; return n; }; // inner is always trusted, built-in markup
 
+  // What the message helper offers. [what the customer sees, the subject to pick on the contact page]
+  const ISSUES = [
+    ["A problem with a file", "Technical issue"], ["I can't find my download", "Technical issue"],
+    ["I was charged twice, or a billing question", "Billing"], ["A refund question", "General enquiry"],
+    ["A licensing question", "Licensing question"], ["A custom design request", "Custom design request"], ["Something else", "General enquiry"],
+  ];
+  const PRESET = { "file-problem": 0, "my-downloads": 1, duplicate: 2, chargeback: 2, refund: 3, "refund-no": 3, "refund-license": 3, "commercial-use": 4, "resell-file": 4, "custom-design": 5 };
+  const looksLikeCard = (t) => /(?:\d[ -]?){13,19}/.test(t);
+  function composeMessage(f) {
+    return ["Subject: " + f.subject, "About: " + f.topic, "Order number: " + (f.order || "not sure"), f.product ? "Design: " + f.product : null, "", f.details, "", "(Written with the Crafty help assistant on craftshan.studio)"].filter((l) => l !== null).join("\n");
+  }
+
   function mount(faq, opts) {
     opts = opts || {};
     const cfg = faq.config, name = cfg.bot_name || "Crafty";
+    AVATAR = AV[cfg.avatar] ? cfg.avatar : "smile";
     const site = (cfg.site || "").replace(/\/$/, "");
     const url = (p) => (/^https?:/.test(p) ? p : site + p);
     const reduce = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -210,10 +271,11 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
     new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
     const fab = html("button", { class: "fab", type: "button", "aria-label": "Chat with " + name, "aria-expanded": "false" }, crafty(42) + `<span class="x">${ico(I.close, 26)}</span>`);
-    const tip = el("button", { class: "tip", type: "button", hidden: "", text: cfg.tooltip || "Hi, I'm " + name + "! Ask me about licensing, refunds or downloads." });
+    const tip = el("button", { class: "tip", type: "button", hidden: "", text: cfg.tooltip || "Hi, I'm " + name + "! How can I help you today?" });
     const log = el("div", { class: "log", role: "log", "aria-live": "polite", "aria-label": "Conversation with " + name });
     const input = el("input", { type: "text", maxlength: String(MAX_LEN), "aria-label": "Your question", placeholder: "Ask " + name + " a question…", autocomplete: "off", enterkeyhint: "send" });
     const send = el("button", { class: "send", type: "submit", text: "Send" });
+    const sug = el("div", { class: "sug", "aria-label": "Suggested questions", hidden: "" });
     const humanHref = url(cfg.contact_path || "/Contact/");
     const head = el("header", {}, [
       html("span", { class: "av" }, crafty(28)),
@@ -222,22 +284,28 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
       html("button", { class: "hb restart", type: "button", "aria-label": "Start over", title: "Start over" }, ico(I.restart, 18)),
       html("button", { class: "hb close", type: "button", "aria-label": "Close chat", title: "Close" }, ico(I.close, 20)),
     ]);
+    const form = el("form", { class: "chatform" }, [input, send]);
     const panel = el("section", { class: "panel", role: "dialog", "aria-label": name + ", Craftshan Studio help chat", hidden: "" }, [
-      head, log, el("form", {}, [input, send]),
+      head, log, sug, form,
       el("div", { class: "note", text: "Automated answers from our published policies, not legal advice. Please don't share card numbers or passwords. Nothing you type is saved." }),
     ]);
     root.append(panel, tip, fab);
 
     const PROBLEM = "I have a problem";
     const problemEntries = () => (cfg.problems || ["file-problem", "my-downloads", "duplicate", "refund", "chargeback"]).map((id) => faq.entries.find((e) => e.id === id)).filter(Boolean);
+    const rt = () => (cfg.response_time ? "\n\nWe usually reply " + cfg.response_time + "." : "");
     let busy = false, count = 0, started = false;
-    const form = panel.querySelector("form");
     const byQ = new Map(faq.entries.map((e) => [e.q, e]));
     const topics = (cfg.topics || []).filter((t) => faq.entries.some((e) => e.topic === t));
     const toBottom = () => (log.scrollTop = log.scrollHeight);
     const toRow = (row) => (log.scrollTop = Math.max(0, row.offsetTop - 8));
+    const pageHint = () => { // different suggestions on the cart, account and product pages
+      const here = (location.pathname + location.search + location.hash).toLowerCase();
+      for (const h of cfg.page_hints || []) { try { if (new RegExp(h.match, "i").test(here)) return h; } catch (e) { /* bad pattern */ } }
+      return null;
+    };
 
-    function botRow(content) { // returns the bubble; content may be text or a typing indicator
+    function botRow(content) {
       const bub = el("div", { class: "bub" });
       if (typeof content === "string") content.split("\n\n").filter(Boolean).forEach((t, i) => bub.appendChild(el("div", { class: i ? "txt note2" : "txt", text: t })));
       else bub.appendChild(content);
@@ -255,25 +323,65 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
     }
     function questions(list, parent) {
       const box = el("div", { class: "qs" });
-      list.forEach((label) => { const b = html("button", { class: "q", type: "button" }, `<span></span>` + ico(I.arrow, 15)); b.firstChild.textContent = label; b.addEventListener("click", () => pick(label)); box.appendChild(b); });
+      list.forEach((label) => { const b = html("button", { class: "q", type: "button" }, "<span></span>" + ico(I.arrow, 15)); b.firstChild.textContent = label; b.addEventListener("click", () => pick(label)); box.appendChild(b); });
       parent.appendChild(box);
     }
     const actions = (parent) => parent.querySelector(":scope > .actions") || parent.appendChild(el("div", { class: "actions" }));
     const humanLink = (parent, label, ghost) => { const a = html("a", { class: "btn" + (ghost ? " ghost" : ""), href: humanHref, target: "_blank", rel: "noopener" }, ico(I.contact, 16) + "<span></span>"); a.querySelector("span").textContent = label || "Talk to a person"; actions(parent).appendChild(a); };
-    function feedback(parent, entry) {
+    const writeBtn = (parent, preset) => { const b = html("button", { class: "btn ghost", type: "button" }, ico(I.pen, 16) + "<span>Write my message</span>"); b.addEventListener("click", () => { if (!busy) composer(preset); }); actions(parent).appendChild(b); };
+
+    // The message helper: builds a complete message locally. Nothing is sent or saved anywhere.
+    function composer(preset) {
+      const r = botRow("Let's put your message together. It stays on your device: I'll write a ready-to-send text that you copy into our contact form.");
+      const form = el("form", { class: "cmp", novalidate: "" });
+      const field = (label, node) => el("label", {}, [el("span", { text: label }), node]);
+      const topic = el("select", { "aria-label": "What is it about?" });
+      ISSUES.forEach(([t], i) => topic.appendChild(el("option", { value: String(i), text: t })));
+      if (preset != null) topic.value = String(preset);
+      const order = el("input", { type: "text", maxlength: "40", placeholder: "For example 12345", autocomplete: "off" });
+      const product = el("input", { type: "text", maxlength: "80", autocomplete: "off" });
+      const details = el("textarea", { maxlength: "600", rows: "4", placeholder: "What happened, and what did you expect?" });
+      const err = el("div", { class: "err", role: "alert" });
+      form.append(field("What is it about?", topic), field("Order number (if you have one)", order), field("Design name (optional)", product), field("What happened?", details), err, el("button", { class: "btn", type: "submit", text: "Create my message" }));
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const f = { subject: ISSUES[+topic.value][1], topic: ISSUES[+topic.value][0], order: order.value.trim(), product: product.value.trim(), details: details.value.trim() };
+        if (f.details.length < 10) { err.textContent = "Please tell us a little more about what happened."; details.focus(); return; }
+        if (looksLikeCard(f.order + " " + f.product + " " + f.details)) { err.textContent = "That looks like a card number. Please remove it. We never need card details."; return; }
+        const text = composeMessage(f);
+        form.remove();
+        const box = el("textarea", { class: "out", readonly: "", "aria-label": "Your message", rows: "10" });
+        box.value = text;
+        r.bub.appendChild(el("div", { class: "txt note2", text: "Here's your message. Copy it, open the contact page, choose the subject \"" + f.subject + "\" and paste it in." }));
+        r.bub.appendChild(box);
+        const copy = html("button", { class: "btn", type: "button" }, ico(I.copy, 16) + "<span>Copy message</span>");
+        copy.addEventListener("click", async () => {
+          let ok = false;
+          try { await navigator.clipboard.writeText(text); ok = true; } catch (e1) { box.focus(); box.select(); try { ok = document.execCommand("copy"); } catch (e2) { ok = false; } }
+          copy.querySelector("span").textContent = ok ? "Copied!" : "Press Ctrl+C to copy";
+        });
+        const open = html("a", { class: "btn ghost", href: humanHref, target: "_blank", rel: "noopener" }, ico(I.contact, 16) + "<span>Open the contact page</span>");
+        r.bub.appendChild(el("div", { class: "actions" }, [copy, open]));
+        r.bub.appendChild(el("div", { class: "txt note2", text: "Please don't add passwords or card numbers." }));
+        toBottom();
+      });
+      r.bub.appendChild(form);
+      toRow(r.row);
+      setTimeout(() => (preset == null ? topic : details).focus(), 50);
+    }
+
+    function feedback(parent) {
       const box = el("div", { class: "fb" }, [el("span", { text: "Was this helpful?" })]);
       const yes = html("button", { type: "button" }, ico(I.thumbUp, 14) + " Yes"), no = html("button", { type: "button" }, ico(I.thumbDown, 14) + " No"), more = html("button", { type: "button" }, "More topics");
       yes.addEventListener("click", () => { box.textContent = "Glad that helped!"; });
-      no.addEventListener("click", () => { box.remove(); const r = botRow(cfg.feedback_down || "Thanks for telling me. I don't keep feedback, so if an answer looks wrong, please let the owner know through the contact page."); humanLink(r.bub, "Tell the owner"); toRow(r.row); });
-      more.addEventListener("click", () => { box.remove(); showTopics(); });
+      no.addEventListener("click", () => { box.remove(); const r = botRow((cfg.feedback_down || "Thanks for telling me. I don't keep feedback, so if an answer looks wrong, please let the owner know.") + rt()); humanLink(r.bub, "Tell the owner"); writeBtn(r.bub); toRow(r.row); });
+      more.addEventListener("click", () => { box.remove(); const r = botRow("Pick a topic, or just type your question."); cards(r.bub); toRow(r.row); });
       box.append(yes, no, more);
       parent.appendChild(box);
     }
-    function showTopics(text) { const r = botRow(text || "Pick a topic, or just type your question."); cards(r.bub); toRow(r.row); }
-
     function pick(label) {
       if (busy) return;
-      if (label === PROBLEM) { me(label); respondLater(() => { const r = botRow("I'm sorry you're having trouble. What's going on?"); questions(problemEntries().map((e) => e.q), r.bub); humanLink(r.bub, "Talk to a person"); return r; }); return; }
+      if (label === PROBLEM) { me(label); respondLater(() => { const r = botRow("I'm sorry you're having trouble. What's going on?"); questions(problemEntries().map((e) => e.q), r.bub); humanLink(r.bub, "Talk to a person"); writeBtn(r.bub); return r; }); return; }
       if (topics.includes(label)) { me(label); respondLater(() => { const r = botRow("Here's what I can help with about " + label.toLowerCase() + ":"); questions(faq.entries.filter((e) => e.topic === label).map((e) => e.q), r.bub); return r; }); }
       else if (byQ.has(label)) { me(label); respondLater(() => answer(byQ.get(label), [])); }
       else ask(label);
@@ -293,23 +401,32 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
       }
       notes.forEach((n) => r.bub.appendChild(el("div", { class: "txt note2", text: n })));
       if (entry.link) { const a = html("a", { class: "btn ghost", href: url(entry.link.path), target: "_blank", rel: "noopener" }, "<span></span>" + ico(I.arrow, 14)); a.firstChild.textContent = entry.link.label || "Read the " + entry.link.text; actions(r.bub).appendChild(a); }
+      if (entry.link && entry.link.path === (cfg.contact_path || "/Contact/")) writeBtn(r.bub, PRESET[entry.id]);
       if (related.length) { r.bub.appendChild(el("div", { class: "fb", text: "You might also want to know:" })); questions(related.map((x) => x.q), r.bub); }
-      feedback(r.bub, entry);
+      feedback(r.bub);
+      return r;
+    }
+    function greeting() {
+      const r = botRow(cfg.greeting);
+      const h = pageHint();
+      const list = h ? h.ids.map((id) => faq.entries.find((e) => e.id === id)).filter(Boolean) : [];
+      if (list.length) { r.bub.appendChild(el("div", { class: "fb", text: h.title })); questions(list.map((e) => e.q), r.bub); }
+      cards(r.bub);
       return r;
     }
     function reply(res) {
-      if (res.type === "greeting") { const r = botRow(cfg.greeting); cards(r.bub); return r; }
-      if (res.type === "thanks") return botRow(cfg.thanks || "You're welcome! Anything else I can help with?");
+      if (res.type === "greeting") return greeting();
+      if (res.type === "thanks") return botRow(cfg.thanks || "You're welcome! Is there anything else I can help with?");
       if (res.type === "answer") return answer(res.entry, res.related);
       if (res.type === "clarify") { const r = botRow("I want to get this right. Did you mean one of these?"); questions(res.options.map((o) => o.q), r.bub); return r; }
-      const r = botRow(res.reason === "sensitive" ? cfg.sensitive : res.reason === "unsupported" ? cfg.unsupported : cfg.handoff);
-      humanLink(r.bub, "Talk to a person");
+      const r = botRow((res.reason === "sensitive" ? cfg.sensitive : res.reason === "unsupported" ? cfg.unsupported : cfg.handoff) + rt());
+      humanLink(r.bub, "Talk to a person"); writeBtn(r.bub);
       if (res.suggestions && res.suggestions.length) { r.bub.appendChild(el("div", { class: "fb", text: "These might help:" })); questions(res.suggestions.map((e) => e.q), r.bub); }
       else if (res.reason !== "sensitive" && topics.length) cards(r.bub);
       return r;
     }
     function respondLater(make) { // shows a typing indicator, then the reply
-      busy = true; input.disabled = true; send.disabled = true;
+      busy = true; input.disabled = true; send.disabled = true; sug.hidden = true;
       const dots = botRow(html("span", { class: "dots", "aria-label": name + " is typing" }, "<i></i><i></i><i></i>")); toBottom();
       setTimeout(() => { dots.row.remove(); const r = make(); toRow(r.row); busy = false; input.disabled = false; send.disabled = false; if (!panel.hidden) input.focus(); }, opts.instant || reduce ? 0 : 550);
     }
@@ -319,18 +436,28 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
       me(text);
       respondLater(() => reply(respond(text, faq)));
     }
-    function start() { log.textContent = ""; count = 0; reply({ type: "greeting" }); }
+    function start() { log.textContent = ""; sug.hidden = true; count = 0; greeting(); }
     function open(show) {
       panel.hidden = !show; tip.hidden = true; fab.setAttribute("aria-expanded", String(show));
       fab.setAttribute("aria-label", show ? "Close chat" : "Chat with " + name);
       if (show) { if (!started) { started = true; start(); } input.focus(); } else fab.focus();
     }
+    // Suggestions while typing: matching questions appear above the box, so customers can tap instead of finishing.
+    let sugTimer;
+    function updateSug() {
+      const v = input.value.trim(); sug.textContent = "";
+      if (v.length < 3 || busy) { sug.hidden = true; return; }
+      const hits = rank(v, faq).filter((r) => r.score >= P.clarify).slice(0, 3);
+      hits.forEach((h) => { const b = html("button", { class: "sq", type: "button" }, "<span></span>" + ico(I.arrow, 14)); b.firstChild.textContent = h.entry.q; b.addEventListener("click", () => { input.value = ""; sug.hidden = true; pick(h.entry.q); }); sug.appendChild(b); });
+      sug.hidden = hits.length === 0;
+    }
+    input.addEventListener("input", () => { clearTimeout(sugTimer); sugTimer = setTimeout(updateSug, 120); });
     fab.addEventListener("click", () => open(panel.hidden));
     tip.addEventListener("click", () => open(true));
     head.querySelector(".close").addEventListener("click", () => open(false));
     head.querySelector(".restart").addEventListener("click", () => { if (!busy) { start(); input.focus(); } });
     panel.addEventListener("keydown", (e) => { if (e.key === "Escape") open(false); });
-    form.addEventListener("submit", (e) => { e.preventDefault(); const v = input.value; input.value = ""; ask(v); });
+    form.addEventListener("submit", (e) => { e.preventDefault(); const v = input.value; input.value = ""; sug.hidden = true; ask(v); });
     document.body.appendChild(host);
 
     // Never sit on top of the site's own floating things (back-to-top, toasts, mobile bar, buy bar, cookie banner).
@@ -381,5 +508,5 @@ input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;paddin
       console.warn("Crafty support bot not started:", e.message); // the site keeps working without it
     }
   }
-  return { respond, rank, tokens, answerText, mount, autoStart, params: P };
+  return { respond, rank, tokens, correct, answerText, mount, autoStart, params: P };
 });

@@ -59,6 +59,55 @@
       "duplicate",
       "refund",
       "chargeback"
+    ],
+    "avatar": "support",
+    "response_time": "",
+    "page_hints": [
+      {
+        "match": "cart|checkout",
+        "title": "Checking out?",
+        "ids": [
+          "payments",
+          "discounts",
+          "shop-open"
+        ]
+      },
+      {
+        "match": "account|orders|download",
+        "title": "Need help with your account?",
+        "ids": [
+          "my-downloads",
+          "account",
+          "file-problem"
+        ]
+      },
+      {
+        "match": "product",
+        "title": "Looking at a design?",
+        "ids": [
+          "commercial-use",
+          "machines",
+          "what-receive"
+        ]
+      },
+      {
+        "match": "contact",
+        "title": "Before you write to us",
+        "ids": [
+          "contact",
+          "refund",
+          "my-downloads"
+        ]
+      },
+      {
+        "match": "shop|free",
+        "title": "Browsing the shop?",
+        "ids": [
+          "commercial-use",
+          "formats",
+          "free-designs"
+        ]
+      }
     ]
   },
   "entries": [
