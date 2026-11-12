@@ -181,8 +181,42 @@
     rosette: (n) => `<svg class="crafty" width="${n}" height="${n}" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3.5a20.5 20.5 0 1 1-9.4 38.7L5.5 45l3.1-8.6A20.5 20.5 0 0 1 24 3.5z" fill="#0D0D0D"/><g fill="#F5C55A">${[0, 45, 90, 135, 180, 225, 270, 315].map((a) => `<ellipse cx="24" cy="14" rx="3.3" ry="7.2" transform="rotate(${a} 24 24)"/>`).join("")}</g><circle cx="24" cy="24" r="4.4" fill="#0D0D0D"/><circle cx="24" cy="24" r="2" fill="#E8A020"/></svg>`,
     support: (n) => `<svg class="crafty" width="${n}" height="${n}" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="19" r="9.5" fill="#0D0D0D"/><path d="M13.5 8.5a10.6 10.6 0 0 1 21 0" stroke="#0D0D0D" stroke-width="2.6" fill="none" stroke-linecap="round"/><rect x="8.8" y="16" width="5" height="8.5" rx="2.5" fill="#0D0D0D"/><rect x="34.2" y="16" width="5" height="8.5" rx="2.5" fill="#0D0D0D"/><path d="M36.5 24.5v3.5q0 3-4 3h-4" stroke="#0D0D0D" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="27.5" cy="31" r="1.9" fill="#0D0D0D"/><circle cx="20.5" cy="18.5" r="1.5" fill="#F5C55A"/><circle cx="27.5" cy="18.5" r="1.5" fill="#F5C55A"/><path d="M20.5 22.2q3.5 2.8 7 0" stroke="#F5C55A" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M12.5 44c0-6.4 5.1-10 11.5-10s11.5 3.6 11.5 10z" fill="#0D0D0D"/></svg>`,
   };
-  let AVATAR = "smile";
-  const crafty = (n) => AV[AVATAR](n);
+  // Crafty the mascot: an original floating-head character. Cream and gold shell, black glass visor with glowing pixel
+  // eyes, a spinning laser-cut flower antenna and waving hands. Pure SVG + CSS: no images, no libraries, very light.
+  const DEFS = `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<radialGradient id="cg-head" cx="35%" cy="25%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#EFE8DA"/><stop offset="1" stop-color="#CBC1AC"/></radialGradient>
+<radialGradient id="cg-hand" cx="35%" cy="25%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#D8CFBB"/></radialGradient>
+<linearGradient id="cg-visor" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2E2E2E"/><stop offset=".5" stop-color="#121212"/><stop offset="1" stop-color="#050505"/></linearGradient>
+<linearGradient id="cg-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD679"/><stop offset="1" stop-color="#E8A020"/></linearGradient>
+<radialGradient id="cg-glow"><stop offset="0" stop-color="#F5C55A" stop-opacity=".55"/><stop offset="1" stop-color="#F5C55A" stop-opacity="0"/></radialGradient>
+<pattern id="cg-scan" width="4" height="3" patternUnits="userSpaceOnUse"><rect width="4" height="1" y="2" fill="#0D0D0D" opacity=".45"/></pattern>
+</defs></svg>`;
+  const mascotSvg = (w, h, headOnly, isStatic) => `<svg class="mascot${headOnly ? " head-only" : ""}${isStatic ? " static" : ""}" viewBox="${headOnly ? "34 3 132 146" : "0 0 200 190"}" width="${w}" height="${h}" data-mood="idle" aria-hidden="true" focusable="false">
+<ellipse class="shadow" cx="100" cy="176" rx="44" ry="6.5" fill="#000" opacity=".3"/>
+<g class="float">
+<g class="hand hl"><ellipse cx="26" cy="96" rx="12.5" ry="22" transform="rotate(26 26 96)" fill="url(#cg-hand)"/><path d="M17 108q5 4 11 2" stroke="#E8A020" stroke-width="2.4" fill="none" stroke-linecap="round" transform="rotate(26 26 96)"/></g>
+<g class="hand hr"><ellipse cx="174" cy="106" rx="11" ry="20" transform="rotate(-16 174 106)" fill="url(#cg-hand)"/></g>
+<path d="M100 34v-7" stroke="#CBC1AC" stroke-width="4" stroke-linecap="round"/>
+<g transform="translate(100 18)"><g class="spin">${[0, 45, 90, 135, 180, 225, 270, 315].map((a) => `<ellipse cx="0" cy="-5.2" rx="2.5" ry="5.4" transform="rotate(${a})" fill="url(#cg-gold)"/>`).join("")}<circle r="2.6" fill="#0D0D0D"/></g></g>
+<rect x="38" y="32" width="124" height="112" rx="46" fill="url(#cg-head)"/>
+<rect x="38" y="32" width="124" height="112" rx="46" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.2"/>
+<rect x="51" y="50" width="98" height="72" rx="27" fill="url(#cg-visor)" stroke="#E8A020" stroke-width="2.2"/>
+<path d="M62 57q38-8 76 0-24 22-76 31z" fill="#fff" opacity=".06"/>
+<g class="face">
+<g class="eyes-idle"><circle cx="78" cy="87" r="21" fill="url(#cg-glow)"/><circle cx="122" cy="87" r="21" fill="url(#cg-glow)"/><rect x="69.5" y="76" width="17" height="22" rx="6" fill="url(#cg-gold)"/><rect x="113.5" y="76" width="17" height="22" rx="6" fill="url(#cg-gold)"/><rect x="69.5" y="76" width="17" height="22" rx="6" fill="url(#cg-scan)"/><rect x="113.5" y="76" width="17" height="22" rx="6" fill="url(#cg-scan)"/></g>
+<g class="eyes-happy"><path d="M68 91q10-15 20 0M112 91q10-15 20 0" stroke="#F5C55A" stroke-width="5" fill="none" stroke-linecap="round"/></g>
+<g class="brows"><path d="M68 77l17-6M132 77l-17-6" stroke="#F5C55A" stroke-width="3" stroke-linecap="round"/></g>
+<path class="m-smile" d="M87 107q13 11 26 0" stroke="#F5C55A" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+<path class="m-happy" d="M85 104q15 20 30 0z" fill="#F5C55A"/>
+<path class="m-think" d="M92 109h16" stroke="#F5C55A" stroke-width="3.6" stroke-linecap="round"/>
+<path class="m-sorry" d="M88 112q12-9 24 0" stroke="#F5C55A" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+<circle cx="64" cy="106" r="3.2" fill="#E8A020" opacity=".35"/><circle cx="136" cy="106" r="3.2" fill="#E8A020" opacity=".35"/>
+</g>
+<ellipse cx="68" cy="43" rx="22" ry="7" fill="#fff" opacity=".7" transform="rotate(-16 68 43)"/>
+</g></svg>`;
+  AV.mascot = (n, live) => mascotSvg(n, Math.round(n * 1.1), true, !live);
+  let AVATAR = "mascot";
+  const crafty = (n, live) => AV[AVATAR](n, live);
 
   const CSS = `
 :host{all:initial;--gold:#E8A020;--ink:#0D0D0D;--head:#0D0D0D;--panel:#1A1A1A;--bot:#252525;--chip:#252525;--input:#0D0D0D;--text:#F5F1E8;--muted:#A9A397;--line:#303030;--link:#F5C55A;--side:22px;--fab-bottom:24px;--sh:0 20px 60px rgba(0,0,0,.55)}
@@ -233,7 +267,32 @@ header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:
 .note{padding:0 14px 10px;font-size:11.5px;line-height:1.4;color:var(--muted);background:var(--panel)}
 @media (prefers-reduced-motion:no-preference){.row{animation:in .2s ease-out}@keyframes in{from{opacity:0;transform:translateY(5px)}}}
 @media (prefers-reduced-motion:reduce){.eyes,.spark,.dots i,.fab{animation:none}.log{scroll-behavior:auto}.fab,.tip,.panel{transition:none}}
-@media (max-width:520px){.panel{left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom,0px));width:auto;height:min(680px,calc(100dvh - 16px - env(safe-area-inset-bottom,0px)))}:host([data-pos=left]) .panel{left:8px}.fab[aria-expanded=true]{display:none}}`;
+@media (max-width:520px){.panel{left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom,0px));width:auto;height:min(680px,calc(100dvh - 16px - env(safe-area-inset-bottom,0px)))}:host([data-pos=left]) .panel{left:8px}.fab[aria-expanded=true]{display:none}}
+.defs{position:absolute;width:0;height:0;overflow:hidden}.mascot{display:block;overflow:visible}
+.mascot .eyes-happy,.mascot .eyes-sorry,.mascot .brows,.mascot .m-happy,.mascot .m-think,.mascot .m-sorry{display:none}
+.mascot[data-mood=happy] .eyes-idle,.mascot[data-mood=happy] .m-smile{display:none}.mascot[data-mood=happy] .eyes-happy,.mascot[data-mood=happy] .m-happy{display:inline}
+.mascot[data-mood=thinking] .m-smile{display:none}.mascot[data-mood=thinking] .m-think{display:inline}
+.mascot[data-mood=sorry] .m-smile{display:none}.mascot[data-mood=sorry] .m-sorry,.mascot[data-mood=sorry] .brows{display:inline}.mascot[data-mood=sorry] .eyes-idle{animation:none;transform:translateY(3px) scaleY(.8)}
+.face{transform:translate(var(--lx,0px),var(--ly,0px));transition:transform .18s ease-out}.mascot[data-mood=thinking] .face{transform:translate(-4px,-3px)}
+.eyes-idle{transform-box:fill-box;transform-origin:center;animation:blink 5.2s infinite}
+.float{animation:bob 4.6s ease-in-out infinite}.shadow{transform-box:fill-box;transform-origin:center;animation:shd 4.6s ease-in-out infinite}
+.hl{transform-box:view-box;transform-origin:44px 116px;animation:sway 3.8s ease-in-out infinite}.hr{transform-box:view-box;transform-origin:156px 120px;animation:sway 4.3s ease-in-out infinite reverse}
+.spin{animation:spin 16s linear infinite}.mascot[data-mood=thinking] .spin{animation-duration:1.8s}.waving .hl{animation:wave .9s ease-in-out 3}
+.head-only .hand,.head-only .shadow{display:none}.mascot.static *{animation:none!important}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-6px) rotate(1.2deg)}}
+@keyframes shd{0%,100%{transform:scaleX(1);opacity:.3}50%{transform:scaleX(.82);opacity:.18}}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(5deg)}}
+@keyframes wave{0%,100%{transform:rotate(0)}25%{transform:rotate(-34deg)}50%{transform:rotate(10deg)}75%{transform:rotate(-30deg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes nudge{0%,88%,100%{transform:none}91%{transform:translateY(-5px) rotate(-6deg)}94%{transform:translateY(0) rotate(5deg)}97%{transform:translateY(-3px) rotate(-3deg)}}
+.fab .mascot{width:46px;height:51px;animation:nudge 13s ease-in-out infinite}.fab[aria-expanded=true] .mascot{display:none}
+:host([data-avatar=mascot]) .fab{color:#F5C55A;background:radial-gradient(circle at 30% 20%,#2e2e2e,#0d0d0d 72%);box-shadow:0 8px 28px rgba(0,0,0,.5),0 0 0 2px #E8A020,0 0 20px rgba(232,160,32,.3)}
+:host([data-avatar=mascot]) .av,:host([data-avatar=mascot]) .row .mini{background:#0D0D0D;box-shadow:0 0 0 1.5px #E8A020}
+.av .mascot{width:25px;height:28px}.row .mini .mascot{width:17px;height:19px}
+.stage{display:none;position:relative;flex:none;height:118px;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 50% 105%,rgba(232,160,32,.24),transparent 66%),var(--panel);border-bottom:1px solid var(--line);transition:height .35s ease,opacity .25s ease;cursor:pointer}
+:host([data-avatar=mascot]) .stage{display:flex}.stage.compact{height:0;opacity:0;border-bottom-width:0}.stage .mascot{width:112px;height:106px}
+@media (max-width:520px){.stage{height:96px}.stage .mascot{width:94px;height:89px}}
+@media (prefers-reduced-motion:reduce){.mascot *,.fab .mascot{animation:none!important}.stage{transition:none}}`;
 
   function el(tag, props, children) {
     const n = document.createElement(tag);
@@ -258,7 +317,7 @@ header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:
   function mount(faq, opts) {
     opts = opts || {};
     const cfg = faq.config, name = cfg.bot_name || "Crafty";
-    AVATAR = AV[cfg.avatar] ? cfg.avatar : "smile";
+    AVATAR = AV[cfg.avatar] ? cfg.avatar : "mascot";
     const site = (cfg.site || "").replace(/\/$/, "");
     const url = (p) => (/^https?:/.test(p) ? p : site + p);
     const reduce = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -266,11 +325,13 @@ header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:
     const root = host.attachShadow({ mode: "open" });
     root.appendChild(el("style", { text: CSS }));
     host.setAttribute("data-pos", cfg.position === "left" ? "left" : "right");
+    host.setAttribute("data-avatar", AVATAR);
+    root.appendChild(html("div", { class: "defs" }, DEFS));
     const theme = () => host.setAttribute("data-theme", document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark");
     theme();
     new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-    const fab = html("button", { class: "fab", type: "button", "aria-label": "Chat with " + name, "aria-expanded": "false" }, crafty(42) + `<span class="x">${ico(I.close, 26)}</span>`);
+    const fab = html("button", { class: "fab", type: "button", "aria-label": "Chat with " + name, "aria-expanded": "false" }, crafty(42, true) + `<span class="x">${ico(I.close, 26)}</span>`);
     const tip = el("button", { class: "tip", type: "button", hidden: "", text: cfg.tooltip || "Hi, I'm " + name + "! How can I help you today?" });
     const log = el("div", { class: "log", role: "log", "aria-live": "polite", "aria-label": "Conversation with " + name });
     const input = el("input", { type: "text", maxlength: String(MAX_LEN), "aria-label": "Your question", placeholder: "Ask " + name + " a question…", autocomplete: "off", enterkeyhint: "send" });
@@ -284,9 +345,10 @@ header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:
       html("button", { class: "hb restart", type: "button", "aria-label": "Start over", title: "Start over" }, ico(I.restart, 18)),
       html("button", { class: "hb close", type: "button", "aria-label": "Close chat", title: "Close" }, ico(I.close, 20)),
     ]);
+    const stage = html("div", { class: "stage", "aria-hidden": "true" }, AVATAR === "mascot" ? mascotSvg(112, 106, false, false) : "");
     const form = el("form", { class: "chatform" }, [input, send]);
     const panel = el("section", { class: "panel", role: "dialog", "aria-label": name + ", Craftshan Studio help chat", hidden: "" }, [
-      head, log, sug, form,
+      head, stage, log, sug, form,
       el("div", { class: "note", text: "Automated answers from our published policies, not legal advice. Please don't share card numbers or passwords. Nothing you type is saved." }),
     ]);
     root.append(panel, tip, fab);
@@ -313,7 +375,7 @@ header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:
       log.appendChild(row);
       return { row, bub };
     }
-    function me(text) { log.appendChild(el("div", { class: "row me" }, [el("div", { class: "bub", text })])); toBottom(); }
+    function me(text) { stage.classList.add("compact"); log.appendChild(el("div", { class: "row me" }, [el("div", { class: "bub", text })])); toBottom(); }
     function cards(parent) {
       const box = el("div", { class: "cards" });
       const add = (icon, label, cls) => { const b = html("button", { class: "card " + (cls || ""), type: "button" }, ico(icon, 20) + "<span></span>"); b.querySelector("span").textContent = label; b.addEventListener("click", () => pick(label)); box.appendChild(b); };
@@ -363,7 +425,7 @@ header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:
         const open = html("a", { class: "btn ghost", href: humanHref, target: "_blank", rel: "noopener" }, ico(I.contact, 16) + "<span>Open the contact page</span>");
         r.bub.appendChild(el("div", { class: "actions" }, [copy, open]));
         r.bub.appendChild(el("div", { class: "txt note2", text: "Please don't add passwords or card numbers." }));
-        toBottom();
+        mood("happy", 2500); toBottom();
       });
       r.bub.appendChild(form);
       toRow(r.row);
@@ -373,8 +435,8 @@ header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:
     function feedback(parent) {
       const box = el("div", { class: "fb" }, [el("span", { text: "Was this helpful?" })]);
       const yes = html("button", { type: "button" }, ico(I.thumbUp, 14) + " Yes"), no = html("button", { type: "button" }, ico(I.thumbDown, 14) + " No"), more = html("button", { type: "button" }, "More topics");
-      yes.addEventListener("click", () => { box.textContent = "Glad that helped!"; });
-      no.addEventListener("click", () => { box.remove(); const r = botRow((cfg.feedback_down || "Thanks for telling me. I don't keep feedback, so if an answer looks wrong, please let the owner know.") + rt()); humanLink(r.bub, "Tell the owner"); writeBtn(r.bub); toRow(r.row); });
+      yes.addEventListener("click", () => { box.textContent = "Glad that helped!"; mood("happy", 2200); });
+      no.addEventListener("click", () => { box.remove(); mood("sorry", 2800); const r = botRow((cfg.feedback_down || "Thanks for telling me. I don't keep feedback, so if an answer looks wrong, please let the owner know.") + rt()); humanLink(r.bub, "Tell the owner"); writeBtn(r.bub); toRow(r.row); });
       more.addEventListener("click", () => { box.remove(); const r = botRow("Pick a topic, or just type your question."); cards(r.bub); toRow(r.row); });
       box.append(yes, no, more);
       parent.appendChild(box);
@@ -392,6 +454,7 @@ header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:
       const sentences = main.match(/[^.!?]+[.!?]+(\s+|$)/g) || [main];
       const long = main.length > 260 && sentences.length > 2;
       const r = botRow("");
+      mood("happy", 2400);
       const txt = el("div", { class: "txt", text: long ? sentences.slice(0, 2).join("").trim() : main });
       r.bub.appendChild(txt);
       if (long) {
@@ -420,15 +483,15 @@ header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:
       if (res.type === "answer") return answer(res.entry, res.related);
       if (res.type === "clarify") { const r = botRow("I want to get this right. Did you mean one of these?"); questions(res.options.map((o) => o.q), r.bub); return r; }
       const r = botRow((res.reason === "sensitive" ? cfg.sensitive : res.reason === "unsupported" ? cfg.unsupported : cfg.handoff) + rt());
-      humanLink(r.bub, "Talk to a person"); writeBtn(r.bub);
+      mood("sorry", 2800); humanLink(r.bub, "Talk to a person"); writeBtn(r.bub);
       if (res.suggestions && res.suggestions.length) { r.bub.appendChild(el("div", { class: "fb", text: "These might help:" })); questions(res.suggestions.map((e) => e.q), r.bub); }
       else if (res.reason !== "sensitive" && topics.length) cards(r.bub);
       return r;
     }
     function respondLater(make) { // shows a typing indicator, then the reply
-      busy = true; input.disabled = true; send.disabled = true; sug.hidden = true;
+      busy = true; input.disabled = true; send.disabled = true; sug.hidden = true; mood("thinking");
       const dots = botRow(html("span", { class: "dots", "aria-label": name + " is typing" }, "<i></i><i></i><i></i>")); toBottom();
-      setTimeout(() => { dots.row.remove(); const r = make(); toRow(r.row); busy = false; input.disabled = false; send.disabled = false; if (!panel.hidden) input.focus(); }, opts.instant || reduce ? 0 : 550);
+      setTimeout(() => { dots.row.remove(); const r = make(); toRow(r.row); if (curMood === "thinking") mood("idle"); busy = false; input.disabled = false; send.disabled = false; if (!panel.hidden) input.focus(); }, opts.instant || reduce ? 0 : 550);
     }
     function ask(text) {
       text = String(text || "").trim().slice(0, MAX_LEN);
@@ -436,7 +499,7 @@ header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:
       me(text);
       respondLater(() => reply(respond(text, faq)));
     }
-    function start() { log.textContent = ""; sug.hidden = true; count = 0; greeting(); }
+    function start() { log.textContent = ""; sug.hidden = true; count = 0; stage.classList.remove("compact"); greeting(); wave(); }
     function open(show) {
       panel.hidden = !show; tip.hidden = true; fab.setAttribute("aria-expanded", String(show));
       fab.setAttribute("aria-label", show ? "Close chat" : "Chat with " + name);
@@ -459,6 +522,39 @@ header{background:var(--head);color:#F5F1E8;padding:12px 12px 12px 14px;display:
     panel.addEventListener("keydown", (e) => { if (e.key === "Escape") open(false); });
     form.addEventListener("submit", (e) => { e.preventDefault(); const v = input.value; input.value = ""; sug.hidden = true; ask(v); });
     document.body.appendChild(host);
+
+    // Crafty's moods, waving and eyes that follow the pointer (skipped for visitors who prefer less motion).
+    const live = AVATAR === "mascot" ? [fab.querySelector(".mascot"), stage.querySelector(".mascot")] : [];
+    let curMood = "idle", moodTimer, lookDown = false;
+    function mood(m, ms) { clearTimeout(moodTimer); curMood = m; live.forEach((sv) => sv && sv.setAttribute("data-mood", m)); if (ms) moodTimer = setTimeout(() => mood("idle"), ms); }
+    function wave(ms) { const sv = live[1]; if (!sv || reduce) return; sv.classList.add("waving"); setTimeout(() => sv.classList.remove("waving"), ms || 2800); }
+    function look(sv, x, y) { sv.style.setProperty("--lx", x + "px"); sv.style.setProperty("--ly", y + "px"); }
+    if (live.length) {
+      fab.addEventListener("pointerenter", () => mood("happy", 1600));
+      stage.addEventListener("click", () => { wave(); mood("happy", 1800); });
+      let typingTimer;
+      input.addEventListener("input", () => { lookDown = true; if (live[1]) look(live[1], 0, 4); clearTimeout(typingTimer); typingTimer = setTimeout(() => { lookDown = false; }, 1600); });
+      input.addEventListener("blur", () => { lookDown = false; clearTimeout(typingTimer); });
+      if (!reduce) {
+        let pending = false, last;
+        addEventListener("pointermove", (e) => {
+          if (e.pointerType === "touch") return;
+          last = e;
+          if (pending) return;
+          pending = true;
+          requestAnimationFrame(() => {
+            pending = false;
+            live.forEach((sv, i) => {
+              if (!sv || (i === 1 && lookDown)) return;
+              const r = sv.getBoundingClientRect();
+              if (!r.width) return;
+              const dx = last.clientX - (r.left + r.width / 2), dy = last.clientY - (r.top + r.height / 2);
+              look(sv, Math.max(-1, Math.min(1, dx / 180)) * 5, Math.max(-1, Math.min(1, dy / 180)) * 3.5);
+            });
+          });
+        }, { passive: true });
+      }
+    }
 
     // Never sit on top of the site's own floating things (back-to-top, toasts, mobile bar, buy bar, cookie banner).
     let queued = false;
